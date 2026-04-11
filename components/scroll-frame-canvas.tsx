@@ -60,22 +60,37 @@ export function ScrollFrameCanvas({
     };
   }, [frameCount, framePath]);
 
-  // Draw the active frame whenever progress or loaded count changes
+  // Draw the active frame whenever progress or loaded count changes.
+  // Blends two adjacent frames based on the fractional part of the mapped
+  // progress so stepping between discrete frames softens into a crossfade —
+  // cheap fake interpolation that reads as a higher frame rate.
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const idx = Math.max(
-      0,
-      Math.min(frameCount - 1, Math.floor(progress * frameCount)),
-    );
-    const img = imagesRef.current[idx];
-    if (!img || !img.complete || img.naturalWidth === 0) return;
+    const imgs = imagesRef.current;
+    const maxIdx = frameCount - 1;
+    const raw = Math.max(0, Math.min(maxIdx, progress * maxIdx));
+    const idxA = Math.floor(raw);
+    const idxB = Math.min(maxIdx, idxA + 1);
+    const t = raw - idxA;
+
+    const a = imgs[idxA];
+    const b = imgs[idxB];
+    const aReady = a && a.complete && a.naturalWidth > 0;
+    const bReady = b && b.complete && b.naturalWidth > 0;
+    if (!aReady && !bReady) return;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+    ctx.globalAlpha = 1;
+    if (aReady) ctx.drawImage(a, 0, 0, canvas.width, canvas.height);
+    if (bReady && t > 0 && idxB !== idxA) {
+      ctx.globalAlpha = t;
+      ctx.drawImage(b, 0, 0, canvas.width, canvas.height);
+      ctx.globalAlpha = 1;
+    }
   }, [progress, frameCount, loadedCount]);
 
   return (
