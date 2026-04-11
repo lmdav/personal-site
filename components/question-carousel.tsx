@@ -74,7 +74,7 @@ export function QuestionCarousel() {
 
         return (
           <>
-            <div className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col px-16 pt-24 pb-16">
+            <div className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col px-6 pt-20 pb-14 md:px-16 md:pt-24 md:pb-16">
             {/* tag swaps based on active question */}
             <div className="flex items-start justify-between">
               <span
@@ -145,7 +145,7 @@ export function QuestionCarousel() {
                   >
                     <div className="max-w-[1400px]">
                       <p
-                        className="font-serif text-[clamp(1.75rem,4.25vw,3.5rem)] leading-[1.05] text-white"
+                        className="font-serif text-[clamp(1.625rem,4.25vw,3.5rem)] leading-[1.05] text-white"
                         style={{ letterSpacing: "-0.02em" }}
                       >
                         {q.beforeHighlight}
@@ -196,10 +196,10 @@ export function QuestionCarousel() {
             {/* footer row with dot index */}
             <div className="flex items-center justify-between pt-6">
               <div className="flex items-center gap-3">
-                <span className="label-sm text-white/60">
+                <span className="label-sm hidden text-white/60 sm:inline">
                   QUESTIONS I THINK ABOUT DAILY.
                 </span>
-                <span className="ml-4 flex items-center gap-1.5">
+                <span className="flex items-center gap-1.5 sm:ml-4">
                   {QUESTIONS.map((_, i) => (
                     <span
                       key={i}

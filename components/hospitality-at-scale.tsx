@@ -60,7 +60,7 @@ export function HospitalityAtScale() {
               />
             </div>
 
-            <div className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col px-12 pt-20 pb-12">
+            <div className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col px-6 pt-16 pb-10 md:px-12 md:pt-20 md:pb-12">
               {/* top row — section tag */}
               <div className="flex items-start justify-between">
                 <span className="section-tag text-black/60">{stage.label}</span>
@@ -73,11 +73,11 @@ export function HospitalityAtScale() {
               <ArchedFrame progress={progress} stageIdx={stageIdx} />
 
               {/* bottom row */}
-              <div className="mt-10 flex items-center justify-between pt-6">
-                <span className="label-sm text-black/60">
+              <div className="mt-8 flex items-center justify-between pt-4 md:mt-10 md:pt-6">
+                <span className="label-sm hidden text-black/60 sm:inline">
                   STARTED YOUNG, COMPOUNDING DAILY.
                 </span>
-                <span className="ml-4 flex items-center gap-1.5">
+                <span className="flex items-center gap-1.5 sm:ml-4">
                   {STAGES.map((_, i) => (
                     <span
                       key={i}
@@ -87,7 +87,7 @@ export function HospitalityAtScale() {
                     />
                   ))}
                 </span>
-                <span className="label-sm text-black/60">2024 — PRESENT</span>
+                <span className="label-sm hidden text-black/60 sm:inline">2024 — PRESENT</span>
               </div>
             </div>
           </div>
@@ -201,24 +201,25 @@ function ArchedFrame({
         </g>
       </svg>
 
-      {/* Inner content sits inside the arch, inset so it doesn't crash the curve */}
+      {/* Inner content sits inside the arch, inset so it doesn't crash the curve.
+          On mobile: stack as column with portrait on top, copy below. */}
       <div
-        className="absolute inset-0 flex items-end gap-8 sm:items-center sm:gap-14"
+        className="absolute inset-0 flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:gap-14"
         style={{
-          paddingTop: `${Math.max(48, PAD + archHeight * 0.55)}px`,
-          paddingLeft: `${PAD + 32}px`,
-          paddingRight: `${PAD + 32}px`,
-          paddingBottom: `${PAD + 24}px`,
+          paddingTop: `${Math.max(40, PAD + archHeight * 0.35)}px`,
+          paddingLeft: `${PAD + 16}px`,
+          paddingRight: `${PAD + 16}px`,
+          paddingBottom: `${PAD + 16}px`,
         }}
       >
         {/* Halftone portrait — constant across stages, white drops out on
             tinted backgrounds via multiply blend. */}
-        <div className="relative aspect-square h-[clamp(180px,38vh,440px)] shrink-0 self-end sm:self-center">
+        <div className="relative aspect-square h-[clamp(140px,26vh,440px)] shrink-0 sm:h-[clamp(180px,38vh,440px)]">
           <Image
             src="/brand/headshot-dithered.png"
             alt="Liam Davis"
             fill
-            sizes="(max-width: 640px) 220px, 440px"
+            sizes="(max-width: 640px) 180px, 440px"
             className="object-contain"
             style={{ mixBlendMode: "multiply" }}
             priority
@@ -226,7 +227,7 @@ function ArchedFrame({
         </div>
 
         {/* Rotating copy */}
-        <div className="relative min-w-0 flex-1">
+        <div className="relative min-w-0 flex-1 text-center sm:text-left">
           {STAGES.map((s, i) => (
             <div
               key={s.title}
@@ -244,10 +245,10 @@ function ArchedFrame({
               }}
               aria-hidden={i !== stageIdx}
             >
-              <h2 className="display-serif text-[clamp(1.5rem,3.75vw,3rem)] leading-[1.05] text-black">
+              <h2 className="display-serif text-[clamp(1.375rem,3.75vw,3rem)] leading-[1.05] text-black">
                 {s.title}
               </h2>
-              <p className="mt-4 max-w-xl font-serif text-[16px] leading-[1.35] text-black/75">
+              <p className="mx-auto mt-3 max-w-xl font-serif text-[14px] leading-[1.35] text-black/75 sm:mx-0 sm:mt-4 sm:text-[16px]">
                 {s.body}
               </p>
             </div>

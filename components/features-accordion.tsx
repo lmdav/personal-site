@@ -110,7 +110,7 @@ export function FeaturesAccordion() {
               </div>
             </div>
 
-            <div className="relative z-10 mx-auto flex w-full max-w-[1800px] flex-1 flex-col px-16 pt-24 pb-10">
+            <div className="relative z-10 mx-auto flex w-full max-w-[1800px] flex-1 flex-col px-6 pt-20 pb-10 md:px-16 md:pt-24">
               {/* Section tag — fixed at top */}
               <p className="section-tag text-white/70">
                 /02 — SKILLS & TOOLS

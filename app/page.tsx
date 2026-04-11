@@ -27,8 +27,8 @@ export default function Home() {
 function AnnouncementBar() {
   return (
     <div className="w-full bg-[var(--color-acid)] text-black">
-      <div className="mx-auto flex max-w-[1800px] items-center justify-between px-7 py-3">
-        <span className="label">STAYZA IS LIVE IN PRIVATE BETA</span>
+      <div className="mx-auto flex max-w-[1800px] items-center justify-between gap-3 px-5 py-3 md:px-7">
+        <span className="label truncate">STAYZA IS LIVE IN PRIVATE BETA</span>
         <Link
           href="https://trystayza.com"
           target="_blank"
@@ -50,7 +50,7 @@ function AnnouncementBar() {
 function Nav() {
   return (
     <nav className="sticky top-0 z-50 w-full bg-black/40 backdrop-blur-md">
-      <div className="mx-auto flex max-w-[1800px] items-center justify-between px-16 py-5">
+      <div className="mx-auto flex max-w-[1800px] items-center justify-between px-6 py-5 md:px-16">
         <Link href="/" className="flex items-center gap-3 text-white">
           <Image
             src="/brand/liam.png"
@@ -114,15 +114,15 @@ function Hero() {
       {/* Wall-Street style ticker behind the headline */}
       <HeroTicker />
 
-      <div className="relative z-10 mx-auto flex w-full max-w-[1800px] flex-col gap-14 px-16 pt-10 pb-12">
-        <div className="flex items-start justify-between">
+      <div className="relative z-10 mx-auto flex w-full max-w-[1800px] flex-col gap-10 px-6 pt-8 pb-12 md:gap-14 md:px-16 md:pt-10">
+        <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
           <span className="section-tag text-white/60">/01 — INDEPENDENT</span>
           <span className="section-tag text-white/60">SANTA CRUZ, CA / 2026</span>
         </div>
 
         <div className="max-w-[1400px]">
           <p className="label-sm mb-5 text-white/60">THE PREMISE</p>
-          <h1 className="display-sans text-[clamp(3rem,9vw,9rem)] leading-[0.95] text-white">
+          <h1 className="display-sans text-[clamp(2.75rem,9vw,9rem)] leading-[0.95] text-white">
             Operating at
             <br />
             the edge of
@@ -266,15 +266,15 @@ function TickerRow({
 function Footer() {
   return (
     <footer id="contact" className="w-full bg-[#0a0a0a] text-white">
-      <div className="mx-auto max-w-[1800px] px-16 pb-24 pt-24">
-        <div className="mb-16 flex items-baseline justify-between border-t border-white/10 pt-8">
+      <div className="mx-auto max-w-[1800px] px-6 pb-20 pt-20 md:px-16 md:pb-24 md:pt-24">
+        <div className="mb-12 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-white/10 pt-8 md:mb-16">
           <span className="section-tag text-white/60">/08 — GET IN TOUCH</span>
           <span className="section-tag text-white/60">THE DOOR&apos;S OPEN</span>
         </div>
 
-        <div className="grid grid-cols-1 gap-20 md:grid-cols-12">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-20">
           <div className="col-span-1 md:col-span-7">
-            <h2 className="display-serif text-[clamp(3rem,8vw,8rem)] text-white">
+            <h2 className="display-serif text-[clamp(2.75rem,8vw,8rem)] leading-[0.95] text-white">
               Say hello.
             </h2>
             <p className="mt-8 max-w-lg font-serif text-[20px] leading-[1.2] text-white/75">
@@ -294,7 +294,7 @@ function Footer() {
               />
               <button
                 type="submit"
-                className="label inline-flex items-center gap-2 bg-[var(--color-acid)] px-4 text-black"
+                className="label inline-flex shrink-0 items-center gap-2 whitespace-nowrap bg-[var(--color-acid)] px-4 text-black"
               >
                 JOIN LIST
                 <Arrow className="h-3 w-3" />
@@ -302,7 +302,7 @@ function Footer() {
             </form>
           </div>
 
-          <div className="col-span-1 grid grid-cols-2 gap-10 md:col-span-5">
+          <div className="col-span-1 grid grid-cols-2 gap-8 md:col-span-5 md:gap-10">
             <FooterColumn
               heading="DIRECT"
               links={[
@@ -323,8 +323,8 @@ function Footer() {
         </div>
 
         {/* Giant wordmark */}
-        <div className="mt-32 flex items-end justify-between gap-8 border-t border-white/10 pt-10">
-          <div className="flex items-center gap-8">
+        <div className="mt-20 flex items-end justify-between gap-8 border-t border-white/10 pt-10 md:mt-32">
+          <div className="flex items-center gap-4 md:gap-8">
             <Image
               src="/brand/liam.png"
               alt="Liam Davis"
@@ -366,7 +366,7 @@ function FooterColumn({
                 href={l.href}
                 target={isExternal ? "_blank" : undefined}
                 rel={isExternal ? "noopener noreferrer" : undefined}
-                className="label-sm text-white/80 hover:text-white transition-colors"
+                className="label-sm whitespace-nowrap text-white/80 hover:text-white transition-colors"
               >
                 {l.label.toUpperCase()}
               </Link>

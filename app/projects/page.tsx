@@ -132,8 +132,8 @@ export default function ProjectsPage() {
 function AnnouncementBar() {
   return (
     <div className="w-full bg-[var(--color-acid)] text-black">
-      <div className="mx-auto flex max-w-[1800px] items-center justify-between px-7 py-3">
-        <span className="label">STAYZA IS LIVE IN PRIVATE BETA</span>
+      <div className="mx-auto flex max-w-[1800px] items-center justify-between gap-3 px-5 py-3 md:px-7">
+        <span className="label truncate">STAYZA IS LIVE IN PRIVATE BETA</span>
         <Link
           href="https://trystayza.com"
           target="_blank"
@@ -155,7 +155,7 @@ function AnnouncementBar() {
 function Nav() {
   return (
     <nav className="sticky top-0 z-50 w-full bg-black/40 backdrop-blur-md">
-      <div className="mx-auto flex max-w-[1800px] items-center justify-between px-16 py-5">
+      <div className="mx-auto flex max-w-[1800px] items-center justify-between px-6 py-5 md:px-16">
         <Link href="/" className="flex items-center gap-3 text-white">
           <Image
             src="/brand/liam.png"
@@ -212,18 +212,18 @@ function Hero() {
         }}
       />
 
-      <div className="relative mx-auto w-full max-w-[1800px] px-16 pb-24 pt-28">
-        <div className="flex items-start justify-between">
+      <div className="relative mx-auto w-full max-w-[1800px] px-6 pb-20 pt-20 md:px-16 md:pb-24 md:pt-28">
+        <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
           <span className="section-tag text-white/60">/00 — SELECTED WORK</span>
           <span className="section-tag text-white/60">
             2022 — {new Date().getFullYear()}
           </span>
         </div>
 
-        <div className="mt-20 grid grid-cols-1 gap-10 md:grid-cols-12">
+        <div className="mt-12 grid grid-cols-1 gap-10 md:mt-20 md:grid-cols-12">
           <div className="col-span-1 md:col-span-9">
-            <p className="label-sm mb-6 text-white/60">THE VENTURES</p>
-            <h1 className="display-serif text-[clamp(2.5rem,7vw,7rem)] text-white">
+            <p className="label-sm mb-5 text-white/60">THE VENTURES</p>
+            <h1 className="display-serif text-[clamp(2.25rem,7vw,7rem)] leading-[1] text-white">
               Six projects,
               <br />
               <em className="text-white/85">one throughline</em>.
@@ -249,7 +249,7 @@ function Hero() {
 function ProjectList() {
   return (
     <section className="w-full bg-black">
-      <div className="mx-auto w-full max-w-[1800px] px-16 pb-32">
+      <div className="mx-auto w-full max-w-[1800px] px-6 pb-24 md:px-16 md:pb-32">
         <ul>
           {PROJECTS.map((p, i) => (
             <li key={p.number}>
@@ -286,7 +286,7 @@ function ProjectCard({
   return (
     <Wrapper>
       <div
-        className={`grid grid-cols-1 gap-8 border-b border-white/12 py-14 transition-colors md:grid-cols-12 md:gap-10 md:py-20 ${
+        className={`grid grid-cols-1 gap-6 border-b border-white/12 py-10 transition-colors md:grid-cols-12 md:gap-10 md:py-20 ${
           isFirst ? "border-t border-white/12" : ""
         } ${project.href ? "group-hover:bg-white/[0.02]" : ""}`}
       >
@@ -380,15 +380,15 @@ function ProjectCard({
 function Footer() {
   return (
     <footer id="contact" className="w-full bg-[#0a0a0a] text-white">
-      <div className="mx-auto max-w-[1800px] px-16 pb-24 pt-24">
-        <div className="mb-16 flex items-baseline justify-between border-t border-white/10 pt-8">
+      <div className="mx-auto max-w-[1800px] px-6 pb-20 pt-20 md:px-16 md:pb-24 md:pt-24">
+        <div className="mb-12 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-white/10 pt-8 md:mb-16">
           <span className="section-tag text-white/60">/99 — GET IN TOUCH</span>
           <span className="section-tag text-white/60">THE DOOR&apos;S OPEN</span>
         </div>
 
-        <div className="grid grid-cols-1 gap-20 md:grid-cols-12">
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-20">
           <div className="col-span-1 md:col-span-7">
-            <h2 className="display-serif text-[clamp(3rem,8vw,8rem)] text-white">
+            <h2 className="display-serif text-[clamp(2.75rem,8vw,8rem)] leading-[0.95] text-white">
               Say hello.
             </h2>
             <p className="mt-8 max-w-lg font-serif text-[20px] leading-[1.2] text-white/75">
@@ -398,7 +398,7 @@ function Footer() {
             </p>
           </div>
 
-          <div className="col-span-1 grid grid-cols-2 gap-10 md:col-span-5">
+          <div className="col-span-1 grid grid-cols-2 gap-8 md:col-span-5 md:gap-10">
             <FooterColumn
               heading="DIRECT"
               links={[
@@ -418,8 +418,8 @@ function Footer() {
           </div>
         </div>
 
-        <div className="mt-32 flex items-end justify-between gap-8 border-t border-white/10 pt-10">
-          <div className="flex items-center gap-8">
+        <div className="mt-20 flex items-end justify-between gap-8 border-t border-white/10 pt-10 md:mt-32">
+          <div className="flex items-center gap-4 md:gap-8">
             <Image
               src="/brand/liam.png"
               alt="Liam Davis"
@@ -463,7 +463,7 @@ function FooterColumn({
                 href={l.href}
                 target={isExternal ? "_blank" : undefined}
                 rel={isExternal ? "noopener noreferrer" : undefined}
-                className="label-sm text-white/80 transition-colors hover:text-white"
+                className="label-sm whitespace-nowrap text-white/80 transition-colors hover:text-white"
               >
                 {l.label.toUpperCase()}
               </Link>
