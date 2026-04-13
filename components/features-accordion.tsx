@@ -17,7 +17,7 @@ const SKILLS: Skill[] = [
     n: "01",
     label: "GTM & STRATEGY",
     title: "Sales pipeline engineering, from cold to closed.",
-    body: "Two revenue-generating businesses before twenty — OPW to $150K ARR in high school, Close OX to $10K MRR in two months. The variable was never product. It was the path to the first dollar.",
+    body: "Two revenue-generating businesses before twenty - OPW to $150K ARR in high school, Close OX to $10K MRR in two months. The variable was never product. It was the path to the first dollar.",
     image: "/skills/01-chess.png",
     imageAlt: "Dithered illustration of a chessboard",
   },
@@ -25,7 +25,7 @@ const SKILLS: Skill[] = [
     n: "02",
     label: "BUILD & AUTOMATE",
     title: "Front-end dev and agentic automation.",
-    body: "React and Next.js on the ship side, n8n and Zapier on the plumbing side, Cursor and Claude everywhere in between. I treat every workflow like code — versioned, tested, boring on purpose.",
+    body: "React and Next.js on the ship side, n8n and Zapier on the plumbing side, Cursor and Claude everywhere in between. I treat every workflow like code - versioned, tested, boring on purpose.",
     image: "/skills/02-robot.png",
     imageAlt: "Dithered illustration of a robotic arm",
   },
@@ -33,7 +33,7 @@ const SKILLS: Skill[] = [
     n: "03",
     label: "CRM & DATA",
     title: "HubSpot, GoHighLevel, and lightweight custom schemas.",
-    body: "A CRM is only as good as the rep running it. I design data models and automations that make the next action obvious — no dashboards nobody opens, no stale pipelines nobody trusts.",
+    body: "A CRM is only as good as the rep running it. I design data models and automations that make the next action obvious - no dashboards nobody opens, no stale pipelines nobody trusts.",
     image: "/skills/03-magnifier.png",
     imageAlt: "Dithered illustration of a magnifying glass on a grid",
   },
@@ -70,11 +70,11 @@ export function FeaturesAccordion() {
       {({ progress }) => {
         // Reveal phase (0 → 0.15): a solid blue overlay sits on top of the
         // already-positioned content and dissipates to reveal the headline +
-        // accordion underneath. No translate — the content never moves.
+        // accordion underneath. No translate - the content never moves.
         const revealEnd = 0.15;
         const overlayOpacity = Math.max(0, 1 - progress / revealEnd);
 
-        // Skill cycling — one quarter of the pin range per skill.
+        // Skill cycling - one quarter of the pin range per skill.
         const dwell = Math.max(0, Math.min(0.9999, progress));
         const activeIdx = Math.min(
           SKILLS.length - 1,
@@ -83,7 +83,7 @@ export function FeaturesAccordion() {
 
         return (
           <div className="relative flex h-full w-full flex-col text-white">
-            {/* Skill illustration — crossfades with the active row. Sits in
+            {/* Skill illustration - crossfades with the active row. Sits in
                 the right half of the panel behind the text, large and very
                 lightly perceptible so it tints into the blue rather than
                 competing with the copy. */}
@@ -111,18 +111,18 @@ export function FeaturesAccordion() {
             </div>
 
             <div className="relative z-10 mx-auto flex w-full max-w-[1800px] flex-1 flex-col px-6 pt-20 pb-10 md:px-16 md:pt-24">
-              {/* Section tag — fixed at top */}
+              {/* Section tag - fixed at top */}
               <p className="section-tag text-white/70">
-                /02 — SKILLS & TOOLS
+                /02 - SKILLS & TOOLS
               </p>
 
-              {/* Centered block — headline + accordion + tools.
+              {/* Centered block - headline + accordion + tools.
                   Constrained to the left ~55% on md+ so the accordion
                   dividers don't bleed into the right-side image column. */}
               <div className="flex flex-1 flex-col justify-center gap-10 py-8 md:max-w-[55%]">
                 <div>
                   <h2 className="display-sans text-[clamp(1.75rem,4vw,3.75rem)] leading-[1.02] text-white">
-                    Built across the stack —
+                    Built across the stack -
                     <br />
                     <em className="font-serif not-italic text-white/90">
                       from GTM to AI.
@@ -141,7 +141,7 @@ export function FeaturesAccordion() {
                     );
                     return (
                       <div key={s.n} className="w-full">
-                        {/* Per-row progress bar — sequential fill */}
+                        {/* Per-row progress bar - sequential fill */}
                         <div
                           aria-hidden
                           className="relative h-px w-full bg-white/25"
@@ -170,7 +170,7 @@ export function FeaturesAccordion() {
                           </span>
                         </div>
 
-                        {/* Active body — conditionally rendered so nothing
+                        {/* Active body - conditionally rendered so nothing
                             ever overlaps mid-transition. */}
                         {isActive && (
                           <div className="flex flex-col gap-3 pb-5 pl-0 sm:pl-[72px]">
@@ -190,7 +190,7 @@ export function FeaturesAccordion() {
 
                 {/* Tools strip */}
                 <div className="mt-8 flex flex-wrap items-baseline gap-x-5 gap-y-2">
-                  <span className="label-sm text-white/55">TOOLS —</span>
+                  <span className="label-sm text-white/55">TOOLS -</span>
                   {TOOLS.map((t, i) => (
                     <span key={t} className="label text-white/85">
                       {t}
@@ -204,7 +204,7 @@ export function FeaturesAccordion() {
               </div>
             </div>
 
-            {/* Dissipating blue overlay — covers the content AND the image
+            {/* Dissipating blue overlay - covers the content AND the image
                 column at the start of the pin, then fades out as you scroll
                 to reveal both in place. Must sit above both `z-10` content
                 and the image layer (default stacking), hence `z-20`. */}

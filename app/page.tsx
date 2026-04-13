@@ -21,7 +21,7 @@ export default function Home() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Announcement bar — yellow on black                                  */
+/* Announcement bar - yellow on black                                  */
 /* ------------------------------------------------------------------ */
 
 function AnnouncementBar() {
@@ -44,7 +44,7 @@ function AnnouncementBar() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Nav — fixed, transparent over hero                                  */
+/* Nav - fixed, transparent over hero                                  */
 /* ------------------------------------------------------------------ */
 
 function Nav() {
@@ -87,7 +87,7 @@ function Nav() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Hero — full viewport, dark, big display                             */
+/* Hero - full viewport, dark, big display                             */
 /* ------------------------------------------------------------------ */
 
 function Hero() {
@@ -96,7 +96,7 @@ function Hero() {
       data-snap-section
       className="relative w-full overflow-hidden bg-black"
     >
-      {/* Subtle particle / dot grid background — CSS only */}
+      {/* Subtle particle / dot grid background - CSS only */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 opacity-[0.28]"
@@ -116,7 +116,7 @@ function Hero() {
 
       <div className="relative z-10 mx-auto flex w-full max-w-[1800px] flex-col gap-10 px-6 pt-8 pb-12 md:gap-14 md:px-16 md:pt-10">
         <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-          <span className="section-tag text-white/60">/01 — INDEPENDENT</span>
+          <span className="section-tag text-white/60">/01 - INDEPENDENT</span>
           <span className="section-tag text-white/60">SANTA CRUZ, CA / 2026</span>
         </div>
 
@@ -158,7 +158,7 @@ function Hero() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Hero ticker — Wall-Street style scrolling marquee                   */
+/* Hero ticker - Wall-Street style scrolling marquee                   */
 /* ------------------------------------------------------------------ */
 
 const TICKER_ROW_A = [
@@ -256,7 +256,7 @@ function TickerRow({
 }
 
 /* ------------------------------------------------------------------ */
-/* Editorial quote — dark, big serif manifesto                         */
+/* Editorial quote - dark, big serif manifesto                         */
 /* ------------------------------------------------------------------ */
 
 /* ------------------------------------------------------------------ */
@@ -268,7 +268,7 @@ function Footer() {
     <footer id="contact" className="w-full bg-[#0a0a0a] text-white">
       <div className="mx-auto max-w-[1800px] px-6 pb-20 pt-20 md:px-16 md:pb-24 md:pt-24">
         <div className="mb-12 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-white/10 pt-8 md:mb-16">
-          <span className="section-tag text-white/60">/08 — GET IN TOUCH</span>
+          <span className="section-tag text-white/60">/08 - GET IN TOUCH</span>
           <span className="section-tag text-white/60">THE DOOR&apos;S OPEN</span>
         </div>
 

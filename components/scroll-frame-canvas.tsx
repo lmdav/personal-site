@@ -7,7 +7,7 @@ type ScrollFrameCanvasProps = {
   progress: number;
   /** total frame count */
   frameCount: number;
-  /** path pattern — `{n}` is replaced with the zero-padded frame index */
+  /** path pattern - `{n}` is replaced with the zero-padded frame index */
   framePath: (index: number) => string;
   /** image intrinsic size (square) in px */
   size?: number;
@@ -62,7 +62,7 @@ export function ScrollFrameCanvas({
 
   // Draw the active frame whenever progress or loaded count changes.
   // Blends two adjacent frames based on the fractional part of the mapped
-  // progress so stepping between discrete frames softens into a crossfade —
+  // progress so stepping between discrete frames softens into a crossfade -
   // cheap fake interpolation that reads as a higher frame rate.
   useEffect(() => {
     const canvas = canvasRef.current;

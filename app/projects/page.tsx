@@ -21,9 +21,9 @@ const PROJECTS: Project[] = [
     role: "Founder",
     company: "Stayza",
     location: "Santa Cruz, CA",
-    dates: "2025 — Present",
+    dates: "2025 - Present",
     title: "Boutique-grade software for small, design-led properties.",
-    body: "Building the hotel tech stack I couldn't find — precise enough for a chain, considered enough for a twelve-room inn. Currently in private beta with operators who care about the texture of a stay.",
+    body: "Building the hotel tech stack I couldn't find - precise enough for a chain, considered enough for a twelve-room inn. Currently in private beta with operators who care about the texture of a stay.",
     metrics: [
       "Private beta with real properties",
       "Full-stack: bookings, ops, guest experience",
@@ -37,9 +37,9 @@ const PROJECTS: Project[] = [
     role: "Marketing Lead",
     company: "Red Bull",
     location: "Santa Cruz, CA",
-    dates: "April 2025 — Present",
+    dates: "April 2025 - Present",
     title: "Leading regional marketing and partnerships for Red Bull Santa Cruz.",
-    body: "Owning sales operations across 50+ beverage, sports, and university accounts. Selected to lead Red Bull Basement — one of the world's largest tech entrepreneur events.",
+    body: "Owning sales operations across 50+ beverage, sports, and university accounts. Selected to lead Red Bull Basement - one of the world's largest tech entrepreneur events.",
     metrics: [
       "50+ accounts across three verticals",
       "New revenue in 80% of accounts",
@@ -53,11 +53,11 @@ const PROJECTS: Project[] = [
     role: "Founder, VCIC Lead",
     company: "Santa Cruz Venture Capital Club",
     location: "UC Santa Cruz",
-    dates: "October 2025 — Present",
+    dates: "October 2025 - Present",
     title: "Founded UCSC's VC club and led the school's best-ever VCIC finish.",
-    body: "Selected to represent UCSC in the world's largest venture capital competition. Finished 3rd — the best score in university history. Built the selection and training pipeline from scratch.",
+    body: "Selected to represent UCSC in the world's largest venture capital competition. Finished 3rd - the best score in university history. Built the selection and training pipeline from scratch.",
     metrics: [
-      "3rd place, VCIC global — UCSC record",
+      "3rd place, VCIC global - UCSC record",
       "Vetted 250 candidates, selected top 10",
       "Raised $6,000 to fund competition travel",
     ],
@@ -69,8 +69,8 @@ const PROJECTS: Project[] = [
     role: "Founder",
     company: "Close OX",
     location: "Santa Cruz, CA",
-    dates: "January 2025 — October 2025",
-    title: "AI automation agency — $10K MRR in two months.",
+    dates: "January 2025 - October 2025",
+    title: "AI automation agency - $10K MRR in two months.",
     body: "Built end-to-end workflow automations for real estate and home service clients. Managed a team of three interns. Sunset after shifting focus full-time to Stayza.",
     metrics: [
       "$10K MRR within 2 months of launch",
@@ -85,9 +85,9 @@ const PROJECTS: Project[] = [
     role: "Affiliate Partner",
     company: "Acquisition.com",
     location: "Remote / Nevada",
-    dates: "July 2025 — August 2025",
+    dates: "July 2025 - August 2025",
     title: "Top 50 global performer, invited to HQ by Alex Hormozi.",
-    body: "Selected as a top 50 global performer and personally invited to Acquisition.com HQ in Nevada for a private workshop with founder Alex Hormozi — typically a $5,000/person event.",
+    body: "Selected as a top 50 global performer and personally invited to Acquisition.com HQ in Nevada for a private workshop with founder Alex Hormozi - typically a $5,000/person event.",
     metrics: [
       "Top 50 of a global affiliate cohort",
       "Private HQ workshop with Alex Hormozi",
@@ -100,8 +100,8 @@ const PROJECTS: Project[] = [
     role: "Owner & Operator",
     company: "OPW LLC",
     location: "Lakeport, CA",
-    dates: "August 2022 — August 2024",
-    title: "Scaled a home services business to $150K ARR — in high school.",
+    dates: "August 2022 - August 2024",
+    title: "Scaled a home services business to $150K ARR - in high school.",
     body: "Built B2B and B2C marketing, partnership development, and operational automation. Established exclusive referral relationships with contractors across a 60-mile radius.",
     metrics: [
       "$150K ARR, built while in high school",
@@ -126,7 +126,7 @@ export default function ProjectsPage() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Announcement bar — reused                                           */
+/* Announcement bar - reused                                           */
 /* ------------------------------------------------------------------ */
 
 function AnnouncementBar() {
@@ -149,7 +149,7 @@ function AnnouncementBar() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Nav — reused                                                        */
+/* Nav - reused                                                        */
 /* ------------------------------------------------------------------ */
 
 function Nav() {
@@ -192,7 +192,7 @@ function Nav() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Hero — page title + intro                                           */
+/* Hero - page title + intro                                           */
 /* ------------------------------------------------------------------ */
 
 function Hero() {
@@ -214,9 +214,9 @@ function Hero() {
 
       <div className="relative mx-auto w-full max-w-[1800px] px-6 pb-20 pt-20 md:px-16 md:pb-24 md:pt-28">
         <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
-          <span className="section-tag text-white/60">/00 — SELECTED WORK</span>
+          <span className="section-tag text-white/60">/00 - SELECTED WORK</span>
           <span className="section-tag text-white/60">
-            2022 — {new Date().getFullYear()}
+            2022 - {new Date().getFullYear()}
           </span>
         </div>
 
@@ -231,7 +231,7 @@ function Hero() {
           </div>
           <div className="col-span-1 flex items-end md:col-span-3">
             <p className="font-serif text-[18px] leading-[1.3] text-white/70">
-              Every one of these started with the same impulse — build the
+              Every one of these started with the same impulse - build the
               thing the market said was too hard for someone my age to build.
               Some are live. Some sunset. All real.
             </p>
@@ -243,7 +243,7 @@ function Hero() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Project list — stacked editorial cards                              */
+/* Project list - stacked editorial cards                              */
 /* ------------------------------------------------------------------ */
 
 function ProjectList() {
@@ -374,7 +374,7 @@ function ProjectCard({
 }
 
 /* ------------------------------------------------------------------ */
-/* Footer — simplified for this page                                   */
+/* Footer - simplified for this page                                   */
 /* ------------------------------------------------------------------ */
 
 function Footer() {
@@ -382,7 +382,7 @@ function Footer() {
     <footer id="contact" className="w-full bg-[#0a0a0a] text-white">
       <div className="mx-auto max-w-[1800px] px-6 pb-20 pt-20 md:px-16 md:pb-24 md:pt-24">
         <div className="mb-12 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-white/10 pt-8 md:mb-16">
-          <span className="section-tag text-white/60">/99 — GET IN TOUCH</span>
+          <span className="section-tag text-white/60">/99 - GET IN TOUCH</span>
           <span className="section-tag text-white/60">THE DOOR&apos;S OPEN</span>
         </div>
 

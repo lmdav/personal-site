@@ -16,7 +16,7 @@ type Question = {
 
 const QUESTIONS: Question[] = [
   {
-    modelTag: "BUILD — SHIPPING THINGS",
+    modelTag: "BUILD - SHIPPING THINGS",
     modelColor: "var(--color-lumen)",
     number: "/03",
     beforeHighlight: "What's worth building ",
@@ -26,22 +26,22 @@ const QUESTIONS: Question[] = [
     projectLabel: "VIEW STAYZA",
   },
   {
-    modelTag: "SCALE — GROWING THINGS",
+    modelTag: "SCALE - GROWING THINGS",
     modelColor: "var(--color-dynamo)",
     number: "/04",
     beforeHighlight: "How do you scale ",
     highlight: "trust faster than you scale revenue",
-    afterHighlight: " — without either one outrunning the other?",
+    afterHighlight: " - without either one outrunning the other?",
     href: "/projects",
     projectLabel: "VIEW CLOSE OX",
   },
   {
-    modelTag: "LEAD — PEOPLE & CAPITAL",
+    modelTag: "LEAD - PEOPLE & CAPITAL",
     modelColor: "var(--color-seraph)",
     number: "/05",
     beforeHighlight: "How do you lead people ",
     highlight: "older than you, smarter than you",
-    afterHighlight: " — without pretending to be either?",
+    afterHighlight: " - without pretending to be either?",
     href: "/projects",
     projectLabel: "VIEW SCVCC",
   },
@@ -59,7 +59,7 @@ export function QuestionCarousel() {
       {({ progress }) => {
         // Each question owns 1/n of the scroll range. Inside its segment:
         //   - segProgress 0 → 1 drives the bar fill for that segment
-        //   - the card stack slides smoothly and continuously — Q_i is
+        //   - the card stack slides smoothly and continuously - Q_i is
         //     centered at the start of its segment and Q_{i+1} is centered
         //     at the end. At segProgress = 1, the bar is full, activeIdx
         //     flips, and the next segment picks up with its card centered.
@@ -68,7 +68,7 @@ export function QuestionCarousel() {
         const activeIdx = Math.min(n - 1, Math.floor(rawIdx));
         const segProgress = rawIdx - activeIdx; // 0..1 within active segment
 
-        // Continuous linear slide — no dwell. pos interpolates the full
+        // Continuous linear slide - no dwell. pos interpolates the full
         // distance between Q_i and Q_{i+1} across each segment.
         const pos = rawIdx;
 
@@ -88,7 +88,7 @@ export function QuestionCarousel() {
               </span>
             </div>
 
-            {/* Segmented scroll progress — one bar per question. Bar i is
+            {/* Segmented scroll progress - one bar per question. Bar i is
                 empty before its segment, fills 0→1 during its segment, and
                 stays full afterward. Synced to the same rawIdx the card
                 stack and tag use. */}
@@ -114,7 +114,7 @@ export function QuestionCarousel() {
               })}
             </div>
 
-            {/* stacked question cards — text only, button lives below */}
+            {/* stacked question cards - text only, button lives below */}
             <div
               className="relative flex-1"
               style={{
@@ -165,7 +165,7 @@ export function QuestionCarousel() {
               })}
             </div>
 
-            {/* Single CTA — swaps with the active question so the buttons
+            {/* Single CTA - swaps with the active question so the buttons
                 from ghost cards never overlap the active text. Border and
                 text tint with the active question's accent color and the
                 whole button fills with that color on hover. External hrefs

@@ -14,21 +14,21 @@ type Stage = {
 const STAGES: Stage[] = [
   {
     bg: "#ffffff",
-    label: "/06 — THE THESIS",
+    label: "/06 - THE THESIS",
     title: "Start before you're ready.",
-    body: "I started OPW at fifteen because nobody told me I couldn't. Every real thing since — Close OX, the VC club, Stayza — happened because I stopped waiting for the right moment and just opened the door.",
+    body: "I started OPW at fifteen because nobody told me I couldn't. Every real thing since - Close OX, the VC club, Stayza - happened because I stopped waiting for the right moment and just opened the door.",
   },
   {
     bg: "var(--color-mint-pale)",
-    label: "/06 — THE THESIS",
+    label: "/06 - THE THESIS",
     title: "Time is the only asset.",
-    body: "Close OX went zero to $10K MRR in two months. OPW went zero to $150K ARR in two years. The variable was never capital or experience — it was the number of reps I could fit into a week. Everything compounds, including you.",
+    body: "Close OX went zero to $10K MRR in two months. OPW went zero to $150K ARR in two years. The variable was never capital or experience - it was the number of reps I could fit into a week. Everything compounds, including you.",
   },
   {
     bg: "var(--color-mint)",
-    label: "/06 — THE THESIS",
+    label: "/06 - THE THESIS",
     title: "Build things people actually use.",
-    body: "The difference between a class project and Stayza is that a bad release costs someone their honeymoon. Everything I ship now has to earn that weight — real properties, real guests, real weeks. Otherwise it doesn't go out the door.",
+    body: "The difference between a class project and Stayza is that a bad release costs someone their honeymoon. Everything I ship now has to earn that weight - real properties, real guests, real weeks. Otherwise it doesn't go out the door.",
   },
 ];
 
@@ -52,7 +52,7 @@ export function HospitalityAtScale() {
               transition: "background-color 800ms ease",
             }}
           >
-            {/* scroll progress bar — black on light bg */}
+            {/* scroll progress bar - black on light bg */}
             <div className="relative h-px w-full shrink-0 bg-black/15">
               <div
                 className="absolute inset-y-0 left-0 bg-black"
@@ -61,7 +61,7 @@ export function HospitalityAtScale() {
             </div>
 
             <div className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col px-6 pt-16 pb-10 md:px-12 md:pt-20 md:pb-12">
-              {/* top row — section tag */}
+              {/* top row - section tag */}
               <div className="flex items-start justify-between">
                 <span className="section-tag text-black/60">{stage.label}</span>
                 <span className="section-tag text-black/60">
@@ -87,7 +87,7 @@ export function HospitalityAtScale() {
                     />
                   ))}
                 </span>
-                <span className="label-sm hidden text-black/60 sm:inline">2024 — PRESENT</span>
+                <span className="label-sm hidden text-black/60 sm:inline">2024 - PRESENT</span>
               </div>
             </div>
           </div>
@@ -98,15 +98,15 @@ export function HospitalityAtScale() {
 }
 
 /**
- * Arched doorframe — unique shape (flat bottom, vertical sides, arched top)
+ * Arched doorframe - unique shape (flat bottom, vertical sides, arched top)
  * with a halftone portrait of Liam anchored on the left and the rotating
  * thesis copy on the right. The portrait stays constant across stages so
- * the section reads "this is me, here's what I believe" — only the words
+ * the section reads "this is me, here's what I believe" - only the words
  * change as you scroll. The white background of the dithered PNG drops
  * out on the colored stages via mix-blend-mode: multiply.
  *
  * Uses SVG <path> so we can drive the oval along the border with
- * getPointAtLength() — giving perfectly smooth perimeter tracing tied
+ * getPointAtLength() - giving perfectly smooth perimeter tracing tied
  * directly to scroll, no CSS transitions.
  */
 function ArchedFrame({
@@ -136,7 +136,7 @@ function ArchedFrame({
     return () => ro.disconnect();
   }, []);
 
-  // Drive the oval imperatively every render. No CSS transitions —
+  // Drive the oval imperatively every render. No CSS transitions -
   // the scroll progress itself is the animation timeline.
   useLayoutEffect(() => {
     const path = pathRef.current;
@@ -212,7 +212,7 @@ function ArchedFrame({
           paddingBottom: `${PAD + 16}px`,
         }}
       >
-        {/* Halftone portrait — constant across stages, white drops out on
+        {/* Halftone portrait - constant across stages, white drops out on
             tinted backgrounds via multiply blend. */}
         <div className="relative aspect-square h-[clamp(140px,26vh,440px)] shrink-0 sm:h-[clamp(180px,38vh,440px)]">
           <Image

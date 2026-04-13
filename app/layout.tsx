@@ -14,7 +14,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
-  title: "Liam Davis — Entrepreneur & AI Operator",
+  title: "Liam Davis - Entrepreneur & AI Operator",
   description:
     "Entrepreneur and AI operator. Two revenue-generating businesses before twenty. Currently building Stayza, leading Red Bull Santa Cruz, and founder of the UCSC Venture Capital Club.",
 };

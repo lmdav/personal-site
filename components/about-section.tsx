@@ -23,14 +23,14 @@ export function AboutSection() {
         <div className="relative flex h-full w-full flex-col">
           <div className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col px-6 pt-16 pb-8 md:px-16 md:pt-24 md:pb-10">
             <div className="flex items-baseline justify-between border-t border-white/10 pt-6 md:pt-8">
-              <span className="section-tag text-white/60">/07 — ABOUT</span>
+              <span className="section-tag text-white/60">/07 - ABOUT</span>
               <span className="section-tag text-white/60">
                 THE SHORT VERSION
               </span>
             </div>
 
             <div className="mt-6 grid flex-1 grid-cols-1 gap-6 md:mt-10 md:grid-cols-12 md:items-center md:gap-12">
-              {/* Left — scroll-scrubbed frame canvas */}
+              {/* Left - scroll-scrubbed frame canvas */}
               <div className="flex justify-center md:col-span-5 md:col-start-1 md:justify-start">
                 <div className="relative aspect-square w-full max-w-[280px] md:max-w-[520px]">
                   <ScrollFrameCanvas
@@ -43,7 +43,7 @@ export function AboutSection() {
                 </div>
               </div>
 
-              {/* Right — editorial quote */}
+              {/* Right - editorial quote */}
               <div className="md:col-span-7">
                 <p className="display-serif text-[clamp(1.375rem,2.6vw,2.5rem)] leading-[1.15] text-white">
                   I&apos;m an entrepreneur and AI operator finishing an Econ
