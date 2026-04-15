@@ -99,7 +99,7 @@ details > summary::-webkit-details-marker {
   display: none;
 }
 
-/* Live status dot — glowing pulse */
+/* Live status dot - glowing pulse */
 .live-dot {
   position: relative;
   background-color: var(--color-mint);
@@ -150,7 +150,7 @@ details > summary::-webkit-details-marker {
   }
 }
 
-/* Active nav link — very subtle white halo drawn around the text */
+/* Active nav link - very subtle white halo drawn around the text */
 .nav-glow {
   text-shadow:
     0 0 6px rgba(255, 255, 255, 0.45),
@@ -158,7 +158,7 @@ details > summary::-webkit-details-marker {
     0 0 28px rgba(255, 255, 255, 0.12);
 }
 
-/* Question-carousel CTA — tints with the active question's accent */
+/* Question-carousel CTA - tints with the active question's accent */
 .question-cta {
   border-color: var(--q-color, rgba(255, 255, 255, 0.4));
   color: var(--q-color, #ffffff);
@@ -173,7 +173,7 @@ details > summary::-webkit-details-marker {
   color: #000000;
 }
 
-/* Hero ticker — Wall-Street marquee rows */
+/* Hero ticker - Wall-Street marquee rows */
 .ticker-row {
   display: flex;
   width: 100%;

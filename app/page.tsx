@@ -123,7 +123,7 @@ function Hero() {
         <div className="max-w-[1400px]">
           <p className="label-sm mb-5 text-white/60">THE PREMISE</p>
           <h1 className="display-sans text-[clamp(2.75rem,9vw,9rem)] leading-[0.95] text-white">
-            Operating at
+            Building at
             <br />
             the edge of
             <br />
