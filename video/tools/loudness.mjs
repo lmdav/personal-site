@@ -19,12 +19,14 @@ export const LIMITS = {
   excess: 0.4,
   /** How much quieter it may be: less means the narration is missing or turned down. */
   shortfall: 1,
+  /** ffmpeg's meter reports silence as -70 LUFS, never -inf. */
+  silence: -69.9,
 };
 
 /** Integrated loudness (LUFS) and true peak (dBFS) of a file, or of part of it. */
 export function measure(file, part) {
   const cut = part ? ["-ss", part.from.toFixed(3), "-t", part.seconds.toFixed(3)] : [];
-  const { stderr, status, error } = spawnSync("ffmpeg", ["-nostats", ...cut, "-i", file, "-vn", "-af", "ebur128=peak=true", "-f", "null", "-"], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+  const { stderr, status, error } = spawnSync("ffmpeg", ["-nostats", ...cut, "-i", file, "-vn", "-af", "ebur128=peak=true", "-f", "null", "-"], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024, timeout: 5 * 60 * 1000 });
   if (error || status !== 0) throw new Error(`ffmpeg could not measure ${file}: ${error?.message ?? stderr.slice(-400)}`);
   return parseSummary(stderr);
 }
@@ -51,8 +53,9 @@ export function judge(whole, scenes, limits = LIMITS) {
   if (!(whole.peak <= limits.peak)) failures.push(`the true peak is ${whole.peak} dBFS, above ${limits.peak}`);
   const lines = scenes.map(({ id, mix, voice }) => {
     const excess = mix - voice;
-    if (!Number.isFinite(voice)) failures.push(`${id}: the narration clip is silent`);
-    else if (!Number.isFinite(mix) || excess < -limits.shortfall) failures.push(`${id}: the mix is ${Number.isFinite(mix) ? `${(-excess).toFixed(1)} LU quieter than` : "silent under"} the narration; is the voice missing?`);
+    const silent = (v) => !(v > limits.silence);
+    if (silent(voice)) failures.push(`${id}: the narration clip is silent`);
+    else if (silent(mix) || excess < -limits.shortfall) failures.push(`${id}: the mix is ${silent(mix) ? "silent under" : `${(-excess).toFixed(1)} LU quieter than`} the narration; is the voice missing?`);
     else if (excess > limits.excess) failures.push(`${id}: the music and sounds push the mix ${excess.toFixed(1)} LU over the narration alone (at most ${limits.excess}), so they sit less than about 10 dB under the voice`);
     return `${id.padEnd(12)} narration ${voice} LUFS, mix while it plays ${mix} LUFS (${excess >= 0 ? "+" : ""}${excess.toFixed(1)})`;
   });

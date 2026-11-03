@@ -132,7 +132,7 @@ Measured on 2026-11-02 rendering frames 200 to 229 of `proof-bowl-real` with `--
 - N8AO's half-resolution mode crashes on three r187 (n8ao 2.0.1 gives three an array where it expects a texture), so it stays off.
 - Depth of field was already at half resolution by default; the setting is now explicit.
 
-How to render: `pnpm render <slug>` in `video/` (since 2026-11-03). It bundles once, renders both cuts with ANGLE at concurrency 5, writes the web copy and poster, and runs the frame check (with the fade ranges from the plan) and the loudness check on both cuts. It stops a render that makes no progress for 2 minutes, and exits non-zero if any check fails.
+How to render: `pnpm render <slug>` in `video/` (since 2026-11-03). It bundles once, renders both cuts with ANGLE at concurrency 5, and runs the frame check (with the fade ranges from the plan) and the loudness check on both cuts. Only if both pass does it write the web copy and poster into the site. It stops a render that makes no progress for 2 minutes (10 while it mixes the audio) or runs past an hour, gives every other step a time limit, and exits non-zero if any step or check fails.
 
 The loudness check (`video/tools/loudness.mjs`) measures the final render's own audio. It fails if the whole mix is outside -25 to -20 LUFS, if the true peak is above -1 dBFS, if a scene's narration is missing, or if the mix while a scene's narration plays is more than 0.4 LU louder than that narration clip alone, which means the music and sounds have come within about 10 dB of the voice. The mix approved on 2026-11-02 measures -22.8 LUFS with a peak of -3.5 dBFS, and every scene within 0.1 LU of its narration. With the music raised to about 6 dB under the voice, 7 of 8 scenes fail.
 

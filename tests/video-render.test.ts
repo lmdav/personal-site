@@ -28,7 +28,7 @@ function fakeTimers() {
 test("the watchdog calls a stall once after the limit with no progress", () => {
   const clock = fakeTimers();
   const stalls: number[] = [];
-  const watch = watchProgress({ limitMs: 120_000, every: 1000, onStall: (ms) => stalls.push(ms), ...clock });
+  const watch = watchProgress({ limitMs: 120_000, every: 1000, onStall: (ms: number) => stalls.push(ms), ...clock });
   for (let i = 0; i < 10; i++) {
     watch.progress(`frames ${i}`);
     clock.tick(60_000); // a minute between updates: slow, but moving
@@ -43,10 +43,34 @@ test("the watchdog calls a stall once after the limit with no progress", () => {
   watch.stop();
 });
 
+test("a report can give the quiet part after it a longer limit", () => {
+  const clock = fakeTimers();
+  const why: string[] = [];
+  const watch = watchProgress({ limitMs: 120_000, every: 1000, onStall: (_ms: number, reason: string) => why.push(reason), ...clock });
+  watch.progress("3407/3407/1", 600_000); // the last frame is drawn; the audio mix is quiet
+  clock.tick(300_000);
+  assert.deepEqual(why, []);
+  clock.tick(300_000);
+  assert.deepEqual(why, ["quiet"]);
+  watch.stop();
+});
+
+test("the watchdog stops a job that crawls past its deadline", () => {
+  const clock = fakeTimers();
+  const why: string[] = [];
+  const watch = watchProgress({ limitMs: 120_000, maxMs: 3_600_000, every: 1000, onStall: (_ms: number, reason: string) => why.push(reason), ...clock });
+  for (let i = 0; i < 70 && why.length === 0; i++) {
+    watch.progress(`frame ${i}`); // a frame a minute: never quiet for 2 minutes
+    clock.tick(60_000);
+  }
+  assert.deepEqual(why, ["deadline"]);
+  watch.stop();
+});
+
 test("the watchdog stops watching when stopped", () => {
   const clock = fakeTimers();
   const stalls: number[] = [];
-  const watch = watchProgress({ limitMs: 1000, every: 1000, onStall: (ms) => stalls.push(ms), ...clock });
+  const watch = watchProgress({ limitMs: 1000, every: 1000, onStall: (ms: number) => stalls.push(ms), ...clock });
   watch.stop();
   clock.tick(10_000);
   assert.deepEqual(stalls, []);
@@ -62,7 +86,8 @@ test("the approved mix passes the loudness check", () => {
 });
 
 test("the loudness check catches a loud bed, a missing voice, clipping, and a quiet mix", () => {
-  const { failures } = judge({ integrated: -27.5, peak: -0.4 }, [scene("sauce", -21.6), scene("patties", -40), scene("build", -Infinity), scene("finish", -30, -Infinity)]);
+  // ffmpeg's meter reports silence as -70 LUFS (checked 2026-11-03 on a silent WAV).
+  const { failures } = judge({ integrated: -27.5, peak: -0.4 }, [scene("sauce", -21.6), scene("patties", -40), scene("build", -70), scene("finish", -30, -70)]);
   assert.equal(failures.length, 6, failures.join("\n"));
   assert.match(failures[0], /-27.5 LUFS, outside -25 to -20/);
   assert.match(failures[1], /true peak is -0.4/);
