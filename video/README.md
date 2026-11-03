@@ -25,10 +25,11 @@ This runs every step in one go, and stops with a non-zero exit if a step or chec
 
 1. Exports the recipe from `content/recipes/<slug>.md` through the site's own loader into `src/data/<slug>.json`, so titles, times, and nutrition always match the page.
 2. Reads the narration script in `src/recipes/<slug>.narration.json` aloud in the Heart voice. It writes one clip per scene and records how long each scene and beat runs.
-3. Checks the scene file and lays out the video from it.
-4. Bundles once, then renders the wide cut (composition `<slug>`) and the vertical cut (`<slug>-vertical`) into `out/`, with the ANGLE GL backend at concurrency 5. A render that makes no progress for 2 minutes (10 while it mixes the audio after the last frame), or runs past an hour, is stopped; every other step has a time limit too.
-5. Checks both cuts for blank or glitched frames outside the fades (`tools/check_frames.py`), and checks the mix's loudness (`tools/loudness.mjs`).
-6. Only if both cuts pass: writes a smaller web copy of the wide cut to `public/recipes/<slug>/how-to.mp4`, and `how-to-poster.jpg` beside it. A failed check leaves the site's copies as they were.
+3. Transcribes every spoken line with whisper.cpp (`tools/check-narration.mjs`) and stops if one does not match the script, such as "romaine" heard as "ramen". Needs `whisper-cli` (`brew install whisper-cpp`) and the `ggml-base.en.bin` model in `models/`, `~/.cache/whisper-cpp/`, or `WHISPER_MODEL`.
+4. Checks the scene file and lays out the video from it.
+5. Bundles once, then renders the wide cut (composition `<slug>`) and the vertical cut (`<slug>-vertical`) into `out/`, with the ANGLE GL backend at concurrency 5. A render that makes no progress for 2 minutes (10 while it mixes the audio after the last frame), or runs past an hour, is stopped; every other step has a time limit too.
+6. Checks both cuts for blank or glitched frames outside the fades (`tools/check_frames.py`), and checks the mix's loudness (`tools/loudness.mjs`).
+7. Only if both cuts pass: writes a smaller web copy of the wide cut to `public/recipes/<slug>/how-to.mp4`, and `how-to-poster.jpg` beside it. A failed check leaves the site's copies as they were.
 
 It needs `ffmpeg` and `ffprobe` on the path (`brew install ffmpeg`) for the checks. Run `node tools/fetch-assets.mjs` once first, to download the 3D assets and sounds.
 
