@@ -47,13 +47,13 @@ export function Captions({ lines, beats, len }: { lines: string[]; beats: number
 }
 
 /** The recipe's name and headline facts, on the left of the frame. */
-export function TitleBlock({ show, facts }: { show: number; facts: string[] }) {
+export function TitleBlock({ show, title, facts }: { show: number; title: string; facts: string[] }) {
   const tall = useTall();
   if (show <= 0) return null;
   const place = tall ? { left: 0, right: 0, top: 150, textAlign: "center" as const } : { left: 130, top: 360 };
   return (
     <div style={{ position: "absolute", ...place, opacity: show, transform: `translateY(${(1 - show) * 16}px)` }}>
-      <div style={{ fontFamily: SERIF, fontSize: tall ? 112 : 104, color: INK, lineHeight: 1 }}>Smash Burger Bowl</div>
+      <div style={{ fontFamily: SERIF, fontSize: tall ? 112 : 104, color: INK, lineHeight: 1 }}>{title}</div>
       <div style={{ fontFamily: MONO, fontSize: tall ? 30 : 27, color: SOFT, letterSpacing: 2, marginTop: 24, lineHeight: 1.7 }}>
         {facts.map((f) => (
           <div key={f}>{f}</div>
@@ -107,9 +107,9 @@ export function IngredientList({ rows }: { rows: { amount: string; name: string;
   const tall = useTall();
   return (
     <div style={{ position: "absolute", left: tall ? 120 : 1130, top: tall ? 880 : 190 }}>
-      {rows.map((row) =>
+      {rows.map((row, i) =>
         row.show <= 0 ? null : (
-          <div key={row.name} style={{ display: "flex", alignItems: "baseline", gap: 22, marginBottom: tall ? 12 : 20, opacity: row.show, transform: `translateX(${(1 - row.show) * 30}px)` }}>
+          <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 22, marginBottom: tall ? 12 : 20, opacity: row.show, transform: `translateX(${(1 - row.show) * 30}px)` }}>
             <div style={{ fontFamily: MONO, fontSize: 24, letterSpacing: 2, color: SOFT, width: 130, textAlign: "right" }}>{row.amount}</div>
             <div style={{ fontFamily: SERIF, fontSize: 48, color: INK, lineHeight: 1.05 }}>{row.name}</div>
           </div>

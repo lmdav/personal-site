@@ -1,7 +1,9 @@
-// The four scenes around the finished bowl: the hero shot with the title, the pull-apart
-// with labels, the build (the baked physics drop, cold half first), and the finish (the
-// sauce drizzle, beans on the side, and the end card). Cameras meet where scenes join, so
-// hero to pull-apart and build to finish cut without a seam.
+// The four templates around the finished bowl (docs/adr/0004-recipe-video-scene-files.md):
+// the hero shot with the title, the pull-apart with labels drawing in on their times, the
+// build (the baked physics drop, the cold half at step "cold" and the hot half at "hot"),
+// and the finish (the sauce drizzle at "drizzle", a side dish, and the end card at
+// "card"). Cameras meet where scenes join, so hero to pull-apart and build to finish cut
+// without a seam. The bowl is the one in the build file bowlShot.tsx reads.
 import { useMemo } from "react";
 import { Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { Bowl } from "../three/Bowl";
@@ -11,9 +13,9 @@ import { beanPile } from "../three/cooking";
 import { KitProvider } from "../three/ingredients";
 import { Studio } from "../three/Studio";
 import { TitleBlock } from "./overlay";
-import { Shot, Stage, ramp, type SceneProps } from "./stage";
+import type { SceneData } from "./scenes";
+import { Shot, Stage, ramp, type SceneProps, type TemplateProps } from "./stage";
 
-const FACTS = ["57 G PROTEIN · 900 CALORIES", "ONE SERVING · ABOUT 30 MIN"];
 const CLOSE = 0.68;
 const CLOSE_TALL = 0.84; // the vertical cut is narrow, so it stands back a little
 const TITLE_ROOM = 1.5; // how far the bowl slides right to make room for the title
@@ -48,28 +50,25 @@ function Hero({ s }: { s: SceneProps }) {
   );
 }
 
-export function HeroScene({ s }: { s: SceneProps }) {
+export function HeroScene({ s, file }: TemplateProps) {
   const f = useCurrentFrame();
   return (
     <>
       <Hero s={s} />
-      <TitleBlock show={ramp(f, 8, 22, Easing.out(Easing.cubic))} facts={FACTS} />
+      <TitleBlock show={ramp(f, 8, 22, Easing.out(Easing.cubic))} title={file.title} facts={file.facts} />
     </>
   );
 }
 
-function Apart({ s }: { s: SceneProps }) {
+function Apart({ s, labelAt }: { s: SceneProps; labelAt: number[] }) {
   const f = useCurrentFrame();
   const { fps } = useVideoConfig();
-  const b = s.beats;
   // The sauce lifts first, then the layers from the top down, as the camera pulls back.
   const liftOf = (rank: number) => spring({ frame: f - (16 + rank * 6), fps, config: { damping: 20, stiffness: 45, mass: 1.2 } });
   const apart = interpolate(f, [8, 70], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
   const titleRoom = TITLE_ROOM * (1 - ramp(f, 0, 40));
   const { position, target } = orbit(mix(AZ.heroOut, AZ.apartOut, f / s.len), apart, titleRoom, s.tall ? CLOSE_TALL : CLOSE, s.tall);
-  // Labels draw in on the words: romaine and the cold toppings, patties, potatoes,
-  // mushrooms, then the sauce.
-  const labelAt = [b[1], b[1] + 8, b[2], b[3], b[4], b[5]];
+  // Labels draw in on their times, a layer at a time from the bottom, then the sauce.
   return (
     <Stage s={s}>
       <Shot position={position} target={target} draft={s.draft} />
@@ -81,31 +80,29 @@ function Apart({ s }: { s: SceneProps }) {
   );
 }
 
-export function ApartScene({ s }: { s: SceneProps }) {
+export function PullApartScene({ s, p, file }: TemplateProps) {
   const f = useCurrentFrame();
+  const { labels } = p.scene as Extract<SceneData, { template: "pullApart" }>;
   return (
     <>
-      <Apart s={s} />
-      <TitleBlock show={1 - ramp(f, 0, 16)} facts={FACTS} />
+      <Apart s={s} labelAt={labels.map(p.frame)} />
+      <TitleBlock show={1 - ramp(f, 0, 16)} title={file.title} facts={file.facts} />
     </>
   );
 }
 
-// The cold half (romaine, then tomato, onion, and pickles) drops on its line; the hot
-// half waits for its own. The bake releases the first hot layer at this sample.
+// The cold half (romaine, then tomato, onion, and pickles) drops at "cold"; the hot half
+// waits for "hot". The bake releases the first hot layer at this sample. scenes.ts
+// (minFrames) gives the scene room for every piece to settle.
 const HOT_FIRST = Math.min(...items.filter((it) => it.layer >= 2).map((it) => it.release));
 const LAST = samples.length - 1;
 
-/** The frames the build scene needs so every piece has settled when it ends. */
-export const buildMinFrames = (beats: number[]) => Math.max(beats[1] + LAST + 2, beats[2] - 4 + LAST - HOT_FIRST + 2);
-
-export function BuildScene({ s }: { s: SceneProps }) {
+export function BuildScene({ s, p }: TemplateProps) {
   const f = useCurrentFrame();
-  const b = s.beats;
-  const coldAt = b[1] - 2;
-  const hotAt = b[2] - 4;
+  const coldAt = p.at.cold;
+  const hotAt = p.at.hot;
   const poseOf = (i: number) => (items[i].layer < 2 ? droppedPose(i, f - coldAt) : droppedPose(i, f - hotAt + HOT_FIRST));
-  const apart = 1 - interpolate(f, [b[1], hotAt + 100], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  const apart = 1 - interpolate(f, [coldAt + 2, hotAt + 100], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
   const { position, target } = orbit(mix(AZ.buildIn, AZ.buildOut, f / s.len), apart, 0, s.tall ? CLOSE_TALL : CLOSE, s.tall, s.tall ? 0.02 : 0.09);
   return (
     <Stage s={s}>
@@ -138,17 +135,16 @@ function Beans({ x, z }: { x: number; z: number }) {
   );
 }
 
-function Finish({ s }: { s: SceneProps }) {
+function Finish({ s, at, sideAt }: { s: SceneProps; at: Record<string, number>; sideAt?: number }) {
   const f = useCurrentFrame();
-  const b = s.beats;
-  const card = ramp(f, b[1], 45);
+  const card = ramp(f, at.card, 45);
   const { position, target } = orbit(mix(AZ.buildOut, AZ.finishOut, f / s.len), 0, TITLE_ROOM * card, s.tall ? mix(CLOSE_TALL, 0.98, card) : mix(CLOSE, 0.92, card), s.tall);
-  const beansIn = ramp(f, b[0] + 46, 34, Easing.out(Easing.cubic));
+  const beansIn = sideAt === undefined ? 0 : ramp(f, sideAt, 34, Easing.out(Easing.cubic));
   return (
     <Stage s={s}>
       <Shot position={position} target={target} draft={s.draft} />
       <BowlSet tall={s.tall} frame={f} poseOf={(i) => droppedPose(i, LAST)}>
-        <Sauce lift={0} opacity={1} drawn={interpolate(f, [b[0] + 4, b[0] + 46], [0, 1], { ...clamp, easing: Easing.inOut(Easing.quad) })} />
+        <Sauce lift={0} opacity={1} drawn={interpolate(f, [at.drizzle, at.drizzle + 42], [0, 1], { ...clamp, easing: Easing.inOut(Easing.quad) })} />
       </BowlSet>
       {beansIn > 0 && <Beans x={mix(0.55, s.tall ? 0.06 : 0.135, beansIn)} z={s.tall ? -0.22 : -0.17} />}
     </Stage>
@@ -168,12 +164,13 @@ export function PosterShot() {
   );
 }
 
-export function FinishScene({ s }: { s: SceneProps }) {
+export function FinishScene({ s, p, file }: TemplateProps) {
   const f = useCurrentFrame();
+  const { side } = p.scene as Extract<SceneData, { template: "finish" }>;
   return (
     <>
-      <Finish s={s} />
-      <TitleBlock show={ramp(f, s.beats[1] + 20, 24, Easing.out(Easing.cubic))} facts={[...FACTS, "LMDAV.COM/RECIPES"]} />
+      <Finish s={s} at={p.at} sideAt={side && p.frame(side.at)} />
+      <TitleBlock show={ramp(f, p.at.card + 20, 24, Easing.out(Easing.cubic))} title={file.title} facts={[...file.facts, file.endCard]} />
     </>
   );
 }

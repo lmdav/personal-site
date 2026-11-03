@@ -3,14 +3,10 @@
 // speaks. Cooking sounds stay quiet and play only where something real would make one:
 // meat hitting the pan, potatoes crisping, sauce landing in the bowl, a spoon stirring.
 import { Audio, Sequence, interpolate, staticFile } from "remotion";
+import { FPS, type Cue, type CueSound } from "./scenes";
 
-const FPS = 30;
-type Sound = "music" | "sizzle" | "pan" | "crackle" | "plop" | "stir";
+type Sound = "music" | CueSound;
 const src = (s: Sound) => staticFile(`audio/${s}.mp3`);
-
-/** One sound: which file, when it starts (scene frames), how long it plays, how loud,
- * where in the file to start (seconds), and how many frames to fade in and out. */
-export type Cue = { sound: Sound; at: number; len: number; volume: number; from?: number; fade?: number };
 
 /** Where each sound's useful part starts in its file, in seconds. The crackle skips to a
  * stretch with no loud pops; the plop file holds several separate plops, which cues pick
