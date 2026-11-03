@@ -121,6 +121,7 @@ export default function ProjectsPage() {
       <SiteNav current="projects" />
       <Hero />
       <ProjectList />
+      <SiteProjects />
       <Footer />
     </main>
   );
@@ -317,6 +318,54 @@ function CardWrapper({
 }
 
 /* ------------------------------------------------------------------ */
+/* On this site - smaller projects that live on lmdav.com              */
+/* ------------------------------------------------------------------ */
+
+const SITE_PROJECTS = [
+  {
+    title: "Recipes",
+    body: "High-protein, high-fiber meals I have cooked and tested, written step by step and easy to print.",
+    href: "/recipes",
+  },
+];
+
+function SiteProjects() {
+  return (
+    <section className="w-full bg-black">
+      <div className="mx-auto w-full max-w-[1800px] px-6 pb-24 md:px-16 md:pb-32">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+          <span className="section-tag text-white/60">/07 - ON THIS SITE</span>
+          <span className="section-tag text-white/60">SIDE PROJECTS</span>
+        </div>
+        <ul className="mt-10">
+          {SITE_PROJECTS.map((p, i) => (
+            <li key={p.href}>
+              <Link
+                href={p.href}
+                className={`group grid grid-cols-1 gap-4 border-b border-white/12 py-10 transition-colors hover:bg-white/[0.02] md:grid-cols-12 md:items-baseline md:gap-10 ${
+                  i === 0 ? "border-t" : ""
+                }`}
+              >
+                <h2 className="display-serif text-[clamp(1.5rem,2.8vw,2.5rem)] text-white md:col-span-4">
+                  {p.title}
+                </h2>
+                <p className="font-serif text-[17px] leading-[1.35] text-white/75 md:col-span-6">
+                  {p.body}
+                </p>
+                <span className="label inline-flex items-center gap-2 text-white transition-colors group-hover:text-[var(--color-acid)] md:col-span-2 md:justify-end">
+                  OPEN
+                  <Arrow className="h-3 w-3" />
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Footer - simplified for this page                                   */
 /* ------------------------------------------------------------------ */
 
@@ -327,6 +376,7 @@ function Footer() {
       projectLinks={[
         { label: "STAYZA", href: "https://trystayza.com" },
         { label: "ALL PROJECTS", href: "/projects" },
+        { label: "RECIPES", href: "/recipes" },
         { label: "HOME", href: "/" },
       ]}
     />

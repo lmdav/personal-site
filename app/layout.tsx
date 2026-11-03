@@ -3,6 +3,7 @@ import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
 import { Instrument_Serif } from "next/font/google";
 import { SmoothScroll } from "@/components/smooth-scroll";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const instrumentSerif = Instrument_Serif({
@@ -14,6 +15,7 @@ const instrumentSerif = Instrument_Serif({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Liam Davis - Entrepreneur & AI Operator",
   description:
     "Entrepreneur and AI operator. Two revenue-generating businesses before twenty. Currently building Stayza, leading Red Bull Santa Cruz, and founder of the UCSC Venture Capital Club.",

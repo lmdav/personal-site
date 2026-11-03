@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { Arrow } from "@/components/arrow-icon";
 
 /** The page the visitor is on, so the nav can highlight it and pick anchor targets. */
-export type SitePage = "home" | "projects";
+export type SitePage = "home" | "projects" | "recipes";
 
 type FooterLink = { label: string; href: string };
 
@@ -14,7 +14,7 @@ type FooterLink = { label: string; href: string };
 
 export function AnnouncementBar() {
   return (
-    <div className="w-full bg-[var(--color-acid)] text-black">
+    <div className="w-full bg-[var(--color-acid)] text-black print:hidden">
       <div className="mx-auto flex max-w-[1800px] items-center justify-between gap-3 px-5 py-3 md:px-7">
         <span className="label truncate">STAYZA IS LIVE IN PRIVATE BETA</span>
         <Link
@@ -44,7 +44,7 @@ export function SiteNav({ current }: { current: SitePage }) {
       : "label text-white/60 transition-colors hover:text-white";
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-black/40 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 w-full bg-black/40 backdrop-blur-md print:hidden">
       <div className="mx-auto flex max-w-[1800px] items-center justify-between px-6 py-5 md:px-16">
         <Link href="/" className="flex items-center gap-3 text-white">
           <Image
@@ -97,7 +97,7 @@ export function SiteFooter({
   children?: ReactNode;
 }) {
   return (
-    <footer id="contact" className="w-full bg-[#0a0a0a] text-white">
+    <footer id="contact" className="w-full bg-[#0a0a0a] text-white print:hidden">
       <div className="mx-auto max-w-[1800px] px-6 pb-20 pt-20 md:px-16 md:pb-24 md:pt-24">
         <div className="mb-12 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-white/10 pt-8 md:mb-16">
           <span className="section-tag text-white/60">{tag}</span>
