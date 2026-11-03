@@ -31,9 +31,9 @@ function Chips({ chips }: { chips: Planned["chips"] }) {
   const f = useCurrentFrame();
   return (
     <>
-      {chips.map(({ text, show, timer }) => (
+      {chips.map(({ text, show, timer }, i) => (
         <Chip
-          key={text}
+          key={i}
           text={text}
           show={interpolate(f, [show[0], show[0] + 8, show[1] - 8, show[1]], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })}
           progress={timer && ramp(f, timer[0], timer[1] - timer[0], Easing.linear)}

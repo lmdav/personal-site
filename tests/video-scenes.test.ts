@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { checkSceneFile, fadeRanges, frameOf, planVideo, totalFrames, type SceneFile, type Script } from "../video/src/howto/scenes.ts";
+import { checkPlan, checkSceneFile, fadeRanges, frameOf, planVideo, totalFrames, type SceneFile, type Script } from "../video/src/howto/scenes.ts";
 
 // The video's scene files (docs/adr/0004-recipe-video-scene-files.md): checking them,
 // turning their times into frames, and laying out the video.
@@ -28,6 +28,8 @@ const TIMINGS = {
   },
 };
 const BAKE = { last: 149, hotFirst: 20 };
+// The Smash Burger Bowl has five layers, so its pull-apart has six labels.
+const BOWL = { slug: SLUG, labels: 6 };
 
 test("times resolve against beats, steps, and the scene's end", () => {
   const beats = [12, 70, 163];
@@ -45,11 +47,12 @@ test("times resolve against beats, steps, and the scene's end", () => {
 });
 
 test("the Smash Burger Bowl's scene file passes its check", () => {
-  assert.deepEqual(checkSceneFile(sceneFile(), script, SLUG, SLUG), []);
+  assert.deepEqual(checkSceneFile(sceneFile(), script, SLUG, BOWL), []);
 });
 
 test("the plan matches the hand-written video, scene by scene", () => {
   const plan = planVideo(sceneFile(), script, TIMINGS, BAKE);
+  assert.deepEqual(checkPlan(plan), []);
   // Lengths and starts of the hand-written version (HowTo.tsx before the scene file).
   assert.deepEqual(
     plan.map((p) => [p.scene.id, p.from, p.len]),
@@ -99,7 +102,7 @@ test("the check names every problem in a scene file", () => {
   (byId("patties").chips as Record<string, unknown>[])[0].show = ["add", "never"];
   (byId("build").steps as Record<string, unknown>).later = "b1";
   scenes.push({ ...byId("finish") });
-  const problems = checkSceneFile(file, script, SLUG, SLUG);
+  const problems = checkSceneFile(file, script, SLUG, BOWL);
   const expect = [
     /hero.*template "parade" is not one of/,
     /potatoes.*steps\.crisp.*beat 9, but the narration has 5 beats/,
@@ -114,7 +117,7 @@ test("the check names every problem in a scene file", () => {
 });
 
 test("the check refuses bowl scenes for another recipe, and scenes the script lacks", () => {
-  const problems = checkSceneFile(sceneFile(), { ...script, extra: [{ speak: "x", caption: "x" }] }, "chili", SLUG);
+  const problems = checkSceneFile(sceneFile(), { ...script, extra: [{ speak: "x", caption: "x" }] }, "chili", BOWL);
   assert.ok(problems.some((p) => /hero.*draws the smash-burger-bowl bowl/.test(p)));
   assert.ok(problems.some((p) => /scene "extra" is in the narration script but not the scene file/.test(p)));
 });
@@ -125,8 +128,64 @@ test("the check names foods and kinds the kit does not have", () => {
   scenes.find((s) => s.id === "potatoes")!.food = "carrot";
   (scenes.find((s) => s.id === "sauce")!.ingredients as Record<string, unknown>[])[1].as = "drizzle";
   (scenes.find((s) => s.id === "mushrooms")!.food as Record<string, unknown>[])[0].piece = "pepper";
-  const problems = checkSceneFile(file, script, SLUG, SLUG);
+  const problems = checkSceneFile(file, script, SLUG, BOWL);
   assert.ok(problems.some((p) => /food "carrot" is not in the kit yet/.test(p)));
   assert.ok(problems.some((p) => /ingredients\[1\]\.as must be one of/.test(p)));
   assert.ok(problems.some((p) => /food\[0\]\.piece "pepper" is not in the kit yet/.test(p)));
+});
+
+/** The Smash Burger Bowl's scene file with one scene changed, checked and planned. */
+function planWith(id: string, change: (scene: Record<string, unknown>) => void) {
+  const file = sceneFile();
+  change((file.scenes as unknown as Record<string, unknown>[]).find((s) => s.id === id)!);
+  const problems = checkSceneFile(file, script, SLUG, BOWL);
+  return problems.length ? problems : checkPlan(planVideo(file, script, TIMINGS, BAKE));
+}
+const steps = (s: Record<string, unknown>) => s.steps as Record<string, unknown>;
+const first = (s: Record<string, unknown>, key: string) => (s[key] as Record<string, unknown>[])[0];
+
+test("a plan with times that would break a template is refused (2026-11-03 review)", () => {
+  const cases: [string, (s: Record<string, unknown>) => void, RegExp][] = [
+    ["sauce", (s) => ((s as { chips?: unknown }).chips = [{ text: "STIR", show: ["stir", "stir+10"], timer: ["stir", "stir"] }]), /"STIR" chip shows for 10 frames/],
+    ["sauce", (s) => ((s as { chips?: unknown }).chips = [{ text: "STIR", show: ["b1", "b3"], timer: ["stir", "stir"] }]), /"STIR" chip's timer must end after it starts/],
+    ["potatoes", (s) => (steps(s).cool = "b1+5"), /cool must come at least 23 frames after microwave/],
+    ["potatoes", (s) => Object.assign(steps(s), { microwave: "b2", cool: "b1" }), /cool must come at least 23 frames after microwave \(it is -/],
+    ["patties", (s) => (steps(s).flip = "b2"), /flip must come at least 1 frame after rest \(it is 0\)/],
+    ["build", (s) => Object.assign(steps(s), { cold: "b2+200", hot: "b0" }), /hot .* comes too long before cold/],
+    ["sauce", (s) => (first(s, "ingredients").lands = "b5+20"), /Greek yogurt lands at frame \d+, after the stir starts/],
+    ["mushrooms", (s) => Object.assign(first(s, "sounds"), { at: "end-5", until: "b0" }), /a pan sound ends before it starts/],
+    ["finish", (s) => ((s.side as Record<string, unknown>).at = "b1+900"), /the side dish is at frame \d+, outside the scene/],
+    ["apart", (s) => ((s.labels as unknown[])[5] = "b5+900"), /label 5 is at frame \d+, outside the scene/],
+  ];
+  for (const [id, change, expected] of cases) {
+    const problems = planWith(id, change);
+    assert.ok(problems.some((p) => expected.test(p)), `${id}: no problem matching ${expected}:\n${problems.join("\n")}`);
+  }
+});
+
+test("scene file fields that would break a render are refused (2026-11-03 review)", () => {
+  const cases: [string, (s: Record<string, unknown>) => void, RegExp][] = [
+    ["mushrooms", (s) => (first(s, "sounds").fade = 0), /sounds\[0\]\.fade needs a number above 0/],
+    ["sauce", (s) => (first(s, "sounds").frames = "30"), /sounds\[0\]\.frames needs a whole number above 0/],
+    ["sauce", (s) => (first(s, "ingredients").plop = { onset: 0, volume: 0.2 }), /plop needs an onset of 0\.03 s or more/],
+    ["mushrooms", (s) => delete s.food, /food must be a list with at least one entry/],
+    ["mushrooms", (s) => (s.food = [{ piece: "mushroom", count: 30 }]), /the pan has room for \d+ of the 30 slices/],
+    ["apart", (s) => (s.labels = ["b1"]), /labels needs 6 times/],
+    ["apart", (s) => delete s.labels, /labels must be a list/],
+    ["patties", (s) => (s.cheese = "no"), /cheese must be true or false/],
+    ["finish", (s) => (s.side = null), /side needs \{ food, at \}/],
+    ["patties", (s) => (first(s, "chips").show = ["valueOf", "end"]), /"valueOf" names "valueOf", which is not a step or moment/],
+  ];
+  for (const [id, change, expected] of cases) {
+    const problems = planWith(id, change);
+    assert.ok(problems.some((p) => expected.test(p)), `${id}: no problem matching ${expected}:\n${problems.join("\n")}`);
+  }
+  const named = sceneFile();
+  (named.scenes as unknown as Record<string, unknown>[])[0].id = "toString";
+  assert.ok(checkSceneFile(named, script, SLUG, BOWL).some((p) => /"toString" is not a scene in the narration script/.test(p)));
+});
+
+test("narration timings that do not match the script are refused", () => {
+  const stale = { ...TIMINGS, beats: { ...TIMINGS.beats, patties: [0, 4.397, 8.111] } };
+  assert.throws(() => planVideo(sceneFile(), script, stale, BAKE), /patties" has 4 beats in the script but 3 in its narration timings; run narrate\.py/);
 });

@@ -94,7 +94,7 @@ function Mix({ scene, p }: { scene: MixData; p: Planned }) {
         const q = plop(f, d.land, 0.15);
         if (!q.shown || sink < 0.05) return null;
         const [x, z] = DOLLOPS[i].at;
-        return <mesh key={d.name} geometry={parts.dollops[i].geo} material={parts.dollops[i].material} position={[x, onBase(x, z) - 0.0018 + q.y, z]} scale={[q.grow, q.squash * sink * q.grow, q.grow]} castShadow />;
+        return <mesh key={i} geometry={parts.dollops[i].geo} material={parts.dollops[i].material} position={[x, onBase(x, z) - 0.0018 + q.y, z]} scale={[q.grow, q.squash * sink * q.grow, q.grow]} castShadow />;
       })}
       {at.pieces &&
         parts.pieces.map((q, i) => {

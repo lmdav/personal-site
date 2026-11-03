@@ -3,6 +3,7 @@
 // steps, chips, list rows, and sounds. This module checks a scene file, turns its times
 // into frames, and lays out the whole video. It has no React or Remotion imports, so the
 // render command (render.mjs) and the tests share the same plan the video draws.
+import { panLayout, type SkilletPiece } from "./skillet.ts";
 
 export const FPS = 30;
 export const LEAD = 12; // frames before the narration starts
@@ -37,7 +38,7 @@ export type MixIngredient = {
   /** A plop as it lands: where in the plop file it starts (seconds), and how loud. */
   plop?: { onset: number; volume: number };
 };
-export type SkilletPiece = "mushroom" | "onion";
+export type { SkilletPiece };
 
 type Base = { id: string; fade: "in" | "out" | "both" | "none" };
 export type SceneData = Base &
@@ -128,7 +129,7 @@ export function frameOf(when: When, beats: number[], names: Record<string, numbe
   } else if (anchor === "end") {
     if (end === undefined) throw new Error(`"${when}" uses the scene's end, which steps cannot`);
     base = end;
-  } else if (anchor in names) {
+  } else if (Object.hasOwn(names, anchor)) {
     base = names[anchor];
   } else {
     throw new Error(`"${when}" names "${anchor}", which is not a step or moment of this scene (${Object.keys(names).join(", ") || "none"})`);
@@ -136,8 +137,14 @@ export function frameOf(when: When, beats: number[], names: Record<string, numbe
   return base + (sign === "-" ? -1 : 1) * Number(n ?? 0);
 }
 
-/** Checks a scene file against the narration script and lists every problem. */
-export function checkSceneFile(raw: unknown, script: Script, slug: string, bowlSlug: string): string[] {
+/** The bowl the bowl templates draw: its recipe, and how many labels its pull-apart has
+ * (one per layer, plus the sauce). */
+export type BowlInfo = { slug: string; labels: number };
+
+/** Checks a scene file against the narration script and lists every problem. Times are
+ * checked against made-up beats here, for names and beat numbers; checkPlan checks them
+ * against the real narration once it is timed. */
+export function checkSceneFile(raw: unknown, script: Script, slug: string, bowl: BowlInfo): string[] {
   const problems: string[] = [];
   const bad = (where: string, what: string) => problems.push(`${where}: ${what}`);
   if (!isObject(raw)) return ["the scene file is not a JSON object"];
@@ -150,13 +157,13 @@ export function checkSceneFile(raw: unknown, script: Script, slug: string, bowlS
   raw.scenes.forEach((s, i) => {
     const where = `scenes[${i}]${isObject(s) && typeof s.id === "string" ? ` (${s.id})` : ""}`;
     if (!isObject(s)) return bad(where, "is not an object");
-    if (typeof s.id !== "string" || !(s.id in script)) return bad(where, `id ${JSON.stringify(s.id)} is not a scene in the narration script`);
+    if (typeof s.id !== "string" || !Object.hasOwn(script, s.id)) return bad(where, `id ${JSON.stringify(s.id)} is not a scene in the narration script`);
     if (ids.indexOf(s.id) !== i) bad(where, "appears twice");
     if (!["in", "out", "both", "none"].includes(String(s.fade))) bad(where, 'fade must be "in", "out", "both", or "none"');
     if (!TEMPLATES.includes(s.template as Template)) return bad(where, `template ${JSON.stringify(s.template)} is not one of ${TEMPLATES.join(", ")}`);
     const scene = s as SceneData;
-    if (BOWL_TEMPLATES.includes(scene.template) && slug !== bowlSlug)
-      bad(where, `the ${scene.template} template draws the ${bowlSlug} bowl; per-recipe bowls come with the kit (playbook item C)`);
+    if (BOWL_TEMPLATES.includes(scene.template) && slug !== bowl.slug)
+      bad(where, `the ${scene.template} template draws the ${bowl.slug} bowl; per-recipe bowls come with the kit (playbook item C)`);
     if (scene.template === "skillet" && !["saute", "smash"].includes(scene.cook)) return bad(where, 'cook must be "saute" or "smash"');
     // Every time must resolve, using made-up beat frames: only the names and beat numbers matter.
     const beats = script[scene.id].map((_, k) => k * 100);
@@ -174,15 +181,19 @@ export function checkSceneFile(raw: unknown, script: Script, slug: string, bowlS
     for (const name of Object.keys(stepData)) if (!stepsOf(scene).includes(name)) bad(where, `steps.${name} is not a step of ${scene.template} (${stepsOf(scene).join(", ") || "none"})`);
     const names = { ...steps, ...momentsOf(scene, steps) };
     const time = (w: unknown, at: string) => tryFrame(w as When, beats, names, 10_000, `${where} ${at}`, problems);
-    checkTemplate(scene, where, time, bad);
+    checkTemplate(scene, where, time, bad, bowl, () => problems.length);
   });
   return problems;
 }
 
-function checkTemplate(scene: SceneData, where: string, time: (w: unknown, at: string) => void, bad: (where: string, what: string) => void) {
-  const list = (v: unknown, at: string) => {
-    if (v !== undefined && !Array.isArray(v)) bad(where, `${at} must be a list`);
+function checkTemplate(scene: SceneData, where: string, time: (w: unknown, at: string) => void, bad: (where: string, what: string) => void, bowl: BowlInfo, problemCount: () => number) {
+  /** A list field: optional ones may be left out, required ones need at least one entry. */
+  const list = (v: unknown, at: string, required = false) => {
+    if ((v !== undefined || required) && (!Array.isArray(v) || (required && v.length === 0))) bad(where, `${at} must be a list${required ? " with at least one entry" : ""}`);
     return Array.isArray(v) ? v : [];
+  };
+  const positive = (v: unknown, at: string, whole = false) => {
+    if (v !== undefined && (typeof v !== "number" || !(v > 0) || (whole && !Number.isInteger(v)))) bad(where, `${at} needs a ${whole ? "whole " : ""}number above 0`);
   };
   if ("chips" in scene)
     list(scene.chips, "chips").forEach((c: ChipData, k) => {
@@ -198,21 +209,27 @@ function checkTemplate(scene: SceneData, where: string, time: (w: unknown, at: s
     list(scene.sounds, "sounds").forEach((c: SoundData, k) => {
       if (!CUE_SOUNDS.includes(c?.sound)) bad(where, `sounds[${k}].sound must be one of ${CUE_SOUNDS.join(", ")}`);
       if (typeof c?.volume !== "number" || c.volume < 0) bad(where, `sounds[${k}].volume needs a number of 0 or more`);
+      positive(c?.fade, `sounds[${k}].fade`);
+      positive(c?.frames, `sounds[${k}].frames`, true);
+      if (c?.offset !== undefined && !(typeof c.offset === "number" && c.offset >= 0)) bad(where, `sounds[${k}].offset needs a number of seconds, 0 or more`);
       time(c?.at, `sounds[${k}].at`);
       if ((c?.until === undefined) === (c?.frames === undefined)) bad(where, `sounds[${k}] needs either until or frames`);
       if (c?.until !== undefined) time(c.until, `sounds[${k}].until`);
     });
   switch (scene.template) {
-    case "pullApart":
-      list(scene.labels, "labels").forEach((w, k) => time(w, `labels[${k}]`));
+    case "pullApart": {
+      const labels = list(scene.labels, "labels", true);
+      if (labels.length && labels.length !== bowl.labels) bad(where, `labels needs ${bowl.labels} times, one per layer of the bowl and one for the sauce`);
+      labels.forEach((w, k) => time(w, `labels[${k}]`));
       break;
+    }
     case "prep":
       // The data is unchecked here, so read it as it came.
       if ((scene.food as string) !== "potato") bad(where, `food ${JSON.stringify(scene.food as unknown)} is not in the kit yet (potato)`);
       break;
     case "mix": {
       if (typeof scene.color !== "string") bad(where, "color needs the stirred color, like #EDB38A");
-      const rows = list(scene.ingredients, "ingredients") as MixIngredient[];
+      const rows = list(scene.ingredients, "ingredients", true) as MixIngredient[];
       const count = (kind: string) => rows.filter((r) => r?.as === kind).length;
       if (count("base") !== 1) bad(where, "ingredients need exactly one base");
       if (count("dollop") > DOLLOP_SLOTS) bad(where, `ingredients can have at most ${DOLLOP_SLOTS} dollops`);
@@ -222,20 +239,36 @@ function checkTemplate(scene: SceneData, where: string, time: (w: unknown, at: s
         if (!MIX_KINDS.includes(r?.as)) bad(where, `ingredients[${k}].as must be one of ${MIX_KINDS.join(", ")}`);
         if (["dollop", "pour", "specks"].includes(r?.as) && typeof r.color !== "string") bad(where, `ingredients[${k}] (${r.as}) needs a color`);
         if (r?.as === "pieces" && r.piece !== "pickle") bad(where, `ingredients[${k}].piece ${JSON.stringify(r.piece)} is not in the kit yet (pickle)`);
+        if (r?.plop !== undefined && !(typeof r.plop?.onset === "number" && r.plop.onset >= 0.03 && typeof r.plop.volume === "number" && r.plop.volume >= 0))
+          bad(where, `ingredients[${k}].plop needs an onset of 0.03 s or more and a volume of 0 or more`);
         time(r?.lands, `ingredients[${k}].lands`);
       });
       break;
     }
     case "skillet":
       if (!Array.isArray(scene.camera) || scene.camera.length !== 2 || !scene.camera.every((n) => typeof n === "number")) bad(where, "camera needs [from, to] angles in radians");
-      if (scene.cook === "saute")
-        list(scene.food, "food").forEach((p, k) => {
+      if (scene.cook === "saute") {
+        const food = list(scene.food, "food", true);
+        const before = problemCount();
+        food.forEach((p, k) => {
           if (!["mushroom", "onion"].includes(p?.piece)) bad(where, `food[${k}].piece ${JSON.stringify(p?.piece)} is not in the kit yet (mushroom, onion)`);
           if (!Number.isInteger(p?.count) || p.count < 1) bad(where, `food[${k}].count needs a whole number`);
         });
+        if (food.length && problemCount() === before) {
+          const asked = food.reduce((n, p) => n + p.count, 0);
+          const placed = panLayout(food).length;
+          if (placed < asked) bad(where, `the pan has room for ${placed} of the ${asked} slices in one layer`);
+        }
+      } else {
+        for (const flag of ["cheese", "parchment"] as const) if (scene[flag] !== undefined && typeof scene[flag] !== "boolean") bad(where, `${flag} must be true or false`);
+      }
       break;
     case "finish":
       if (scene.side !== undefined) {
+        if (!isObject(scene.side)) {
+          bad(where, "side needs { food, at }");
+          break;
+        }
         if (scene.side.food !== "beans") bad(where, `side.food ${JSON.stringify(scene.side.food)} is not in the kit yet (beans)`);
         time(scene.side.at, "side.at");
       }
@@ -282,6 +315,7 @@ export function planVideo(file: SceneFile, script: Script, timings: Timings, bak
     const starts = timings.beats[scene.id];
     const seconds = timings.durations[scene.id];
     if (!starts || seconds === undefined) throw new Error(`No narration timings for scene "${scene.id}"; run narrate.py`);
+    if (starts.length !== script[scene.id].length) throw new Error(`Scene "${scene.id}" has ${script[scene.id].length} beats in the script but ${starts.length} in its narration timings; run narrate.py`);
     const beats = starts.map((t) => LEAD + Math.round(t * FPS));
     const spoken = Math.round(seconds * FPS);
     const stepData = ("steps" in scene ? scene.steps : {}) as Record<string, When>;
@@ -309,6 +343,59 @@ function cuesOf(scene: SceneData, frame: (w: When) => number): Cue[] {
     cues.push({ sound: c.sound, at, len: c.until !== undefined ? frame(c.until) - at : (c.frames as number), volume: c.volume, from: c.offset, fade: c.fade });
   }
   return cues;
+}
+
+/** Checks a planned video against what the templates need from real frames: steps in
+ * order with room between them, chip windows long enough to fade in and out, sounds that
+ * start before they end, and every time inside its scene. Lists every problem. */
+export function checkPlan(plan: Planned[]): string[] {
+  const problems: string[] = [];
+  for (const { scene, len, at, frame, chips, cues } of plan) {
+    const bad = (what: string) => problems.push(`scene "${scene.id}": ${what}`);
+    const inside = (f: number, what: string) => {
+      if (f < 0 || f >= len) bad(`${what} is at frame ${f}, outside the scene (0 to ${len - 1})`);
+    };
+    /** Steps that must come in this order, each at least gap frames after the one before. */
+    const order = (names: string[], gap: Record<string, number> = {}) =>
+      names.slice(1).forEach((name, i) => {
+        const need = gap[name] ?? 1;
+        if (at[name] - at[names[i]] < need) bad(`${name} must come at least ${need} frame${need === 1 ? "" : "s"} after ${names[i]} (it is ${at[name] - at[names[i]]})`);
+      });
+    for (const name of stepsOf(scene)) inside(at[name], `step ${name}`);
+    chips.forEach(({ text, show, timer }) => {
+      if (show[1] - show[0] <= 16) bad(`the "${text}" chip shows for ${show[1] - show[0]} frames; it needs more than 16 to fade in and out`);
+      if (timer && timer[1] <= timer[0]) bad(`the "${text}" chip's timer must end after it starts`);
+      [...show, ...(timer ?? [])].forEach((f) => inside(Math.min(f, len - 1), `the "${text}" chip`));
+    });
+    cues.forEach((c) => {
+      if (c.len < 1) bad(`a ${c.sound} sound ends before it starts`);
+      inside(c.at, `a ${c.sound} sound`);
+    });
+    switch (scene.template) {
+      case "prep":
+        // The microwave's glow fades in over 10 frames and out over 12.
+        order(["poke", "microwave", "cool", "press", "crisp"], { cool: 23 });
+        break;
+      case "mix":
+        for (const r of scene.ingredients) if (frame(r.lands) >= at.stir) bad(`${r.name} lands at frame ${frame(r.lands)}, after the stir starts (${at.stir})`);
+        for (const r of scene.ingredients) inside(frame(r.lands), r.name);
+        break;
+      case "skillet":
+        order(scene.cook === "smash" ? ["heat", "add", "rest", "flip"] : ["add", "stir"]);
+        break;
+      case "pullApart":
+        scene.labels.forEach((w, k) => inside(frame(w), `label ${k}`));
+        break;
+      case "build":
+        // The camera closes in from "cold" until 100 frames after "hot".
+        if (at.hot + 100 <= at.cold + 2) bad(`hot (${at.hot}) comes too long before cold (${at.cold})`);
+        break;
+      case "finish":
+        if (scene.side) inside(frame(scene.side.at), "the side dish");
+        break;
+    }
+  }
+  return problems;
 }
 
 /** The video's total length in frames. */

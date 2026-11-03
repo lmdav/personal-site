@@ -2,8 +2,8 @@
 // script in src/recipes, and the narration timings narrate.py writes to src/data. A recipe
 // without timings yet is left out until it is narrated. A scene file with problems stops
 // the bundle with all of them listed.
-import { BOWL_SLUG, items, samples } from "../three/bowlShot";
-import { bakeOf, checkSceneFile, planVideo, totalFrames, type Planned, type SceneFile, type Script, type Timings } from "./scenes";
+import { BOWL_SLUG, LAYERS, items, samples } from "../three/bowlShot";
+import { bakeOf, checkPlan, checkSceneFile, planVideo, totalFrames, type Planned, type SceneFile, type Script, type Timings } from "./scenes";
 
 // webpack's require.context, which Remotion's bundler provides.
 type Context = { keys(): string[]; (key: string): unknown };
@@ -28,10 +28,13 @@ export const RECIPES: Recipe[] = sceneFiles
     if (!has(timings, scriptKey)) return [];
     const raw = sceneFiles(key);
     const script = scripts(scriptKey) as Script;
-    const problems = checkSceneFile(raw, script, slug, BOWL_SLUG);
-    if (problems.length) throw new Error(`src/recipes/${slug}.scenes.json has problems:\n- ${problems.join("\n- ")}`);
+    const problems = checkSceneFile(raw, script, slug, { slug: BOWL_SLUG, labels: LAYERS + 1 });
+    const fail = (list: string[]) => new Error(`src/recipes/${slug}.scenes.json has problems:\n- ${list.join("\n- ")}`);
+    if (problems.length) throw fail(problems);
     const file = raw as SceneFile;
     const plan = planVideo(file, script, timings(scriptKey) as Timings, bake);
+    const planProblems = checkPlan(plan);
+    if (planProblems.length) throw fail(planProblems);
     return [{ slug, file, plan, frames: totalFrames(plan) }];
   });
 

@@ -6,13 +6,14 @@
 import { useMemo } from "react";
 import { Easing, useCurrentFrame } from "remotion";
 import * as THREE from "three";
-import { rng } from "../geo";
 import { mix } from "../three/bowlShot";
+import { rng } from "../geo";
 import { cookable, meltingCheese, Steam, useRawFood } from "../three/cooking";
 import { Parchment, SKILLET, Skillet, Spatula } from "../three/cookware";
 import { KitProvider, useKit } from "../three/ingredients";
 import { Studio } from "../three/Studio";
-import type { SceneData, SkilletPiece } from "./scenes";
+import type { SceneData } from "./scenes";
+import { SLICES, panLayout } from "./skillet";
 import { Shot, Stage, aim, plop, ramp, type SceneProps, type TemplateProps } from "./stage";
 
 type SkilletData = Extract<SceneData, { template: "skillet" }>;
@@ -36,34 +37,6 @@ function PanShot({ s, children, az }: { s: SceneProps; children: React.ReactNode
 }
 
 /* Saute ------------------------------------------------------------ */
-
-/** How each kind of slice sits in the pan: the gap it keeps from others (and from its own
- * kind, if wider), and its raw color and how much of it stays. */
-const SLICES: Record<SkilletPiece, { gap: number; ownGap?: number; raw: string; keep: number }> = {
-  mushroom: { gap: 0.026, ownGap: 0.034, raw: "#C4AE8E", keep: 0.7 },
-  onion: { gap: 0.022, raw: "#EEE7D8", keep: 0.2 },
-};
-
-/** The slices in one layer, not touching. */
-function panLayout(food: { piece: SkilletPiece; count: number }[]) {
-  const r = rng(33);
-  const placed: { x: number; z: number; piece: SkilletPiece; variant: number; yaw: number; drift: number }[] = [];
-  const tryPlace = (piece: SkilletPiece) => {
-    const { gap, ownGap } = SLICES[piece];
-    for (let k = 0; k < 400; k++) {
-      const a = r() * Math.PI * 2;
-      const d = Math.sqrt(r()) * 0.083;
-      const x = Math.cos(a) * d;
-      const z = Math.sin(a) * d;
-      if (placed.every((p) => Math.hypot(p.x - x, p.z - z) > (p.piece === piece && ownGap ? ownGap : gap))) {
-        placed.push({ x, z, piece, variant: placed.length, yaw: r() * 6.3, drift: r() * 6.3 });
-        return;
-      }
-    }
-  };
-  for (const { piece, count } of food) for (let i = 0; i < count; i++) tryPlace(piece);
-  return placed;
-}
 
 function Saute({ scene, at }: { scene: Extract<SkilletData, { cook: "saute" }>; at: Record<string, number> }) {
   const f = useCurrentFrame();
