@@ -18,11 +18,6 @@ image:
 video:
   src: "/recipes/smash-burger-bowl/how-to.mp4"
   poster: "/recipes/smash-burger-bowl/how-to-poster.jpg"
-  credits:
-    - "Food photos: Alpha Perspective, Maude Frédérique Lavoie, and Terry Jaskiw on Unsplash"
-    - "3D models and lighting: Kuutti Siitonen, Dimitrios Savva, Rico Cilliers, and Sergej Majboroda on Poly Haven (CC0)"
-    - "Music and sounds: MrCatfishing, simosco, davidkay, Erbsland-Music, MilanKovanda, and Anthousai on Freesound (CC0)"
-    - "Voice: Kokoro (Apache 2.0)"
 
 ingredients:
   - name: "Burger"

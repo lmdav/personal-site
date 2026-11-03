@@ -155,6 +155,19 @@ function Finish({ s }: { s: SceneProps }) {
   );
 }
 
+/** The finished bowl on its own, centered, with no title or caption: the video's poster
+ * frame on the recipe page. The same shot the build scene ends on. */
+export function PosterShot() {
+  const s: SceneProps = { len: 1, beats: [0], draft: false, tall: false };
+  const { position, target } = orbit(AZ.buildOut, 0, 0, CLOSE);
+  return (
+    <Stage s={s}>
+      <Shot position={position} target={target} draft={false} />
+      <BowlSet tall={false} frame={0} poseOf={(i) => droppedPose(i, LAST)} />
+    </Stage>
+  );
+}
+
 export function FinishScene({ s }: { s: SceneProps }) {
   const f = useCurrentFrame();
   return (

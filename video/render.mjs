@@ -3,7 +3,7 @@
 // Usage: pnpm render <slug>
 // Needs the local Kokoro setup (see README.md) and the assets from tools/fetch-assets.mjs.
 import { spawnSync } from "node:child_process";
-import { mkdirSync, mkdtempSync, readFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -38,8 +38,5 @@ for (const id of [slug, `${slug}-vertical`]) {
 // 4. The web copy: smaller, starting to play before it has fully loaded.
 const master = path.join(outDir, `${slug}.mp4`);
 remotion("ffmpeg", "-v", "error", "-y", "-i", master, "-c:v", "libx264", "-preset", "slow", "-crf", "28", "-pix_fmt", "yuv420p", "-movflags", "+faststart", "-c:a", "copy", path.join(siteDir, "how-to.mp4"));
-// 5. The poster: the last frame of the opening scene, which shows the title with no
-// caption. HowTo.tsx sizes that scene as 12 frames, the narration, then 30 frames.
-const { durations } = JSON.parse(readFileSync(path.join(videoDir, "src", "data", `${slug}.narration.json`), "utf8"));
-const posterFrame = 12 + Math.round(durations.hero * 30) + 30 - 1;
-remotion("ffmpeg", "-v", "error", "-y", "-i", master, "-vf", `select=eq(n\\,${posterFrame})`, "-frames:v", "1", "-q:v", "3", path.join(siteDir, "how-to-poster.jpg"));
+// 5. The poster: the finished bowl with no title or caption (the <slug>-poster still).
+remotion("still", bundle, `${slug}-poster`, path.join(siteDir, "how-to-poster.jpg"), "--gl=angle", "--image-format=jpeg", "--jpeg-quality=88");

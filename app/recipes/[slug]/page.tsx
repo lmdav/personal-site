@@ -101,7 +101,6 @@ function RecipeContent({ recipe }: { recipe: Recipe }) {
         <Steps recipe={recipe} />
       </div>
 
-      {recipe.video && <HowToVideo video={recipe.video} title={recipe.title} />}
       {recipe.image && <RecipePhoto image={recipe.image} />}
       <Tags tags={recipe.tags} />
 
@@ -115,7 +114,7 @@ function RecipeContent({ recipe }: { recipe: Recipe }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Header - title, summary, version choice, meta row                   */
+/* Header - title, summary, version choice, meta row, and the video    */
 /* ------------------------------------------------------------------ */
 
 function RecipeHeader({ recipe }: { recipe: Recipe }) {
@@ -144,25 +143,32 @@ function RecipeHeader({ recipe }: { recipe: Recipe }) {
       </div>
       <CookModeStatus className="mt-3 text-[16px] text-white/80" />
 
-      <h1 className="recipe-title display-serif mt-5 text-[clamp(2.5rem,6vw,5rem)] leading-[1] text-white">
-        {recipe.title}
-      </h1>
-      <p className="recipe-summary mt-4 max-w-[46rem] font-serif text-[clamp(1.125rem,1.6vw,1.375rem)] leading-[1.3] text-white/75">
-        {recipe.summary}
-      </p>
-      <VersionPicker className="mt-6" />
+      {/* With a video, it sits beside the title on wider screens and under the details
+          on a phone, so it is the first thing after the recipe's name. */}
+      <div className={recipe.video ? "lg:grid lg:grid-cols-12 lg:items-start lg:gap-12" : undefined}>
+        <div className={recipe.video ? "lg:col-span-6 xl:col-span-7" : undefined}>
+          <h1 className="recipe-title display-serif mt-5 text-[clamp(2.5rem,6vw,5rem)] leading-[1] text-white">
+            {recipe.title}
+          </h1>
+          <p className="recipe-summary mt-4 max-w-[46rem] font-serif text-[clamp(1.125rem,1.6vw,1.375rem)] leading-[1.3] text-white/75">
+            {recipe.summary}
+          </p>
+          <VersionPicker className="mt-6" />
 
-      <dl className="recipe-meta mt-6 flex flex-wrap gap-x-7 gap-y-2">
-        {meta.map((m) => (
-          <div key={m.label} className="flex items-baseline gap-2">
-            <dt className="text-[14px] uppercase tracking-[0.06em] text-white/60">{m.label}</dt>
-            <dd className="text-[17px] text-white">{m.value}</dd>
-          </div>
-        ))}
-      </dl>
-      {recipe.servingsNote && (
-        <p className="recipe-serving-note mt-2 text-[15px] text-white/60">{recipe.servingsNote}</p>
-      )}
+          <dl className="recipe-meta mt-6 flex flex-wrap gap-x-7 gap-y-2">
+            {meta.map((m) => (
+              <div key={m.label} className="flex items-baseline gap-2">
+                <dt className="text-[14px] uppercase tracking-[0.06em] text-white/60">{m.label}</dt>
+                <dd className="text-[17px] text-white">{m.value}</dd>
+              </div>
+            ))}
+          </dl>
+          {recipe.servingsNote && (
+            <p className="recipe-serving-note mt-2 text-[15px] text-white/60">{recipe.servingsNote}</p>
+          )}
+        </div>
+        {recipe.video && <HowToVideo video={recipe.video} title={recipe.title} className="mt-8 lg:col-span-6 lg:mt-6 xl:col-span-5" />}
+      </div>
     </header>
   );
 }
@@ -219,30 +225,21 @@ function Tags({ tags }: { tags: string[] }) {
 /* How-to video (screen only)                                          */
 /* ------------------------------------------------------------------ */
 
-function HowToVideo({ video, title }: { video: RecipeVideo; title: string }) {
+function HowToVideo({ video, title, className = "" }: { video: RecipeVideo; title: string; className?: string }) {
   return (
-    <section aria-labelledby="how-to" className="print-hidden mt-16 md:mt-20">
-      <h2 id="how-to" className="section-tag text-white/60">
-        WATCH THE HOW-TO
-      </h2>
+    <figure className={`recipe-video print-hidden ${className}`}>
       <video
         controls
         playsInline
         preload="none"
         poster={video.poster}
         aria-label={`${title}: narrated step-by-step how-to video, with captions`}
-        className="mt-6 aspect-video w-full bg-white/5"
+        className="aspect-video w-full border border-white/15 bg-[#efe8dc] shadow-[0_24px_60px_rgba(0,0,0,0.5)]"
       >
         <source src={video.src} type="video/mp4" />
       </video>
-      {video.credits.length > 0 && (
-        <ul className="mt-4 space-y-1 text-sm text-white/45">
-          {video.credits.map((line) => (
-            <li key={line}>{line}</li>
-          ))}
-        </ul>
-      )}
-    </section>
+      <figcaption className="mt-3 text-[13px] uppercase tracking-[0.08em] text-white/60">Watch it made, start to finish</figcaption>
+    </figure>
   );
 }
 

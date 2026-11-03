@@ -19,9 +19,8 @@ export type RecipeImage = {
   credit?: string;
   creditUrl?: string;
 };
-/** A short how-to video and its poster frame, both in public/, and credit lines for
- * the photos, models, sounds, and voice it uses. */
-export type RecipeVideo = { src: string; poster: string; credits: string[] };
+/** A short how-to video and its poster frame. Both live in public/. */
+export type RecipeVideo = { src: string; poster: string };
 export type Nutrition = {
   calories: number;
   protein: number;
@@ -315,12 +314,8 @@ export function parseRecipe(source: string, fileName: string): Recipe {
   let video: RecipeVideo | undefined;
   if (top.video !== undefined && top.video !== null) {
     const v = c.object(top.video, "video");
-    c.fields(v, ["src", "poster", "credits"], "video.");
-    video = {
-      src: localPath(c, v, "src", "video."),
-      poster: localPath(c, v, "poster", "video."),
-      credits: c.list(v, "credits", "video.", true).map((t, i) => c.textValue(t, `video.credits[${i}]`) ?? ""),
-    };
+    c.fields(v, ["src", "poster"], "video.");
+    video = { src: localPath(c, v, "src", "video."), poster: localPath(c, v, "poster", "video.") };
   }
 
   const tags = c.list(top, "tags", "").map((t, i) => c.textValue(t, `tags[${i}]`) ?? "");
