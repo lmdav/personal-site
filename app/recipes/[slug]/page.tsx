@@ -212,6 +212,13 @@ function HowToVideo({ video, title }: { video: RecipeVideo; title: string }) {
       >
         <source src={video.src} type="video/mp4" />
       </video>
+      {video.credits.length > 0 && (
+        <ul className="mt-4 space-y-1 text-sm text-white/45">
+          {video.credits.map((line) => (
+            <li key={line}>{line}</li>
+          ))}
+        </ul>
+      )}
     </section>
   );
 }

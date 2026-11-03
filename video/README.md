@@ -21,12 +21,15 @@ The model files (about 115 MB) and `.venv` stay on your machine. Git ignores the
 pnpm render smash-burger-bowl
 ```
 
-This runs four steps:
+This runs five steps:
 
 1. Exports the recipe from `content/recipes/<slug>.md` through the site's own loader into `src/data/<slug>.json`, so titles, times, and nutrition always match the page.
-2. Reads the narration script in `src/recipes/<slug>.narration.json` aloud in the Heart voice, writing one clip per scene and recording their lengths. Each scene lasts as long as its narration.
-3. Renders `public/recipes/<slug>/how-to.mp4` (1080p, H.264) and `how-to-poster.jpg`.
-4. Renders `public/recipes/<slug>/blueprint.png` (3200 x 2200) from the same drawings.
+2. Reads the narration script in `src/recipes/<slug>.narration.json` aloud in the Heart voice. It writes one clip per scene and records how long each scene and beat runs.
+3. Renders the wide cut (composition `<slug>`) and the vertical cut (`<slug>-vertical`) into `out/`.
+4. Writes a smaller web copy of the wide cut to `public/recipes/<slug>/how-to.mp4`.
+5. Writes `how-to-poster.jpg` there too.
+
+Run `node tools/fetch-assets.mjs` once first, to download the 3D assets and sounds.
 
 To preview while editing, run `pnpm export <slug>` and `.venv/bin/python narrate.py <slug>` once, then `pnpm studio`. The `parts-sheet` still shows every drawing in its states.
 

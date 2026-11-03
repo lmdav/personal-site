@@ -196,33 +196,34 @@ test("requires a local image to exist in the public folder", () => {
   assert.equal(loadRecipes(dir, publicDir)[0].image?.src, "/recipes/bowl.jpg");
 });
 
-const MEDIA = `blueprint:
-  src: "/recipes/test-bowl/blueprint.png"
-  alt: "A blueprint drawing of the bowl"
-video:
+const MEDIA = `video:
   src: "/recipes/test-bowl/how-to.mp4"
   poster: "/recipes/test-bowl/how-to-poster.jpg"
+  credits:
+    - "Music: a track by someone on Freesound (CC0)"
 `;
 
-test("accepts a blueprint and a video only when their files are in the public folder", () => {
+test("accepts a video only when its files are in the public folder", () => {
   const dir = tempDir({ "test-bowl.md": edit("tags: [quick]", `${MEDIA}tags: [quick]`) });
-  assert.throws(() => loadRecipes(dir, tempDir({})), /"\/recipes\/test-bowl\/blueprint.png" is not in the public folder/);
+  assert.throws(() => loadRecipes(dir, tempDir({})), /"\/recipes\/test-bowl\/how-to.mp4" is not in the public folder/);
 
   const publicDir = tempDir({});
   mkdirSync(path.join(publicDir, "recipes", "test-bowl"), { recursive: true });
-  for (const f of ["blueprint.png", "how-to.mp4", "how-to-poster.jpg"]) {
+  for (const f of ["how-to.mp4", "how-to-poster.jpg"]) {
     writeFileSync(path.join(publicDir, "recipes", "test-bowl", f), "");
   }
   const [r] = loadRecipes(dir, publicDir);
-  assert.equal(r.blueprint?.alt, "A blueprint drawing of the bowl");
   assert.equal(r.video?.poster, "/recipes/test-bowl/how-to-poster.jpg");
+  assert.deepEqual(r.video?.credits, ["Music: a track by someone on Freesound (CC0)"]);
 });
 
-test("rejects a blueprint or video that is not a path in the public folder", () => {
+test("rejects a video that is not a path in the public folder, or credits that are not text", () => {
   const remote = MEDIA.replace('"/recipes/test-bowl/how-to.mp4"', '"https://example.com/a.mp4"');
   assert.match(problems(edit("tags: [quick]", `${remote}tags: [quick]`)), /video\.src must be a path in the public folder/);
-  const noAlt = MEDIA.replace('  alt: "A blueprint drawing of the bowl"\n', "");
-  assert.match(problems(edit("tags: [quick]", `${noAlt}tags: [quick]`)), /blueprint\.alt is required/);
+  const badCredit = MEDIA.replace('    - "Music: a track by someone on Freesound (CC0)"', "    - { who: someone }");
+  assert.match(problems(edit("tags: [quick]", `${badCredit}tags: [quick]`)), /video\.credits\[0\]/);
+  const noCredits = MEDIA.replace('  credits:\n    - "Music: a track by someone on Freesound (CC0)"\n', "");
+  assert.deepEqual(parseRecipe(edit("tags: [quick]", `${noCredits}tags: [quick]`), "test-bowl.md").video?.credits, []);
 });
 
 test("every published recipe and the template are valid", () => {

@@ -1,6 +1,6 @@
 # Recipe media v4: the 3D product shot
 
-Status: direction chosen. The proof and both cuts of the narrated how-to video (16:9 and 9:16) are built and rendered on branch `feat/recipe-blueprint-video`, and are not yet wired into the recipe page. Last updated 2026-11-02. This supersedes the look and animation in `recipes-media-v3.md`. The recipe fields, the `video/` package, the render command, and the Kokoro narration pipeline all stay.
+Status: direction chosen. The proof and both cuts of the narrated how-to video (16:9 and 9:16) are built and rendered, and the wide cut is wired into the recipe page. Last updated 2026-11-02. This supersedes the look and animation in `recipes-media-v3.md`. The recipe fields, the `video/` package, the render command, and the Kokoro narration pipeline all stay.
 
 ## Feedback on v3 (from Liam)
 
@@ -61,7 +61,7 @@ A new recipe needs:
 
 ## The how-to video
 
-Two compositions from the same scenes (`video/src/howto/`): `smash-burger-bowl-v4` (1920 x 1080, for the recipe page) and `smash-burger-bowl-v4-vertical` (1080 x 1920, for a phone). Both run about 114 seconds, narrated in the Kokoro `af_heart` voice with on-screen captions. It reuses the studio, the bowl, the ingredient kit, the physics bake, and the proof's choreography (now shared in `video/src/three/bowlShot.tsx`, which the proof also uses).
+Two compositions from the same scenes (`video/src/howto/`): `smash-burger-bowl` (1920 x 1080, for the recipe page) and `smash-burger-bowl-vertical` (1080 x 1920, for a phone). Both run about 114 seconds, narrated in the Kokoro `af_heart` voice with on-screen captions. It reuses the studio, the bowl, the ingredient kit, the physics bake, and the proof's choreography (now shared in `video/src/three/bowlShot.tsx`, which the proof also uses).
 
 | Scene | What happens |
 | --- | --- |
@@ -135,7 +135,7 @@ How to render:
 
 ```bash
 npx remotion bundle src/index.ts --out-dir <scratch>/bundle
-npx remotion render <scratch>/bundle smash-burger-bowl-v4 out/smash-burger-bowl-v4.mp4 --gl=angle --concurrency=5 --crf=20
+npx remotion render <scratch>/bundle smash-burger-bowl out/smash-burger-bowl.mp4 --gl=angle --concurrency=5 --crf=20
 ```
 
 ## Review gates (Liam, 2026-11-02)
@@ -165,11 +165,15 @@ One independent correctness pass covered the new code. Its eight findings were e
 - The flip has no spatula. The cheese melts without a lid.
 - The oil is in the narration and captions but not shown. A translucent film read as murky liquid, so it was removed.
 
-## Wiring it in (not done; needs Liam's OK)
+## On the recipe page (2026-11-02, with Liam's OK)
 
-- The old v3 composition (`smash-burger-bowl`, `video/src/Video.tsx`) is no longer registered, because its narration script was replaced. Its rendered video in the site's `public/recipes/smash-burger-bowl/` is untouched, and the recipe page on this branch still points at it.
-- `video/render.mjs` renders the composition named after the slug, so it fails until the v4 composition takes over that id.
-- To wire it in: rename the composition to the slug, add `--gl=angle` to `render.mjs`, render into `public/recipes/<slug>/how-to.mp4`, and pick a new poster frame.
+- The wide cut has the recipe's own id, `smash-burger-bowl`. `pnpm render <slug>` in `video/` renders both cuts into `video/out/`, then writes the web copy and the poster into `public/recipes/<slug>/`.
+  - The web copy is CRF 28 with fast start: 16 MB, against 40 MB for the master. At full size it looks the same as the master, apart from slightly smoother meat texture.
+  - The poster is the last frame of the opening scene: the title, with no caption.
+  - Only the pieces of that script were checked, not a full end-to-end run.
+- The page shows the video after the steps, with a short credits list under it from the recipe's `video.credits`.
+- The v3 blueprint sheet is not on the page, and the recipe format no longer has a `blueprint` field.
+- The old v3 composition is still in `video/src/Video.tsx` but no longer registered.
 
 ## Status
 
@@ -185,11 +189,11 @@ One independent correctness pass covered the new code. Its eight findings were e
 | Pronunciation dictionary ("romaine", "patties", "paprika") | Built; checked with whisper.cpp |
 | Beat-timed narration and captions (`narrate.py`, narration script) | Built |
 | Sauce scene naming each sauce ingredient | Built |
-| Full narrated video `smash-burger-bowl-v4` (16:9) | Rendered to `video/out/smash-burger-bowl-v4.mp4`: 3,407 frames, 113.6 s, in 9.7 min at concurrency 5. The frame check found no blank or glitch frames. Sent to Liam. |
-| Vertical cut `smash-burger-bowl-v4-vertical` (9:16) | Rendered to `video/out/smash-burger-bowl-v4-vertical.mp4`: 3,407 frames in 9.7 min. The frame check found no blank or glitch frames. Sent to Liam. |
+| Full narrated video `smash-burger-bowl` (16:9) | Rendered to `video/out/smash-burger-bowl.mp4`: 3,407 frames, 113.6 s, in 9.7 min at concurrency 5. The frame check found no blank or glitch frames. Sent to Liam. |
+| Vertical cut `smash-burger-bowl-vertical` (9:16) | Rendered to `video/out/smash-burger-bowl-vertical.mp4`: 3,407 frames in 9.7 min. The frame check found no blank or glitch frames. Sent to Liam. |
 | Slower narration, longer holds, bigger captions | Built |
 | Potato pre-cook (fork, microwave, cool) | Built |
 | Music bed and cooking sounds | Built. The six CC0 files were downloaded with Liam's OK. In the final mix, the music and effects sit 11 to 20 dB under the voice, scene by scene, with a peak of -3.5 dBFS. This is measured, not listened to. |
 | Credits file `video/CREDITS.md` | Built. Every photo, model, texture, sound, font, voice, and library is credited. |
-| Wiring the video into the recipe page | Planned; waiting for Liam's OK |
-| Asset credits on the recipe page | Planned (the list is in `video/CREDITS.md`) |
+| Wiring the video into the recipe page | Built (see "On the recipe page") |
+| Asset credits on the recipe page | Built: short credit lines under the video, with the full list in `video/CREDITS.md` |

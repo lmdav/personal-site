@@ -22,8 +22,7 @@ Only publish a recipe after it has been cooked and tested.
 | `prepMinutes`, `cookMinutes`, `totalMinutes` | Yes | Whole numbers of minutes. |
 | `tags` | Yes | A list, such as `[high-protein, meal-prep, beef]`. |
 | `image` | No | A photo with `src`, `alt`, and, for photos that are not yours, `credit` and `creditUrl`. `src` is a path under `public/` (starting with `/`) or an `images.unsplash.com` link. `alt` describes the photo for screen readers. |
-| `blueprint` | No | A blueprint drawing with `src` (a path under `public/`) and `alt`. See "Blueprints and videos" below. |
-| `video` | No | A how-to video with `src` and `poster`, both paths under `public/`. See "Blueprints and videos" below. |
+| `video` | No | A how-to video with `src` and `poster`, both paths under `public/`, and optional `credits` lines shown under it. See "How-to videos" below. |
 | `ingredients` | Yes | A list of groups. Each group has an optional `name` and a list of `items`. |
 | `steps` | Yes | A list. Each step has a `title`, optional `minutes`, and `text`. |
 | `tips` | No | A list. Each tip has an optional `title` and `text`. |
@@ -39,10 +38,8 @@ The text after the second `---` line is the chef's notes: plain paragraphs separ
 - Nutrition numbers are estimates, and the page labels them that way.
 - Use only original text. Photos must be your own, or free to use and credited (such as Unsplash photos, with `credit` and `creditUrl`).
 
-## Blueprints and videos
+## How-to videos
 
-Both are optional, and both live in `public/recipes/<slug>/`.
+A how-to video is optional and lives in `public/recipes/<slug>/`. It is made in `video/` (see `video/README.md` and `docs/recipes-media-v4.md`). Running `pnpm render <slug>` inside `video/` writes `how-to.mp4` and `how-to-poster.jpg` into the recipe's public folder.
 
-- **Blueprint and video:** both are made in `video/` from the same drawings (see `video/README.md`). Running `pnpm render <slug>` inside `video/` writes `blueprint.png`, `how-to.mp4`, and `how-to-poster.jpg` into the recipe's public folder.
-
-Then add the `blueprint` and `video` fields to the recipe file. The build fails if a listed file is missing.
+Then add the `video` field to the recipe file, with a `credits` line for each kind of outside material the video uses (photos, models, music and sounds, voice). `video/CREDITS.md` has the full list. The build fails if a listed file is missing.
