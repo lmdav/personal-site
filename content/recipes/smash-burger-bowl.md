@@ -5,9 +5,9 @@ summary: "Crispy smashed potatoes, crusty smash patties, mushrooms and onions, s
 date: 2026-11-02
 servings: 1
 servingsNote: "Double everything for two."
-prepMinutes: 8
-cookMinutes: 17
-totalMinutes: 25
+prepMinutes: 10
+cookMinutes: 20
+totalMinutes: 30
 tags: [high-protein, beef, weeknight, comfort-food]
 image:
   src: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?auto=format&fit=crop&w=1600&q=80"
@@ -16,71 +16,99 @@ image:
   creditUrl: "https://unsplash.com/photos/double-patty-cheeseburger-jh5XyK4Rr3Y"
 
 ingredients:
-  - name: "Bowl"
+  - name: "Burger"
     items:
-      - "6 oz ground beef (90% lean or leaner)"
-      - "1 slice of cheese"
-      - "2 to 3 small potatoes"
-      - "1 cup sliced mushrooms"
-      - "1/2 onion: half of it sliced, half finely diced"
-      - "2 cups chopped lettuce"
-      - "Pickles"
-      - "2 tsp oil"
-      - "Salt, pepper, and garlic powder"
-  - name: "Smoky beans"
+      - "6 oz 90% lean ground beef, rolled into 2 loose balls and kept cold until cooking"
+      - "1 slice American cheese, cut in half"
+      - "1/2 tsp avocado or canola oil"
+      - "Salt and pepper"
+  - name: "Crispy potatoes"
     items:
-      - "1/2 cup black beans, rinsed"
-      - "1 tbsp ketchup"
-      - "1 tsp mustard"
-      - "Pinch of smoked paprika and garlic powder"
-      - "2 tbsp water"
+      - "8 oz baby or small Yukon Gold potatoes (about 3)"
+      - "1 tsp avocado or olive oil"
+      - "Pinch of salt and garlic powder"
+  - name: "Mushrooms and onions"
+    items:
+      - "1 cup sliced cremini mushrooms"
+      - "1/4 onion, sliced"
+      - "1/2 tsp oil"
+      - "1 tsp Worcestershire sauce or low-sodium soy sauce"
+  - name: "Fresh toppings"
+    items:
+      - "2 cups chopped romaine"
+      - "1 small tomato, diced"
+      - "1/4 onion, finely diced (set aside 1 tbsp for the beans)"
+      - "1/4 cup dill pickle chips"
   - name: "Special sauce"
     items:
-      - "3 tbsp plain Greek yogurt"
+      - "3 tbsp plain nonfat Greek yogurt"
       - "1 tsp mayo"
       - "1 tsp ketchup"
+      - "1 tsp yellow mustard"
+      - "1 tbsp finely chopped pickles, plus 1 tsp pickle juice"
+      - "Pinch each of garlic powder and smoked paprika"
+  - name: "Smoky beans, on the side"
+    items:
+      - "1/2 cup canned pinto beans, rinsed (black beans also work and add a little more fiber)"
+      - "1 tbsp ketchup"
       - "1 tsp mustard"
-      - "1 tbsp finely chopped pickles, plus a splash of pickle juice"
-      - "Pinch each of garlic powder and paprika"
+      - "1 tbsp of the diced onion"
+      - "1/4 tsp smoked paprika and a pinch of garlic powder"
+      - "1/2 tsp maple syrup (optional, for a classic baked-bean taste)"
+      - "2 tbsp water"
 
 steps:
   - title: "Start the potatoes"
     minutes: 6
-    text: "Poke the potatoes with a fork and microwave them for 5 to 6 minutes, until a fork slides in easily. Set them aside to cool a little."
+    text: "Poke the potatoes with a fork and microwave them on high for 5 to 6 minutes, until a fork slides in easily. Let them cool on a cutting board for 5 minutes so the outsides dry. If you are using an air fryer, preheat it to 400°F now."
   - title: "Make the sauce"
     minutes: 2
-    text: "Mix all the special sauce ingredients in a small cup and put it in the fridge."
-  - title: "Make the smoky beans"
-    minutes: 5
-    text: "In a small pot, warm the beans with the ketchup, mustard, spices, and water. Simmer on low, stirring now and then, until thick."
+    text: "Mix all the special sauce ingredients in a small cup and put it in the fridge for at least 10 minutes so the flavors blend."
+  - title: "Simmer the beans"
+    minutes: 6
+    text: "In a small pot over medium-low heat, combine all the smoky bean ingredients. Simmer, stirring now and then, until the beans are glossy and thick, then turn the heat to low to keep them warm."
+  - title: "Crisp the potatoes"
+    minutes: 15
+    text: "Press each potato to about 1/2 inch thick with the bottom of a cup. Brush them with the oil and sprinkle with salt and garlic powder. Air-fry at 400°F for 12 to 15 minutes, or roast on a sheet pan at 425°F for 18 to 20 minutes, flipping once halfway, until they are deep golden with crisp edges."
   - title: "Cook the mushrooms and onions"
     minutes: 6
-    text: "Heat 1 tsp of oil in a large pan over medium-high heat. Add the mushrooms and sliced onion, and leave them alone for 2 minutes so they brown, then stir and cook 3 to 4 minutes more. Salt them at the end and move them to a plate."
-  - title: "Crisp the potatoes"
-    minutes: 6
-    text: "Pat the potatoes dry and press each one flat with the bottom of a cup. Add 1 tsp of oil to the same pan and cook them about 3 minutes per side, until golden and crispy. Season with salt and garlic powder."
-  - title: "Smash the burger"
+    text: "Heat a large skillet, preferably cast iron, over medium-high heat. Add the mushrooms and sliced onion to the dry pan in a single layer and leave them alone for 2 minutes. Add the 1/2 tsp oil and stir for 3 to 4 minutes more, until browned. Add the Worcestershire for the last 30 seconds, then move them to a plate."
+  - title: "Set up the cold side"
+    minutes: 2
+    text: "In a wide bowl, put the romaine, tomato, the rest of the diced onion, and the pickles on one half."
+  - title: "Smash the burgers"
     minutes: 3
-    text: "Roll the beef into 2 loose balls. Wipe the pan, turn the heat to high, and let it get very hot, until it just starts to smoke. Press each ball flat right away with a sturdy spatula, as thin as you can, and season with salt and pepper. Do not touch them for 2 minutes, so a dark crust forms. Flip, add the cheese, and cook 1 minute more."
+    text: "Wipe the skillet, turn the heat to high, and let it heat for 3 minutes, until it just starts to smoke. Add the 1/2 tsp oil, then put the beef balls in the pan. Cover each ball with a square of parchment and, within 10 seconds, press it as flat as you can with a sturdy spatula. Peel off the parchment and season with a small pinch of salt and pepper. Do not touch them for 2 minutes, so a dark crust forms. Scrape under the crust with the edge of the spatula, flip, and put a half slice of cheese on each patty. Add 1 tsp of water to the pan away from the meat and cover for 20 to 30 seconds to melt the cheese."
   - title: "Build the bowl"
-    text: "Lettuce first, then the potatoes, the patties, the mushrooms and onions, the diced raw onion, and the pickles. Spoon on the sauce. Serve the beans on the side."
+    minutes: 1
+    text: "Put the potatoes, patties, and mushrooms and onions on the empty half of the bowl. Drizzle the sauce over everything and serve the beans on the side."
 
 tips:
-  - title: "Grease"
-    text: "With 80/20 beef, pour off the grease after cooking the burgers."
-  - title: "Smoke"
-    text: "A little smoke while smashing is normal, so turn on the fan."
-  - title: "Timing"
-    text: "Everything except the burger can be made 10 minutes ahead. The burger is always cooked last."
+  - title: "Pan"
+    text: "Use cast iron or heavy stainless steel for the burgers. High heat damages nonstick pans."
+  - title: "Salt"
+    text: "The pickles, cheese, ketchup, and beans are already salty, so season everything lightly."
+  - title: "Richer version"
+    text: "85% lean beef gives a better crust, for about 70 more calories and 8 g more fat. Pour off the fat after cooking."
+  - title: "Lighter version"
+    text: "Use 5 oz of 93% lean beef, skip the mayo, and use reduced-fat cheese for about 760 kcal, 53 g protein, and 23 g fat. Use 1 tsp of oil for the patties."
+  - title: "Spicy version"
+    text: "Add pickled jalapeños, or a pinch of cayenne in the sauce."
+  - title: "Make ahead"
+    text: "The sauce and beans keep for 3 days in the fridge."
 
 nutrition:
-  calories: 675
-  protein: 50
-  carbs: 80
-  fat: 24
-  fiber: 13
+  calories: 900
+  protein: 57
+  carbs: 86
+  fat: 36
+  fiber: 15
   estimate: true
-  note: "About 650 to 700 kcal and 22 to 25 g fat, with 90% lean beef."
+  note: "Estimated from standard USDA values for the ingredients as listed. Sodium is about 1,900 mg, so salt lightly."
 ---
 
-The beans are a side rather than a topping, because warmed with ketchup, mustard, and smoked paprika they taste like classic burger-night beans. Crisp lettuce is the base instead of spinach, because a hot patty turns raw spinach slimy. Mushrooms and onions add vegetables in a way that tastes like a burger topping. The chopped pickles in the sauce give it the tang of a real burger sauce.
+The bowl is built in two halves on purpose. The hot potatoes, patties, and mushrooms go on one side and the cold romaine, tomato, onion, and pickles go on the other, so the lettuce stays crisp and every bite has the hot and cold contrast that makes a burger satisfying.
+
+Lean beef needs help to smash well, so the pan gets very hot, a little oil goes in first, and parchment keeps the meat from sticking to the spatula. The dark crust that forms in the first two untouched minutes is where most of the flavor comes from.
+
+The smoky beans are a side rather than a topping. Pinto beans with ketchup, mustard, and smoked paprika taste like classic burger-night beans, and they carry most of the fiber. The yogurt special sauce brings the tang, and its acid cuts the richness of the beef and cheese.
