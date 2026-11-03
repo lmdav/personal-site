@@ -23,7 +23,7 @@ Only publish a recipe after it has been cooked and tested.
 | `servingsNote` | No | A short note under the servings, such as "Double everything for two." |
 | `prepMinutes`, `cookMinutes`, `totalMinutes` | Yes | Whole numbers of minutes. |
 | `tags` | Yes | A list, such as `[high-protein, meal-prep, beef]`. |
-| `image` | No | A photo with `src`, `alt`, and, for photos that are not yours, `credit` and `creditUrl`. `src` is a path under `public/` (starting with `/`) or an `images.unsplash.com` link. `alt` describes the photo for screen readers. |
+| `image` | No | A photo with `src` and `alt`. `src` is a path under `public/` (starting with `/`) or an `images.unsplash.com` link. `alt` describes the photo for screen readers. Add `credit` and `creditUrl` only for a photo whose license asks for credit. Unsplash photos do not, so recipe pages show no photo credits. |
 | `video` | No | A how-to video with `src` and `poster`, both paths under `public/`. It shows beside the title. See "How-to videos" below. |
 | `ingredients` | Yes | A list of groups. Each group has an optional `name` and a list of `items`. |
 | `steps` | Yes | A list. Each step has a `title`, optional `minutes`, and `text`. |
@@ -38,7 +38,7 @@ The text after the second `---` line is the chef's notes: plain paragraphs separ
 - Write full sentences, with no em dashes.
 - Spell measurements the same way every time: tbsp, tsp, cup, oz, lb, °F.
 - Nutrition numbers are estimates, and the page labels them that way.
-- Use only original text. Photos must be your own, or free to use and credited (such as Unsplash photos, with `credit` and `creditUrl`).
+- Use only original text. Photos must be your own or free to use, such as Unsplash photos, which need no credit.
 
 ## How-to videos
 

@@ -15,7 +15,8 @@ export type RecipeImage = {
   src: string;
   /** Describes the photo for screen readers. */
   alt: string;
-  /** Required for photos that are not your own, such as "Photo by Name on Unsplash". */
+  /** Only for a photo whose license asks for credit. Unsplash photos do not, and the
+   * recipe pages show no credit for them. */
   credit?: string;
   creditUrl?: string;
 };

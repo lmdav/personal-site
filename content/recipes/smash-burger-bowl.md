@@ -13,8 +13,6 @@ tags: [high-protein, beef, weeknight, comfort-food]
 image:
   src: "https://images.unsplash.com/photo-1572802419224-296b0aeee0d9?auto=format&fit=crop&w=1600&q=80"
   alt: "A double smash cheeseburger with melted cheese and caramelized onions"
-  credit: "Photo for illustration by amirali mirhashemian on Unsplash"
-  creditUrl: "https://unsplash.com/photos/double-patty-cheeseburger-jh5XyK4Rr3Y"
 video:
   src: "/recipes/smash-burger-bowl/how-to.mp4"
   poster: "/recipes/smash-burger-bowl/how-to-poster.jpg"
