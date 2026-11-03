@@ -20,6 +20,9 @@ importers:
       '@react-three/postprocessing':
         specifier: ^3.2.2
         version: 3.2.2(@react-three/fiber@9.8.2(@types/react@19.3.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(three@0.187.0))(@types/three@0.187.0)(postprocessing@6.39.6(three@0.187.0))(react@19.2.4)(three@0.187.0)
+      '@remotion/bundler':
+        specifier: 4.0.540
+        version: 4.0.540(postcss@8.5.32)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@remotion/cli':
         specifier: 4.0.540
         version: 4.0.540(postcss@8.5.32)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(typescript@5.9.3)
@@ -27,6 +30,9 @@ importers:
         specifier: 4.0.540
         version: 4.0.540(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@remotion/motion-blur':
+        specifier: 4.0.540
+        version: 4.0.540(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      '@remotion/renderer':
         specifier: 4.0.540
         version: 4.0.540(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
       '@remotion/three':

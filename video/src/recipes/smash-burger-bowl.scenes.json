@@ -1,0 +1,77 @@
+{
+  "title": "Smash Burger Bowl",
+  "facts": ["57 G PROTEIN · 900 CALORIES", "ONE SERVING · ABOUT 30 MIN"],
+  "endCard": "LMDAV.COM/RECIPES",
+  "scenes": [
+    { "id": "hero", "template": "hero", "fade": "in" },
+    { "id": "apart", "template": "pullApart", "fade": "out", "labels": ["b1", "b1+8", "b2", "b3", "b4", "b5"] },
+    {
+      "id": "potatoes",
+      "template": "prep",
+      "fade": "both",
+      "food": "potato",
+      "steps": { "poke": "b0", "microwave": "b1", "cool": "b2", "press": "b3", "crisp": "b4" },
+      "chips": [
+        { "text": "MICROWAVE ON HIGH · 5 TO 6 MIN", "show": ["microwave", "cool"], "timer": ["microwave+4", "cool-6"] },
+        { "text": "COOL · 5 MIN", "show": ["cool", "press"], "timer": ["cool", "press-6"] },
+        { "text": "AIR-FRY 400°F · 12 TO 15 MIN", "show": ["crisp", "end"], "timer": ["crisp+6", "crisp+86"] }
+      ],
+      "sounds": [{ "sound": "crackle", "at": "crisp+6", "until": "end", "volume": 2.2, "fade": 20 }]
+    },
+    {
+      "id": "sauce",
+      "template": "mix",
+      "fade": "both",
+      "color": "#EDB38A",
+      "steps": { "stir": "b5+4" },
+      "ingredients": [
+        { "amount": "3 TBSP", "name": "Greek yogurt", "lands": "b1+8", "as": "base", "plop": { "onset": 2.25, "volume": 0.25 } },
+        { "amount": "1 TSP", "name": "Mayo", "lands": "b2+20", "as": "dollop", "color": "#F2EAD0", "plop": { "onset": 1.01, "volume": 0.7 } },
+        { "amount": "1 TSP", "name": "Ketchup", "lands": "b2+40", "as": "dollop", "color": "#A3241A", "plop": { "onset": 3.54, "volume": 0.45 } },
+        { "amount": "1 TSP", "name": "Yellow mustard", "lands": "b2+62", "as": "dollop", "color": "#E3B22A", "plop": { "onset": 4.32, "volume": 0.5 } },
+        { "amount": "1 TBSP", "name": "Chopped pickles", "lands": "b3+12", "as": "pieces", "piece": "pickle", "plop": { "onset": 1.44, "volume": 0.5 } },
+        { "amount": "1 TSP", "name": "Pickle juice", "lands": "b3+50", "as": "pour", "color": "#C8C27A" },
+        { "amount": "PINCH", "name": "Garlic powder", "lands": "b4+16", "as": "specks", "color": "#E7D9B8" },
+        { "amount": "PINCH", "name": "Smoked paprika", "lands": "b4+44", "as": "specks", "color": "#B0341C" }
+      ],
+      "sounds": [{ "sound": "stir", "at": "stir-2", "frames": 72, "volume": 0.75, "fade": 10 }]
+    },
+    {
+      "id": "mushrooms",
+      "template": "skillet",
+      "cook": "saute",
+      "fade": "both",
+      "camera": [-0.1, 0.08],
+      "food": [
+        { "piece": "mushroom", "count": 11 },
+        { "piece": "onion", "count": 9 }
+      ],
+      "steps": { "add": 6, "stir": "b1" },
+      "chips": [
+        { "text": "HANDS OFF · 2 MIN", "show": ["b0+40", "stir"], "timer": ["b0+40", "stir"] },
+        { "text": "OIL, THEN STIR · 3 TO 4 MIN", "show": ["stir", "end"], "timer": ["stir", "end-6"] }
+      ],
+      "sounds": [{ "sound": "pan", "at": "add+2", "until": "end", "volume": 0.1, "fade": 15 }]
+    },
+    {
+      "id": "patties",
+      "template": "skillet",
+      "cook": "smash",
+      "fade": "both",
+      "camera": [0.12, -0.06],
+      "steps": { "heat": 6, "add": "b1", "rest": "b2", "flip": "b3" },
+      "chips": [
+        { "text": "HIGH HEAT · 3 MIN", "show": [8, "add"], "timer": [8, "add-6"] },
+        { "text": "HANDS OFF · 2 MIN", "show": ["rest", "flip"], "timer": ["rest", "flip-4"] },
+        { "text": "COVER · 20 TO 30 SEC", "show": ["flip+30", "end"], "timer": ["flip+40", "flip+90"] }
+      ],
+      "sounds": [
+        { "sound": "sizzle", "at": "lands", "until": "end", "volume": 0.13, "fade": 8 },
+        { "sound": "sizzle", "at": "smash+6", "frames": 90, "volume": 0.09, "offset": 5, "fade": 20 },
+        { "sound": "sizzle", "at": "turn+6", "frames": 60, "volume": 0.07, "offset": 9, "fade": 15 }
+      ]
+    },
+    { "id": "build", "template": "build", "fade": "in", "steps": { "cold": "b1-2", "hot": "b2-4" } },
+    { "id": "finish", "template": "finish", "fade": "out", "steps": { "drizzle": "b0+4", "card": "b1" }, "side": { "food": "beans", "at": "b0+46" } }
+  ]
+}

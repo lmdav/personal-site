@@ -76,6 +76,7 @@ Two compositions from the same scenes (`video/src/howto/`): `smash-burger-bowl` 
 
 How it is put together:
 
+- **Scene file:** `video/src/recipes/<slug>.scenes.json` names each scene's template and its timings, chips, list rows, and sounds (ADR 0004). The templates are in `video/src/howto/`, and `HowTo.tsx` plays the list. The Smash Burger Bowl was moved to its scene file on 2026-11-03; stills at 22 key moments, wide and vertical, came out identical to the hand-written scenes.
 - **Narration script:** `video/src/recipes/<slug>.narration.json`. Each scene is a list of beats, each with a line to speak and a caption. The recipe file is the source of truth for every amount, time, and temperature.
 - **Narration audio:** `narrate.py` speaks each scene's beats into one WAV and writes the scene lengths and the time each beat starts to `video/src/data/<slug>.narration.json`.
   - Each scene lasts as long as its narration plus a little air, and never less than its action needs.

@@ -4,7 +4,7 @@
  * everything, and exits non-zero if any gate failed. Usage: `pnpm verify`.
  */
 import { spawnSync } from "node:child_process";
-import { realpathSync } from "node:fs";
+import { existsSync, realpathSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 /** Local gates. A CI job must map to one of these names or to CI_EXCUSES. */
@@ -14,14 +14,17 @@ export const GATES = [
   { name: "test", cmd: ["pnpm", "test"] },
   // The build also validates every recipe file and fails on a bad one.
   { name: "build", cmd: ["pnpm", "build"] },
+  // The video package (its own pnpm project) typechecks its scenes and templates.
+  { name: "video-types", cmd: ["pnpm", "--dir", "video", "exec", "tsc", "--noEmit"], needs: "video/node_modules" },
 ];
 
 /** CI jobs with no local gate, each with the reason. Empty: the repo has no CI yet. */
 export const CI_EXCUSES = {};
 
 function run() {
-  const results = GATES.map(({ name, cmd }) => {
+  const results = GATES.map(({ name, cmd, needs }) => {
     console.log(`\n=== ${name}: ${cmd.join(" ")}`);
+    if (needs && !existsSync(needs)) return { name, result: `SKIPPED (no ${needs}; run pnpm install --ignore-workspace in video/)` };
     const { status, error } = spawnSync(cmd[0], cmd.slice(1), { stdio: "inherit" });
     if (error) return { name, result: `SKIPPED (${error.message})` };
     return { name, result: status === 0 ? "PASS" : `FAIL (exit ${status})` };

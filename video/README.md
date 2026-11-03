@@ -35,17 +35,18 @@ To preview while editing, run `pnpm export <slug>` and `.venv/bin/python narrate
 
 ## How it fits together
 
-- `src/parts.tsx`: every ingredient and tool as a 3D drawing with state props, such as a patty's `smash` and `crust`, the cheese's `melt`, and a potato's `flatten` and `crisp`. The video animates these props, and the sheet draws them at rest.
-- `src/Video.tsx`: the eight narrated scenes. Each scene animates the action its narration describes.
-- `src/Sheet.tsx`: the blueprint sheet.
+- `src/recipes/<slug>.scenes.json`: the recipe's video as data. Each scene names a template and gives it the recipe's steps, timer chips, list rows, and sounds. The format is in `docs/adr/0004-recipe-video-scene-files.md`.
+- `src/howto/scenes.ts`: checks a scene file, turns its times into frames, and lays out the video. The render command reads the same plan.
+- `src/howto/`: the templates. `bowlScenes.tsx` (hero, pull-apart, build, finish), `PrepScene.tsx` (poke, microwave, cool, press, crisp), `MixScene.tsx` (ingredients into a small bowl, then a stir), and `skilletScenes.tsx` (saute, or smash and flip). `HowTo.tsx` plays the scene list; `recipes.ts` finds every recipe's files.
+- `src/three/`: the studio, the bowl, the ingredient kit, cookware, and cooking effects.
 - `narrate.py`: the Kokoro narration.
 
 ## Add a recipe
 
-1. Write `src/recipes/<slug>.narration.json` with the same eight scenes. Each scene is a list of beats, and each beat has a line to speak and a caption.
-2. Add its parts and scene details. New ingredients become new parts in `src/parts.tsx`.
-3. Register a `<Composition>` with the slug as its id and a `<Still>` with id `<slug>-blueprint` in `src/Root.tsx`.
-4. Run `pnpm render <slug>`, then add the `blueprint` and `video` fields to the recipe file.
+1. Write `src/recipes/<slug>.narration.json`: each scene is a list of beats, and each beat has a line to speak and a caption.
+2. Write `src/recipes/<slug>.scenes.json` with the same scene ids, a template for each, and the times its steps land on, like `"crisp": "b4"` for the fifth beat. The Smash Burger Bowl's file is the worked example. A check lists every problem when the video bundles.
+3. A cooking method the templates do not cover, or a food the kit does not have, needs a new template or kit piece first. The bowl templates still draw the Smash Burger Bowl's bowl (playbook item C).
+4. Run `pnpm render <slug>`, then add the `video` field to the recipe file.
 
 ## License
 

@@ -1,9 +1,10 @@
-// Potatoes, from the start: three whole baby potatoes on a plate get poked with a fork,
-// then the plate turns under a warm glow like a microwave turntable. They hop over to the
-// cutting board to cool and steam, a cup presses each one flat, and they crisp from pale
-// to deep golden. A pressed potato is the same photo-traced piece the bowl uses
-// (src/three/relief.ts), shown raw until it crisps. In the vertical cut the whole set
-// turns a quarter turn, so the board runs up the frame.
+// The prep template (docs/adr/0004-recipe-video-scene-files.md), for smashed potatoes:
+// three whole potatoes on a plate get poked with a fork (step "poke"), then the plate
+// turns under a warm glow like a microwave turntable ("microwave"). They hop over to the
+// cutting board to cool and steam ("cool"), a cup presses each one flat ("press"), and
+// they crisp from pale to deep golden ("crisp"). A pressed potato is the same
+// photo-traced piece the bowl uses (src/three/relief.ts), shown raw until it crisps. In
+// the vertical cut the whole set turns a quarter turn, so the board runs up the frame.
 import type { ReactNode } from "react";
 import { useMemo } from "react";
 import { Easing, interpolate, useCurrentFrame } from "remotion";
@@ -12,9 +13,7 @@ import { cookable, Steam, useRawFood } from "../three/cooking";
 import { Cup, Fork, PLATE_TOP, Plate } from "../three/cookware";
 import { KitProvider, useKit } from "../three/ingredients";
 import { Prop, Studio } from "../three/Studio";
-import { Chip } from "./overlay";
-import type { Cue } from "./sound";
-import { Shot, Stage, aim, ramp, type SceneProps } from "./stage";
+import { Shot, Stage, aim, ramp, type SceneProps, type TemplateProps } from "./stage";
 
 type V3 = [number, number, number];
 const TOP = 0.0413; // the cutting board's surface
@@ -27,22 +26,18 @@ const PRESS = 20; // frames per press
 const HIGH = 0.16; // the cup's height between presses
 const POKE = 14; // frames per fork poke, two per potato
 
-// Beats: 0 poke, 1 microwave, 2 cool, 3 press and oil, 4 air-fry.
-const pressStart = (b: number[], k: number) => b[3] + 6 + k * PRESS;
-const hopStart = (b: number[], k: number) => b[2] + 4 + k * 7;
-const pokeStart = (b: number[]) => b[0] + 26;
-export const potatoMinFrames = (beats: number[]) => beats[4] + 96;
-/** A soft crackle while they crisp. */
-// The crackle is a quiet recording (-54 dB between pops), so it is raised, but not so far
-// that its pops reach the voice.
-export const potatoCues = (b: number[], len: number): Cue[] => [{ sound: "crackle", at: b[4] + 6, len: len - b[4] - 6, volume: 2.2, fade: 20 }];
+/** The scene's steps, in scene frames. */
+type Steps = Record<"poke" | "microwave" | "cool" | "press" | "crisp", number>;
+const pressStart = (b: Steps, k: number) => b.press + 6 + k * PRESS;
+const hopStart = (b: Steps, k: number) => b.cool + 4 + k * 7;
+const pokeStart = (b: Steps) => b.poke + 26;
 
 /** Turns a point a quarter turn around the middle of the board, the same turn the vertical
  * cut gives the whole set. */
 const turned = (p: V3, tall: boolean): V3 => (tall ? [p[2], p[1], -p[0]] : p);
 
 /** How far the plate has turned in the microwave. */
-const spinOf = (f: number, b: number[]) => ramp(f, b[1] + 4, b[2] - b[1] - 10, Easing.inOut(Easing.sin)) * Math.PI * 2.5;
+const spinOf = (f: number, b: Steps) => ramp(f, b.microwave + 4, b.cool - b.microwave - 10, Easing.inOut(Easing.sin)) * Math.PI * 2.5;
 
 /** Where potato k sits on the plate, as the plate turns. */
 function onPlate(k: number, spin: number): [number, number] {
@@ -51,7 +46,7 @@ function onPlate(k: number, spin: number): [number, number] {
 }
 
 /** The middle of whole potato k: on the plate, hopping to the board, or on the board. */
-function wholeAt(f: number, b: number[], k: number): V3 {
+function wholeAt(f: number, b: Steps, k: number): V3 {
   const [px, pz] = onPlate(k, spinOf(f, b));
   const t = ramp(f, hopStart(b, k), 22, Easing.inOut(Easing.cubic));
   const [bx, bz] = SPOTS[k];
@@ -60,11 +55,11 @@ function wholeAt(f: number, b: number[], k: number): V3 {
 }
 
 /** How far potato k is pressed (0 to 1) at frame f. */
-const pressed = (f: number, b: number[], k: number) => ramp(f, pressStart(b, k) + 7, 5, Easing.out(Easing.quad));
+const pressed = (f: number, b: Steps, k: number) => ramp(f, pressStart(b, k) + 7, 5, Easing.out(Easing.quad));
 
 /** Where the cup's base is: over each potato in turn, coming in from and leaving to the
  * upper right. */
-function cupAt(f: number, b: number[]): V3 | null {
+function cupAt(f: number, b: Steps): V3 | null {
   const first = pressStart(b, 0);
   const last = pressStart(b, SPOTS.length - 1) + PRESS;
   const away: V3 = [0.3, 0.26, 0.02];
@@ -92,7 +87,7 @@ function cupAt(f: number, b: number[]): V3 | null {
 
 /** Where the fork's tips are: two quick pokes into each potato on the plate, coming in
  * from and leaving to the upper right. */
-function forkAt(f: number, b: number[]): V3 | null {
+function forkAt(f: number, b: Steps): V3 | null {
   const first = pokeStart(b);
   const end = first + ON_PLATE.length * 2 * POKE;
   if (f < first - 10 || f > end + 10) return null;
@@ -118,16 +113,15 @@ function forkAt(f: number, b: number[]): V3 | null {
   return [mix(x, nx, go), mix(up, top - 0.006, depth), mix(z, nz, go)];
 }
 
-function Potatoes({ s }: { s: SceneProps }) {
+function Potatoes({ b }: { b: Steps }) {
   const f = useCurrentFrame();
-  const b = s.beats;
   const kit = useKit();
   const raw = useRawFood();
   const smashed = useMemo(() => kit.potato.map((p) => cookable(p.material, "#E6D3A0", 0.5)), [kit]);
-  const done = ramp(f, b[4] + 6, 80, Easing.inOut(Easing.sin));
-  const oiled = ramp(f, b[3] + 66, 16);
+  const done = ramp(f, b.crisp + 6, 80, Easing.inOut(Easing.sin));
+  const oiled = ramp(f, b.press + 66, 16);
   const spin = spinOf(f, b);
-  const glow = interpolate(f, [b[1], b[1] + 10, b[2] - 12, b[2]], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const glow = interpolate(f, [b.microwave, b.microwave + 10, b.cool - 12, b.cool], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const cup = cupAt(f, b);
   const fork = forkAt(f, b);
   const steamFrom = SPOTS.map((_, k): V3 => {
@@ -142,7 +136,7 @@ function Potatoes({ s }: { s: SceneProps }) {
       {SPOTS.map(([x, z], k) => {
         const p = pressed(f, b, k);
         // the same turn before and after the press, so the swap to the pressed piece lines up
-        const turn = k * 1.3 + (f < hopStart(b, k) ? spin : spinOf(b[2], b));
+        const turn = k * 1.3 + (f < hopStart(b, k) ? spin : spinOf(b.cool, b));
         if (p >= 1) {
           const m = smashed[k].done(done);
           m.roughness = mix(0.5, 0.3, oiled);
@@ -155,7 +149,7 @@ function Potatoes({ s }: { s: SceneProps }) {
       })}
       {fork && <Fork position={fork} rotation-z={0.3} />}
       {cup && <Cup position={cup} />}
-      <Steam from={steamFrom} frame={f} amount={ramp(f, b[1] + 30, 30) * (1 - ramp(f, b[3] - 20, 20))} />
+      <Steam from={steamFrom} frame={f} amount={ramp(f, b.microwave + 30, 30) * (1 - ramp(f, b.press - 20, 20))} />
     </>
   );
 }
@@ -164,14 +158,13 @@ function Turned({ tall, children }: { tall: boolean; children: ReactNode }) {
   return <group rotation-y={tall ? Math.PI / 2 : 0}>{children}</group>;
 }
 
-function Board({ s }: { s: SceneProps }) {
+function Board({ s, b }: { s: SceneProps; b: Steps }) {
   const f = useCurrentFrame();
-  const b = s.beats;
   const t = f / s.len;
   // From the plate over to the board, then down more steeply as the potatoes crisp, so
   // their tops fill the view.
-  const pan = ramp(f, b[2] - 6, 46);
-  const overhead = ramp(f, b[4] - 10, 40);
+  const pan = ramp(f, b.cool - 6, 46);
+  const overhead = ramp(f, b.crisp - 10, 40);
   const at = turned([mix(PLATE[0], 0, pan), mix(0.03, TOP + 0.008, pan), 0], s.tall);
   const { position, target } = aim(at, mix(-0.18, 0.04, t), mix(0.9, 1.22, overhead), mix(0.42, 0.41, t) + 0.05 * overhead + (s.tall ? 0.04 : 0));
   return (
@@ -180,23 +173,13 @@ function Board({ s }: { s: SceneProps }) {
       <Studio props={false} />
       <KitProvider>
         <Turned tall={s.tall}>
-          <Potatoes s={s} />
+          <Potatoes b={b} />
         </Turned>
       </KitProvider>
     </Stage>
   );
 }
 
-export function PotatoScene({ s }: { s: SceneProps }) {
-  const f = useCurrentFrame();
-  const b = s.beats;
-  const window = (from: number, to: number) => interpolate(f, [from, from + 8, to - 8, to], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-  return (
-    <>
-      <Board s={s} />
-      <Chip text="MICROWAVE ON HIGH · 5 TO 6 MIN" show={window(b[1], b[2])} progress={ramp(f, b[1] + 4, b[2] - b[1] - 10, Easing.linear)} />
-      <Chip text="COOL · 5 MIN" show={window(b[2], b[3])} progress={ramp(f, b[2], b[3] - b[2] - 6, Easing.linear)} />
-      <Chip text="AIR-FRY 400°F · 12 TO 15 MIN" show={window(b[4], s.len)} progress={ramp(f, b[4] + 6, 80, Easing.linear)} />
-    </>
-  );
+export function PrepScene({ s, p }: TemplateProps) {
+  return <Board s={s} b={p.at as Steps} />;
 }

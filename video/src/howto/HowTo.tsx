@@ -1,83 +1,72 @@
-// The narrated how-to video in the v4 product-shot style (docs/recipes-media-v4.md). Each
-// scene lasts as long as its narration (timed by narrate.py) plus a little air, and never
-// less than its action needs. Captions follow the narration beat by beat, and actions are
-// timed to the beat that names them.
+// The narrated how-to video in the v4 product-shot style (docs/recipes-media-v4.md), laid
+// out from the recipe's scene file (docs/adr/0004-recipe-video-scene-files.md). Each scene
+// lasts as long as its narration (timed by narrate.py) plus a little air, and never less
+// than its action needs. Captions follow the narration beat by beat, and actions are
+// timed to the beats and steps that name them.
 import type { ComponentType } from "react";
-import { AbsoluteFill, Audio, Sequence, staticFile } from "remotion";
-import narration from "../data/smash-burger-bowl.narration.json";
-import script from "../recipes/smash-burger-bowl.narration.json";
+import { AbsoluteFill, Audio, Easing, Sequence, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { BACKDROP } from "../three/Studio";
-import { ApartScene, BuildScene, FinishScene, HeroScene, buildMinFrames } from "./bowlScenes";
-import { Captions, Fade } from "./overlay";
-import { MushroomScene, PattyScene, mushroomCues, pattyCues, pattyMinFrames } from "./panScenes";
-import { PotatoScene, potatoCues, potatoMinFrames } from "./PotatoScene";
-import { SauceScene, sauceCues, sauceMinFrames } from "./SauceScene";
-import { Cues, MusicBed, type Cue } from "./sound";
-import type { SceneProps } from "./stage";
+import { BuildScene, FinishScene, HeroScene, PullApartScene } from "./bowlScenes";
+import { MixScene } from "./MixScene";
+import { Captions, Chip, Fade } from "./overlay";
+import { PrepScene } from "./PrepScene";
+import { recipeOf } from "./recipes";
+import { LEAD, type Planned, type Template } from "./scenes";
+import { SkilletScene } from "./skilletScenes";
+import { Cues, MusicBed } from "./sound";
+import { ramp, type TemplateProps } from "./stage";
 
-const SLUG = "smash-burger-bowl";
-const FPS = 30;
-const LEAD = 12; // frames before the narration starts
-const TAIL = 30; // frames after it ends, a hold to take each step in
-
-type SceneDef = {
-  id: keyof typeof script;
-  View: ComponentType<{ s: SceneProps }>;
-  /** The fewest frames the scene's action needs, given its beats. */
-  min?: (beats: number[]) => number;
-  /** Cooking sounds, in scene frames. */
-  cues?: (beats: number[], len: number) => Cue[];
-  fadeIn: boolean;
-  fadeOut: boolean;
+const VIEWS: Record<Template, ComponentType<TemplateProps>> = {
+  hero: HeroScene,
+  pullApart: PullApartScene,
+  prep: PrepScene,
+  mix: MixScene,
+  skillet: SkilletScene,
+  build: BuildScene,
+  finish: FinishScene,
 };
 
-const SCENES: SceneDef[] = [
-  { id: "hero", View: HeroScene, fadeIn: true, fadeOut: false },
-  { id: "apart", View: ApartScene, fadeIn: false, fadeOut: true },
-  { id: "potatoes", View: PotatoScene, min: potatoMinFrames, cues: potatoCues, fadeIn: true, fadeOut: true },
-  { id: "sauce", View: SauceScene, min: sauceMinFrames, cues: sauceCues, fadeIn: true, fadeOut: true },
-  { id: "mushrooms", View: MushroomScene, cues: mushroomCues, fadeIn: true, fadeOut: true },
-  { id: "patties", View: PattyScene, min: pattyMinFrames, cues: pattyCues, fadeIn: true, fadeOut: true },
-  { id: "build", View: BuildScene, min: buildMinFrames, fadeIn: true, fadeOut: false },
-  { id: "finish", View: FinishScene, fadeIn: false, fadeOut: true },
-];
+/** A scene's timer chips: each shows over its window, and its ring fills over its timer. */
+function Chips({ chips }: { chips: Planned["chips"] }) {
+  const f = useCurrentFrame();
+  return (
+    <>
+      {chips.map(({ text, show, timer }) => (
+        <Chip
+          key={text}
+          text={text}
+          show={interpolate(f, [show[0], show[0] + 8, show[1] - 8, show[1]], [0, 1, 1, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" })}
+          progress={timer && ramp(f, timer[0], timer[1] - timer[0], Easing.linear)}
+        />
+      ))}
+    </>
+  );
+}
 
-const durations = narration.durations as Record<string, number>;
-const starts = narration.beats as Record<string, number[]>;
-
-/** Where every scene sits in the video, in frames. */
-export const PLAN = (() => {
-  let at = 0;
-  return SCENES.map((scene) => {
-    const beats = starts[scene.id].map((t) => LEAD + Math.round(t * FPS));
-    const len = Math.max(LEAD + Math.round(durations[scene.id] * FPS) + TAIL, scene.min?.(beats) ?? 0);
-    const from = at;
-    at += len;
-    const voice: [number, number] = [from + LEAD, from + LEAD + Math.round(durations[scene.id] * FPS)];
-    return { ...scene, from, len, beats, voice, captions: script[scene.id].map((b) => b.caption) };
-  });
-})();
-
-export const HOWTO_FRAMES = PLAN.reduce((sum, s) => sum + s.len, 0);
-
-/** draft: half resolution and no lens effects, for quick previews. tall: the vertical
- * 9:16 cut, framed and laid out for a phone. sound: false leaves out the music and
- * cooking sounds (the narration stays). */
-export function HowTo({ draft = false, tall = false, sound = true }: { draft?: boolean; tall?: boolean; sound?: boolean }) {
+/** slug: the recipe. draft: half resolution and no lens effects, for quick previews.
+ * tall: the vertical 9:16 cut, framed and laid out for a phone. sound: false leaves out
+ * the music and cooking sounds (the narration stays). */
+export function HowTo({ slug, draft = false, tall = false, sound = true }: { slug: string; draft?: boolean; tall?: boolean; sound?: boolean }) {
+  const { file, plan, frames } = recipeOf(slug);
   return (
     <AbsoluteFill style={{ backgroundColor: BACKDROP }}>
-      {sound && <MusicBed total={HOWTO_FRAMES} voice={PLAN.map((s) => s.voice)} />}
-      {PLAN.map(({ id, View, from, len, beats, captions, fadeIn, fadeOut, cues }) => (
-        <Sequence key={id} from={from} durationInFrames={len} name={id}>
-          <View s={{ len, beats, draft, tall }} />
-          {sound && cues && <Cues cues={cues(beats, len)} />}
-          <Captions lines={captions} beats={beats} len={len} />
-          <Fade len={len} fadeIn={fadeIn} fadeOut={fadeOut} />
-          <Sequence from={LEAD}>
-            <Audio src={staticFile(`${SLUG}/narration/${id}.wav`)} />
+      {sound && <MusicBed total={frames} voice={plan.map((s) => s.voice)} />}
+      {plan.map((p) => {
+        const { id, template, fade } = p.scene;
+        const View = VIEWS[template];
+        return (
+          <Sequence key={id} from={p.from} durationInFrames={p.len} name={id}>
+            <View s={{ len: p.len, beats: p.beats, draft, tall }} p={p} file={file} />
+            <Chips chips={p.chips} />
+            {sound && <Cues cues={p.cues} />}
+            <Captions lines={p.captions} beats={p.beats} len={p.len} />
+            <Fade len={p.len} fadeIn={fade === "in" || fade === "both"} fadeOut={fade === "out" || fade === "both"} />
+            <Sequence from={LEAD}>
+              <Audio src={staticFile(`${slug}/narration/${id}.wav`)} />
+            </Sequence>
           </Sequence>
-        </Sequence>
-      ))}
+        );
+      })}
     </AbsoluteFill>
   );
 }

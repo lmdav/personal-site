@@ -1,20 +1,28 @@
+import { Fragment } from "react";
 import { Composition, Still } from "remotion";
 import { PartsSheet } from "./PartsSheet";
 import { BlueprintSheet } from "./Sheet";
 import { PROOF_FRAMES, ProductShot } from "./proof/ProductShot";
 import { BOWL3D_FRAMES, Bowl3D } from "./proof/Bowl3D";
 import { BOWL_REAL_FRAMES, BowlReal } from "./proof/BowlReal";
-import { HOWTO_FRAMES, HowTo } from "./howto/HowTo";
 import { PosterShot } from "./howto/bowlScenes";
+import { HowTo } from "./howto/HowTo";
+import { RECIPES } from "./howto/recipes";
+import { FPS } from "./howto/scenes";
 
-// The v4 how-to video (docs/recipes-media-v4.md): wide for the recipe page, with the
-// recipe's slug as its id, and vertical for phones.
+// The v4 how-to videos (docs/recipes-media-v4.md), one pair for every recipe with a scene
+// file and narration: wide for the recipe page, with the recipe's slug as its id, vertical
+// for phones, and the poster still (the finished bowl, no title or caption).
 export function RemotionRoot() {
   return (
     <>
-      <Composition id="smash-burger-bowl" component={HowTo} durationInFrames={HOWTO_FRAMES} fps={30} width={1920} height={1080} defaultProps={{ draft: false, tall: false }} />
-      <Composition id="smash-burger-bowl-vertical" component={HowTo} durationInFrames={HOWTO_FRAMES} fps={30} width={1080} height={1920} defaultProps={{ draft: false, tall: true }} />
-      <Still id="smash-burger-bowl-poster" component={PosterShot} width={1920} height={1080} />
+      {RECIPES.map(({ slug, frames }) => (
+        <Fragment key={slug}>
+          <Composition id={slug} component={HowTo} durationInFrames={frames} fps={FPS} width={1920} height={1080} defaultProps={{ slug, draft: false, tall: false }} />
+          <Composition id={`${slug}-vertical`} component={HowTo} durationInFrames={frames} fps={FPS} width={1080} height={1920} defaultProps={{ slug, draft: false, tall: true }} />
+          <Still id={`${slug}-poster`} component={PosterShot} width={1920} height={1080} />
+        </Fragment>
+      ))}
       <Still id="smash-burger-bowl-blueprint" component={BlueprintSheet} width={3200} height={2200} />
       <Composition id="proof-product-shot" component={ProductShot} durationInFrames={PROOF_FRAMES} fps={30} width={1920} height={1080} />
       <Composition id="proof-bowl-3d" component={Bowl3D} durationInFrames={BOWL3D_FRAMES} fps={30} width={1920} height={1080} />

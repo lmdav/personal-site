@@ -7,6 +7,7 @@ import { Easing, interpolate, useVideoConfig } from "remotion";
 import * as THREE from "three";
 import { CameraRig } from "../three/bowlShot";
 import { Lens, dprFor } from "../three/Studio";
+import type { Planned, SceneFile } from "./scenes";
 
 export type SceneProps = {
   /** Length of the scene in frames. */
@@ -18,6 +19,10 @@ export type SceneProps = {
   /** The vertical 9:16 cut, for phones. Scenes frame it on their own. */
   tall: boolean;
 };
+
+/** What every template gets: the scene's frame props, its plan (steps, times, chips,
+ * and sounds in scene frames), and the recipe's scene file. */
+export type TemplateProps = { s: SceneProps; p: Planned; file: SceneFile };
 
 /** The lens's vertical field of view: wider for the vertical cut, so the subject still
  * fits across the narrow frame. */
