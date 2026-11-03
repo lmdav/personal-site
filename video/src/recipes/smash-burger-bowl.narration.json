@@ -1,34 +1,134 @@
 {
-  "title": {
-    "speak": "Smash burger bowl. A burger and fries, rebuilt as a high-protein bowl. One serving, about thirty minutes.",
-    "caption": "A burger and fries, rebuilt as a high-protein bowl. One serving, about 30 minutes."
-  },
-  "kit": {
-    "speak": "Here is what you need. Lean beef and a slice of cheese for the patties. Small potatoes. Mushrooms and onion. Romaine, tomato, and pickles for the cold side. A quick yogurt sauce, and smoky pinto beans.",
-    "caption": "Lean beef and cheese, small potatoes, mushrooms and onion, romaine, tomato, pickles, a yogurt sauce, and smoky pinto beans."
-  },
-  "potatoes": {
-    "speak": "Start with the potatoes. Poke them, microwave for five to six minutes, and let them dry. Press each one flat with a cup, brush with oil, and air-fry at four hundred degrees until the edges are crisp.",
-    "caption": "Microwave 5 to 6 min and let them dry. Press flat with a cup, brush with oil, and air-fry at 400°F until the edges crisp."
-  },
-  "sauceBeans": {
-    "speak": "While they cook, stir the special sauce together and chill it. Then simmer the beans with ketchup, mustard, and smoked paprika until they are glossy.",
-    "caption": "While they cook, stir the sauce and chill it. Simmer the beans with ketchup, mustard, and smoked paprika until glossy."
-  },
-  "mushrooms": {
-    "speak": "Brown the mushrooms and onions in a dry pan first. Then add a little oil, and a splash of Worcestershire at the end.",
-    "caption": "Brown the mushrooms and onions in a dry pan, then a little oil and a splash of Worcestershire."
-  },
-  "smash": {
-    "speak": "Now the burgers. Get the pan smoking hot. Lay parchment on top and press the beef as flat as you can. Then leave it alone for two minutes while the crust forms. Flip, add the cheese, cover, and let it melt.",
-    "caption": "Smoking-hot pan. Parchment on top, press flat, then hands off for 2 min. Flip, add the cheese, cover, and melt."
-  },
-  "build": {
-    "speak": "Build the bowl in two halves. On the cold side, romaine, tomato, onion, and pickles. On the hot side, potatoes, patties, and mushrooms. Sauce over everything, and beans on the side.",
-    "caption": "Cold side: romaine, tomato, onion, pickles. Hot side: potatoes, patties, mushrooms. Sauce over everything, beans on the side."
-  },
-  "finish": {
-    "speak": "About nine hundred calories and fifty-seven grams of protein. The full recipe is at L M Dav dot com, slash recipes.",
-    "caption": "About 900 calories and 57 g of protein. Full recipe at lmdav.com/recipes."
-  }
+  "hero": [
+    {
+      "speak": "Smash burger bowl. A burger and fries, rebuilt as a high-protein bowl, in about thirty minutes.",
+      "caption": "A burger and fries, rebuilt as a high-protein bowl. One serving, about 30 minutes."
+    }
+  ],
+  "apart": [
+    {
+      "speak": "Here is what goes in it.",
+      "caption": "Here is what goes in it."
+    },
+    {
+      "speak": "Romaine, tomato, onion, and pickles.",
+      "caption": "Romaine, tomato, onion, and pickles."
+    },
+    {
+      "speak": "Two smash patties with cheese.",
+      "caption": "Two smash patties with cheese."
+    },
+    {
+      "speak": "Crispy potatoes.",
+      "caption": "Crispy potatoes."
+    },
+    {
+      "speak": "Mushrooms and onions.",
+      "caption": "Mushrooms and onions."
+    },
+    {
+      "speak": "And a tangy special sauce.",
+      "caption": "And a tangy special sauce."
+    }
+  ],
+  "potatoes": [
+    {
+      "speak": "Start with the potatoes. Poke each one a few times with a fork.",
+      "caption": "Poke 3 small potatoes (8 oz) a few times with a fork."
+    },
+    {
+      "speak": "Microwave them on high for five to six minutes, until a fork slides in.",
+      "caption": "Microwave on high for 5 to 6 min, until a fork slides in easily."
+    },
+    {
+      "speak": "Let them cool for five minutes, so the outsides dry.",
+      "caption": "Let them cool on a cutting board for 5 min so the outsides dry."
+    },
+    {
+      "speak": "Press each one flat with a cup, and brush with oil.",
+      "caption": "Press each one 1/2 inch thick with the bottom of a cup. Brush with oil."
+    },
+    {
+      "speak": "Air-fry at four hundred degrees for twelve to fifteen minutes, until deep golden.",
+      "caption": "Air-fry at 400°F for 12 to 15 min (or roast at 425°F for 18 to 20), flipping once."
+    }
+  ],
+  "sauce": [
+    {
+      "speak": "While they cook, make the sauce.",
+      "caption": "While they cook, make the special sauce."
+    },
+    {
+      "speak": "Three tablespoons of Greek yogurt.",
+      "caption": "3 tbsp plain nonfat Greek yogurt"
+    },
+    {
+      "speak": "A teaspoon each of mayo, ketchup, and mustard.",
+      "caption": "1 tsp each of mayo, ketchup, and yellow mustard"
+    },
+    {
+      "speak": "A tablespoon of chopped pickles, and a teaspoon of the juice.",
+      "caption": "1 tbsp finely chopped pickles, plus 1 tsp pickle juice"
+    },
+    {
+      "speak": "A pinch of garlic powder and smoked paprika.",
+      "caption": "A pinch each of garlic powder and smoked paprika"
+    },
+    {
+      "speak": "Stir until pink, and chill.",
+      "caption": "Stir until pink. Chill for at least 10 minutes."
+    }
+  ],
+  "mushrooms": [
+    {
+      "speak": "Put the mushrooms and onions in a hot, dry pan, and leave them for two minutes.",
+      "caption": "Mushrooms and sliced onion in a dry pan on medium-high. Hands off for 2 min."
+    },
+    {
+      "speak": "Then add a little oil, stir until browned, and finish with Worcestershire.",
+      "caption": "Add 1/2 tsp oil and stir 3 to 4 min until browned. Worcestershire for the last 30 seconds."
+    }
+  ],
+  "patties": [
+    {
+      "speak": "Now the patties. Get the pan smoking hot, and add a little oil.",
+      "caption": "Heat the pan on high for 3 min, until it just smokes. Add 1/2 tsp oil."
+    },
+    {
+      "speak": "Put in the beef, cover it with parchment, and press it flat.",
+      "caption": "Add the 2 beef balls. Parchment on top, and press flat within 10 seconds."
+    },
+    {
+      "speak": "Leave it alone for two minutes, so a crust forms.",
+      "caption": "Salt and pepper, then hands off for 2 min while a dark crust forms."
+    },
+    {
+      "speak": "Flip, add the cheese, and cover until it melts.",
+      "caption": "Flip, add half a slice of cheese to each, and cover for 20 to 30 seconds."
+    }
+  ],
+  "build": [
+    {
+      "speak": "Build the bowl in two halves.",
+      "caption": "Build the bowl in two halves."
+    },
+    {
+      "speak": "Romaine, tomato, onion, and pickles on one side.",
+      "caption": "The cold side: romaine, tomato, onion, and pickles."
+    },
+    {
+      "speak": "Potatoes, patties, and mushrooms on the other.",
+      "caption": "The hot side: potatoes, patties, and mushrooms."
+    }
+  ],
+  "finish": [
+    {
+      "speak": "Drizzle on the sauce, and serve the smoky beans on the side.",
+      "caption": "Drizzle on the sauce. Smoky pinto beans go on the side."
+    },
+    {
+      "speak": "About nine hundred calories and fifty-seven grams of protein. The full recipe is at L M Dav dot com.",
+      "caption": "About 900 calories and 57 g protein. The full recipe is at lmdav.com/recipes."
+    }
+  ]
 }
