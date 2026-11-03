@@ -12,8 +12,6 @@ import { rng } from "../geo";
 import { MONO, SERIF } from "../theme";
 import { Piece, pieceObject, useKit, type Kind } from "./ingredients";
 
-/** The recipe whose bowl this draws. The scene templates that show the bowl check it. */
-export const BOWL_SLUG = "smash-burger-bowl";
 export const build = spec;
 type Pose = number[]; // x, y, z, then rotation as a quaternion
 export const samples = drop.frames as Pose[][];

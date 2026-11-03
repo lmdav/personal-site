@@ -70,6 +70,9 @@ const STEPS: Partial<Record<Template, readonly string[]>> = {
   finish: ["drizzle", "card"],
 };
 const SKILLET_STEPS = { saute: ["add", "stir"], smash: ["heat", "add", "rest", "flip"] } as const;
+/** The recipe whose bowl src/three/bowlShot.tsx draws (it imports that recipe's build
+ * file and bake; a test keeps the two in step). Per-recipe bowls come with the kit. */
+export const BOWL_SLUG = "smash-burger-bowl";
 /** Templates that draw the finished bowl. They read the bowl's build file and bake. */
 export const BOWL_TEMPLATES: readonly Template[] = ["hero", "pullApart", "build", "finish"];
 const TEMPLATES: readonly Template[] = ["hero", "pullApart", "prep", "mix", "skillet", "build", "finish"];

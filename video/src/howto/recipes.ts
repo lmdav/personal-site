@@ -2,8 +2,8 @@
 // script in src/recipes, and the narration timings narrate.py writes to src/data. A recipe
 // without timings yet is left out until it is narrated. A scene file with problems stops
 // the bundle with all of them listed.
-import { BOWL_SLUG, LAYERS, items, samples } from "../three/bowlShot";
-import { bakeOf, checkPlan, checkSceneFile, planVideo, totalFrames, type Planned, type SceneFile, type Script, type Timings } from "./scenes";
+import { LAYERS, items, samples } from "../three/bowlShot";
+import { BOWL_SLUG, bakeOf, checkPlan, checkSceneFile, planVideo, totalFrames, type Planned, type SceneFile, type Script, type Timings } from "./scenes";
 
 // webpack's require.context, which Remotion's bundler provides.
 type Context = { keys(): string[]; (key: string): unknown };
