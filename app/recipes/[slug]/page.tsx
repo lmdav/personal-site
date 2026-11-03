@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Arrow } from "@/components/arrow-icon";
+import { CheckRow, CookModeRoot, CookModeStatus, CookModeToggle } from "@/components/cook-mode";
+import { IngredientsSheet } from "@/components/ingredients-sheet";
 import { PrintButton } from "@/components/print-button";
 import { AnnouncementBar, SiteNav } from "@/components/site-chrome";
 import { recipeJsonLd, serializeJsonLd } from "@/lib/recipe-jsonld";
@@ -11,7 +13,6 @@ import {
   getRecipe,
   loadRecipes,
   type Recipe,
-  type RecipeDrawing,
   type RecipeImage,
   type RecipeVideo,
 } from "@/lib/recipes";
@@ -59,7 +60,7 @@ export default async function RecipePage({ params }: Props) {
   const jsonLd = recipeJsonLd(recipe, `${SITE_URL}/recipes/${recipe.slug}`);
 
   return (
-    <main className="recipe-page min-h-screen w-full overflow-x-clip bg-black text-white">
+    <CookModeRoot className="recipe-page min-h-screen w-full overflow-x-clip bg-black text-white">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
@@ -67,17 +68,17 @@ export default async function RecipePage({ params }: Props) {
       <AnnouncementBar />
       <SiteNav current="recipes" />
 
-      <article className="recipe-article mx-auto w-full max-w-[1800px] px-6 pb-24 pt-10 md:px-16 md:pb-32 md:pt-16">
+      <article className="recipe-article mx-auto w-full max-w-[1800px] px-6 pb-24 pt-6 md:px-16 md:pb-32 md:pt-10">
         <RecipeHeader recipe={recipe} />
-        {recipe.image && <RecipePhoto image={recipe.image} />}
-        {recipe.video && <HowToVideo video={recipe.video} title={recipe.title} />}
 
-        <div className="recipe-body mt-14 grid grid-cols-1 gap-14 border-t border-white/12 pt-14 md:grid-cols-12 md:gap-10">
+        <div className="recipe-body mt-8 grid grid-cols-1 gap-12 border-t border-white/12 pt-8 md:mt-10 md:grid-cols-12 md:gap-10 md:pt-10">
           <Ingredients recipe={recipe} />
           <Steps recipe={recipe} />
         </div>
 
-        {recipe.blueprint && <Blueprint drawing={recipe.blueprint} />}
+        {recipe.video && <HowToVideo video={recipe.video} title={recipe.title} />}
+        {recipe.image && <RecipePhoto image={recipe.image} />}
+        <Tags tags={recipe.tags} />
 
         <div className="recipe-extras mt-20 grid grid-cols-1 gap-14 border-t border-white/12 pt-14 md:grid-cols-12 md:gap-10">
           {recipe.tips.length > 0 && <Tips recipe={recipe} />}
@@ -87,7 +88,7 @@ export default async function RecipePage({ params }: Props) {
       </article>
 
       <RecipesFooter />
-    </main>
+    </CookModeRoot>
   );
 }
 
@@ -97,68 +98,65 @@ export default async function RecipePage({ params }: Props) {
 
 function RecipeHeader({ recipe }: { recipe: Recipe }) {
   const meta = [
-    { label: "SERVES", value: String(recipe.servings), note: recipe.servingsNote },
-    { label: "PREP", value: formatMinutes(recipe.prepMinutes) },
-    { label: "COOK", value: formatMinutes(recipe.cookMinutes) },
-    { label: "TOTAL", value: formatMinutes(recipe.totalMinutes) },
-    { label: "PROTEIN", value: `${recipe.nutrition.protein} g`, note: "Per serving" },
+    { label: "Serves", value: String(recipe.servings) },
+    { label: "Prep", value: formatMinutes(recipe.prepMinutes) },
+    { label: "Cook", value: formatMinutes(recipe.cookMinutes) },
+    { label: "Total", value: formatMinutes(recipe.totalMinutes) },
+    { label: "Protein", value: `${recipe.nutrition.protein} g per serving` },
   ];
 
   return (
     <header>
-      <div className="print-hidden flex flex-wrap items-center justify-between gap-4">
+      <div className="print-hidden flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
         <Link
           href="/recipes"
-          className="label inline-flex items-center gap-2 text-white/70 transition-colors hover:text-white"
+          className="label inline-flex min-h-11 items-center gap-2 text-white/70 transition-colors hover:text-white"
         >
           <Arrow className="h-3 w-3 rotate-180" />
           ALL RECIPES
         </Link>
-        <PrintButton />
+        <div className="flex gap-2">
+          <CookModeToggle />
+          <PrintButton />
+        </div>
       </div>
+      <CookModeStatus className="mt-3 text-[16px] text-white/80" />
 
-      <ul role="list" className="print-hidden mt-12 flex flex-wrap gap-2 md:mt-16" aria-label="Tags">
-        {recipe.tags.map((tag, i) => (
-          <li key={`${i}-${tag}`} className="label-sm border border-white/20 px-2 py-1.5 text-white/70">
-            {tag.replace(/-/g, " ")}
-          </li>
-        ))}
-      </ul>
-
-      <h1 className="recipe-title display-serif mt-6 text-[clamp(2.75rem,8vw,7rem)] leading-[1] text-white">
+      <h1 className="recipe-title display-serif mt-5 text-[clamp(2.5rem,6vw,5rem)] leading-[1] text-white">
         {recipe.title}
       </h1>
-      <p className="recipe-summary mt-6 max-w-[780px] font-serif text-[clamp(1.25rem,2vw,1.6rem)] leading-[1.3] text-white/75">
+      <p className="recipe-summary mt-4 max-w-[46rem] font-serif text-[clamp(1.125rem,1.6vw,1.375rem)] leading-[1.3] text-white/75">
         {recipe.summary}
       </p>
 
-      <dl className="recipe-meta mt-10 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 md:grid-cols-5">
+      <dl className="recipe-meta mt-6 flex flex-wrap gap-x-7 gap-y-2">
         {meta.map((m) => (
-          <div key={m.label}>
-            <dt className="label-sm text-white/60">{m.label}</dt>
-            <dd className="mt-3 font-serif text-[26px] leading-none text-white">{m.value}</dd>
-            {m.note && <dd className="mt-2 text-[14px] text-white/60">{m.note}</dd>}
+          <div key={m.label} className="flex items-baseline gap-2">
+            <dt className="text-[14px] uppercase tracking-[0.06em] text-white/60">{m.label}</dt>
+            <dd className="text-[17px] text-white">{m.value}</dd>
           </div>
         ))}
       </dl>
+      {recipe.servingsNote && (
+        <p className="recipe-serving-note mt-2 text-[15px] text-white/60">{recipe.servingsNote}</p>
+      )}
     </header>
   );
 }
 
 /* ------------------------------------------------------------------ */
-/* Photo - wide, with a credit line for photos that are not Liam's     */
+/* Photo and tags - after the steps, so the recipe comes first        */
 /* ------------------------------------------------------------------ */
 
 function RecipePhoto({ image }: { image: RecipeImage }) {
   return (
-    <figure className="recipe-photo mt-12 md:mt-16">
-      <div className="recipe-photo-frame relative aspect-[4/3] w-full overflow-hidden bg-white/5 sm:aspect-[16/9] lg:aspect-[21/9]">
+    <figure className="recipe-photo print-hidden mt-16 max-w-[56rem] border-t border-white/12 pt-10">
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-white/5 sm:aspect-[16/9]">
         <Image
           src={image.src}
           alt={image.alt}
           fill
-          priority
-          sizes="(min-width: 1800px) 1672px, 100vw"
+          sizes="(min-width: 960px) 896px, 100vw"
           className="object-cover"
         />
       </div>
@@ -182,8 +180,20 @@ function RecipePhoto({ image }: { image: RecipeImage }) {
   );
 }
 
+function Tags({ tags }: { tags: string[] }) {
+  return (
+    <ul role="list" className="print-hidden mt-8 flex flex-wrap gap-2" aria-label="Tags">
+      {tags.map((tag, i) => (
+        <li key={`${i}-${tag}`} className="border border-white/20 px-2 py-1.5 text-[13px] uppercase tracking-[0.06em] text-white/70">
+          {tag.replace(/-/g, " ")}
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 /* ------------------------------------------------------------------ */
-/* How-to video and blueprint drawing (screen only)                    */
+/* How-to video (screen only)                                          */
 /* ------------------------------------------------------------------ */
 
 function HowToVideo({ video, title }: { video: RecipeVideo; title: string }) {
@@ -197,42 +207,11 @@ function HowToVideo({ video, title }: { video: RecipeVideo; title: string }) {
         playsInline
         preload="none"
         poster={video.poster}
-        aria-label={`${title}: step-by-step how-to video, with no sound`}
+        aria-label={`${title}: narrated step-by-step how-to video, with captions`}
         className="mt-6 aspect-video w-full bg-white/5"
       >
         <source src={video.src} type="video/mp4" />
       </video>
-    </section>
-  );
-}
-
-function Blueprint({ drawing }: { drawing: RecipeDrawing }) {
-  return (
-    <section aria-labelledby="blueprint" className="print-hidden mt-20 border-t border-white/12 pt-14">
-      <div className="flex flex-wrap items-baseline justify-between gap-4">
-        <h2 id="blueprint" className="section-tag text-white/60">
-          THE BLUEPRINT
-        </h2>
-        <a
-          href={drawing.src}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="label inline-flex items-center gap-2 text-white/70 transition-colors hover:text-white"
-        >
-          OPEN FULL SIZE
-          <Arrow className="h-3 w-3" />
-        </a>
-      </div>
-      <a href={drawing.src} target="_blank" rel="noopener noreferrer" className="mt-6 block">
-        <Image
-          src={drawing.src}
-          alt={drawing.alt}
-          width={3200}
-          height={2200}
-          sizes="(min-width: 1800px) 1672px, 100vw"
-          className="h-auto w-full"
-        />
-      </a>
     </section>
   );
 }
@@ -242,59 +221,93 @@ function Blueprint({ drawing }: { drawing: RecipeDrawing }) {
 /* ------------------------------------------------------------------ */
 
 function Ingredients({ recipe }: { recipe: Recipe }) {
+  // On a computer the list stays in view while the steps scroll; it scrolls
+  // on its own when it is taller than the screen.
   return (
-    <section aria-labelledby="ingredients" className="recipe-ingredients md:col-span-4">
+    <section
+      aria-labelledby="ingredients"
+      data-lenis-prevent-wheel
+      className="recipe-ingredients md:sticky md:top-24 md:col-span-4 md:max-h-[calc(100dvh-7rem)] md:self-start md:overflow-y-auto md:pr-4"
+    >
       <h2 id="ingredients" className="section-tag text-white/60">
         INGREDIENTS
       </h2>
-      {recipe.ingredients.map((group, i) => (
-        <div key={i} className="recipe-group mt-8">
-          {group.name && (
-            <h3 className="label text-[var(--color-acid)]">{group.name}</h3>
-          )}
-          <ul role="list" className="mt-4 space-y-3">
-            {group.items.map((item, j) => (
-              <li key={`${j}-${item}`} className="flex gap-3 text-[17px] leading-[1.5] text-white/85">
-                <span aria-hidden className="mt-[0.75em] h-px w-3 shrink-0 bg-white/40" />
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+      <IngredientGroups recipe={recipe} />
     </section>
   );
 }
 
+function IngredientGroups({ recipe }: { recipe: Recipe }) {
+  return recipe.ingredients.map((group, i) => (
+    <div key={i} className="recipe-group mt-6">
+      {group.name && (
+        <h3 className="text-[14px] uppercase tracking-[0.08em] text-[var(--color-acid)]">
+          {group.name}
+        </h3>
+      )}
+      <ul role="list" className="mt-2">
+        {group.items.map((item, j) => (
+          <CheckRow
+            key={`${j}-${item}`}
+            id={`ingredient-${i}-${j}`}
+            label={item}
+            className="recipe-ingredient flex gap-3 py-1 text-[17px] leading-[1.45] text-white/85"
+            markerClassName="flex shrink-0 items-start"
+            marker={<span aria-hidden className="ingredient-dash cook-hide mt-[0.72em] h-px w-3 bg-white/40" />}
+          >
+            <span>{item}</span>
+          </CheckRow>
+        ))}
+      </ul>
+    </div>
+  ));
+}
+
 function Steps({ recipe }: { recipe: Recipe }) {
+  const stepMinutes = recipe.steps.reduce((sum, step) => sum + (step.minutes ?? 0), 0);
+
   return (
     <section aria-labelledby="steps" className="recipe-steps md:col-span-8">
       <h2 id="steps" className="section-tag text-white/60">
         STEPS
       </h2>
-      <ol role="list" className="mt-8">
+      {stepMinutes > recipe.totalMinutes && (
+        <p className="recipe-overlap mt-3 max-w-[38rem] text-[15px] leading-[1.5] text-white/60">
+          Some steps happen at the same time, so the step times add up to more than the{" "}
+          {formatMinutes(recipe.totalMinutes)} total.
+        </p>
+      )}
+      <ol role="list" className="mt-6">
         {recipe.steps.map((step, i) => (
-          <li
+          <CheckRow
             key={`${i}-${step.title}`}
-            className="recipe-step grid grid-cols-[2.75rem_1fr] gap-4 border-t border-white/12 py-7 first:border-t-0 first:pt-0 md:grid-cols-[4rem_1fr]"
+            id={`step-${i}`}
+            label={`Step ${i + 1}: ${step.title}`}
+            className="recipe-step grid grid-cols-[2.75rem_1fr] gap-4 border-t border-white/12 py-6 first:border-t-0 first:pt-0 md:grid-cols-[4rem_1fr]"
+            markerClassName="flex flex-col items-start gap-2"
+            marker={
+              <span aria-hidden className="display-serif text-[30px] text-white/50">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+            }
           >
-            <span aria-hidden className="display-serif text-[32px] text-white/50">
-              {String(i + 1).padStart(2, "0")}
-            </span>
             <div>
               <h3 className="flex flex-wrap items-baseline gap-x-3 gap-y-1 text-[19px] font-medium text-white">
                 {step.title}
                 {step.minutes !== undefined && (
-                  <span className="label-sm text-white/60">{formatMinutes(step.minutes)}</span>
+                  <span className="text-[14px] font-normal text-white/60">{formatMinutes(step.minutes)}</span>
                 )}
               </h3>
-              <p className="mt-3 max-w-[68ch] text-[17px] leading-[1.6] text-white/80">
+              <p className="recipe-step-text mt-2 max-w-[34rem] text-[18px] leading-[1.55] text-white/85">
                 {step.text}
               </p>
             </div>
-          </li>
+          </CheckRow>
         ))}
       </ol>
+      <IngredientsSheet>
+        <IngredientGroups recipe={recipe} />
+      </IngredientsSheet>
     </section>
   );
 }
@@ -336,7 +349,7 @@ function NutritionFacts({ recipe }: { recipe: Recipe }) {
       <h2 id="nutrition" className="section-tag text-white/60">
         NUTRITION
       </h2>
-      <p className="mt-8 label-sm text-white/60">PER SERVING, ESTIMATED</p>
+      <p className="mt-8 text-[14px] uppercase tracking-[0.06em] text-white/60">Per serving, estimated</p>
       <dl className="mt-4">
         {rows.map((row) => (
           <div
