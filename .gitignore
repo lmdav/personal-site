@@ -48,3 +48,7 @@ next-env.d.ts
 /video/public
 /video/src/data
 /video/out
+
+# local narration voice (Kokoro): environment, model files, generated audio
+/video/.venv
+/video/models
