@@ -48,7 +48,7 @@ The recipe itself was drafted before this run, in a claude.ai chat, and handed o
 
 ## The next recipe, step by step
 
-This is the target pipeline. Stages 2 and 3 depend on items B, D, and E in the proposal below. Until those land, follow "Commands that work today".
+This is the target pipeline. The `/recipe` skill (`~/.claude/skills/recipe/SKILL.md`, item A) runs it, and items B, D, and E, which stages 2 and 3 depend on, were built on 2026-11-03 (see Status). They take effect once their PRs merge.
 
 | Stage | What happens | Liam's time | Clock |
 | --- | --- | --- | --- |
@@ -92,17 +92,20 @@ Liam's list, from 2026-11-02: flavor, how the ingredients mix and play together,
 
 ### Commands that work today
 
-All video commands run inside `video/`. The video session is turning the render into one command; until that lands, the bundle and render commands are in `docs/recipes-media-v4.md` under "How to render".
+All video commands run inside `video/`, once the PRs for items B, D, and E (#13 to #15) merge. Until then they are on the branch `feat/recipe-narration-check`.
 
 1. `node tools/fetch-assets.mjs` downloads the CC0 models, textures, lighting, and sounds listed in `assets.json`.
 2. `.venv/bin/python tools/prepare_textures.py` cuts the photo textures. The source photos live outside the repo; `video/CREDITS.md` lists where each came from.
 3. `node tools/bake-drop.mjs <slug>` bakes the physics from `src/recipes/<slug>.build.json`.
-4. `.venv/bin/python narrate.py <slug>` speaks `src/recipes/<slug>.narration.json` and records the timings.
-5. Bundle once, then render each cut with `--gl=angle --concurrency=5`. Leaving out `--gl=angle` stalls the render.
-6. `.venv/bin/python tools/check_frames.py <mp4> --fades <ranges>` flags blank and glitched frames.
-7. In the site root: `pnpm verify`, then a PR. After Liam's OK, merge, then deploy from `main` with `vercel deploy --prod --yes --scope liam87davis-5781s-projects`, until item F fixes deploy on merge.
+4. Write `src/recipes/<slug>.scenes.json` (format: `docs/adr/0004-recipe-video-scene-files.md`; the Smash Burger Bowl's is the worked example).
+5. `.venv/bin/python narrate.py <slug>`, then `node tools/check-narration.mjs <slug>`: whisper.cpp checks every spoken line against the script.
+6. `node tools/stills.mjs <bundle> <slug> <out-dir> <frame> ...` renders stills for the review pack, from a bundle made with `pnpm exec remotion bundle src/index.ts --out-dir <bundle>`.
+7. `pnpm render <slug>`, in the background: narration and its whisper check, the scene check, both cuts with ANGLE at concurrency 5, the frame and loudness checks, then the web copy and poster into the site. It stops on a stall and exits non-zero on any failed check.
+8. In the site root: `pnpm verify`, then a PR. After Liam's OK, merge, then deploy from `main` with `vercel deploy --prod --yes --scope liam87davis-5781s-projects`, until item F fixes deploy on merge.
 
-## What to build to get there (proposal, waiting for Liam's go)
+Keep the Mac on power for a render. On 2026-11-03 it hibernated at 1% battery 6 minutes into one; the render's browser crashed, and the stall check stopped it on wake.
+
+## What to build to get there (proposal; Liam's go for A, B, D, and E on 2026-11-02)
 
 Ranked by payoff for the effort.
 
@@ -118,11 +121,17 @@ Ranked by payoff for the effort.
 
 ## Status
 
-| Piece | Status (last checked 2026-11-02, 23:40) |
+| Piece | Status (last checked 2026-11-03, 09:20) |
 | --- | --- |
 | Recipe format, validator, verify gate, pages, cook mode | Built and live |
-| The v4 video system and both cuts | Built (PR #5) |
-| The video on the recipe page | In progress in the video session |
-| The sweet potato version as a choice on one page | In progress in the video session |
-| This playbook | Written, not committed |
-| Items A to G | Planned, waiting for Liam's go |
+| The v4 video system and both cuts | Built and merged (PR #5) |
+| The video on the recipe page, and sweet potato as a choice on one page | Built and merged (PRs #5, #10, #11) |
+| This playbook | Committed in PR #12 |
+| A. `/recipe` skill | Built: `~/.claude/skills/recipe/SKILL.md`, outside the repo. Not yet run on a real recipe. |
+| B. Scene templates | Built (PR #13). The Smash Burger Bowl renders from `smash-burger-bowl.scenes.json`: 44 stills at 22 key moments, wide and vertical, are pixel-identical to the hand-written scenes, and the full wide cut is byte-identical to the one Liam approved. The bowl templates still draw only the Smash Burger Bowl (item C). |
+| D. One render command | Built (PR #14). `pnpm render smash-burger-bowl` passed in one run on 2026-11-03: exit 0 in 27.1 min (13.2 and 12.6 min per cut), no blank or glitched frames, the mix at -22.8 LUFS with a -3.5 dBFS peak and every scene within 0.1 LU of its narration. The stall stop fired correctly when the Mac hibernated mid-render; a planted loud bed fails the loudness check. |
+| E. Pronunciation check | Built (PR #15). All 29 narration lines match; a planted wrong line and the unfixed "romaine" both fail. |
+| C. Kit for the four tested recipes | Not started |
+| F. Deploy on merge | Not done; a setting in Liam's Vercel account |
+| G. Video hosting | Not started |
+| The 10 to 15 minute target | Untested until the next recipe runs through `/recipe` |
