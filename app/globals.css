@@ -257,3 +257,132 @@ details > summary::-webkit-details-marker {
     animation: none;
   }
 }
+
+/* ------------------------------------------------------------------ */
+/* Recipe printing - black on white, large type, steps kept whole      */
+/* ------------------------------------------------------------------ */
+
+@media print {
+  @page {
+    margin: 0.6in;
+  }
+  html,
+  body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .print-hidden {
+    display: none !important;
+  }
+  .recipe-page,
+  .recipe-page * {
+    color: #000000 !important;
+    background: transparent !important;
+    border-color: #bbbbbb !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  .recipe-page {
+    min-height: 0 !important;
+  }
+  .recipe-article {
+    max-width: none !important;
+    padding: 0 !important;
+  }
+  .recipe-title {
+    margin-top: 0 !important;
+    font-size: 30pt !important;
+  }
+  .recipe-summary {
+    margin-top: 8pt !important;
+    font-size: 14pt !important;
+  }
+  .recipe-meta {
+    margin-top: 14pt !important;
+    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+    gap: 8pt !important;
+  }
+  .recipe-meta dd {
+    margin-top: 4pt !important;
+    font-size: 14pt !important;
+  }
+  .recipe-meta dd + dd {
+    font-size: 10pt !important;
+  }
+  /* Side-by-side columns keep most recipes to one or two pages. */
+  .recipe-body,
+  .recipe-extras {
+    display: grid !important;
+    gap: 0.3in !important;
+    margin-top: 10pt !important;
+    padding-top: 10pt !important;
+  }
+  .recipe-body {
+    grid-template-columns: 1fr 2fr !important;
+  }
+  .recipe-extras {
+    grid-template-columns: 3fr 2fr !important;
+  }
+  .recipe-body > *,
+  .recipe-extras > * {
+    grid-column: auto !important;
+  }
+  .recipe-page h2 + * {
+    margin-top: 8pt !important;
+  }
+  .recipe-group {
+    margin-top: 10pt !important;
+  }
+  .recipe-ingredients li {
+    margin: 0 0 4pt !important;
+    font-size: 12pt !important;
+    line-height: 1.3 !important;
+  }
+  .recipe-ingredients li > span {
+    background: #000000 !important;
+  }
+  .recipe-step p,
+  .recipe-tips li {
+    font-size: 12.5pt !important;
+    line-height: 1.35 !important;
+  }
+  .recipe-tips li {
+    margin: 0 0 6pt !important;
+  }
+  .recipe-nutrition dl > div {
+    padding: 2pt 0 !important;
+    font-size: 11pt !important;
+  }
+  .recipe-step {
+    padding: 6pt 0 !important;
+  }
+  .recipe-step h3 {
+    font-size: 14pt !important;
+    font-weight: 600 !important;
+  }
+  .recipe-group,
+  .recipe-step,
+  .recipe-tips li,
+  .recipe-nutrition {
+    break-inside: avoid;
+  }
+  .recipe-page h2,
+  .recipe-page h3 {
+    break-after: avoid;
+  }
+}
+
+/* A recipe photo prints small so it does not crowd out the steps. */
+@media print {
+  .recipe-photo {
+    margin-top: 12pt !important;
+  }
+  .recipe-photo-frame {
+    aspect-ratio: auto !important;
+    height: 1.3in !important;
+  }
+  .recipe-photo figcaption {
+    margin-top: 3pt !important;
+    font-size: 8pt !important;
+  }
+}

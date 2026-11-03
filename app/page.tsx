@@ -205,6 +205,7 @@ function Footer() {
       projectLinks={[
         { label: "STAYZA", href: "https://trystayza.com" },
         { label: "ALL PROJECTS", href: "/projects" },
+        { label: "RECIPES", href: "/recipes" },
         { label: "WRITING (SOON)", href: "#" },
       ]}
     >
