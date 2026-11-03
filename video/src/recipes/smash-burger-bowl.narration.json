@@ -1,0 +1,34 @@
+{
+  "title": {
+    "speak": "Smash burger bowl. A burger and fries, rebuilt as a high-protein bowl. One serving, about thirty minutes.",
+    "caption": "A burger and fries, rebuilt as a high-protein bowl. One serving, about 30 minutes."
+  },
+  "kit": {
+    "speak": "Here is what you need. Lean beef and a slice of cheese for the patties. Small potatoes. Mushrooms and onion. Romaine, tomato, and pickles for the cold side. A quick yogurt sauce, and smoky pinto beans.",
+    "caption": "Lean beef and cheese, small potatoes, mushrooms and onion, romaine, tomato, pickles, a yogurt sauce, and smoky pinto beans."
+  },
+  "potatoes": {
+    "speak": "Start with the potatoes. Poke them, microwave for five to six minutes, and let them dry. Press each one flat with a cup, brush with oil, and air-fry at four hundred degrees until the edges are crisp.",
+    "caption": "Microwave 5 to 6 min and let them dry. Press flat with a cup, brush with oil, and air-fry at 400°F until the edges crisp."
+  },
+  "sauceBeans": {
+    "speak": "While they cook, stir the special sauce together and chill it. Then simmer the beans with ketchup, mustard, and smoked paprika until they are glossy.",
+    "caption": "While they cook, stir the sauce and chill it. Simmer the beans with ketchup, mustard, and smoked paprika until glossy."
+  },
+  "mushrooms": {
+    "speak": "Brown the mushrooms and onions in a dry pan first. Then add a little oil, and a splash of Worcestershire at the end.",
+    "caption": "Brown the mushrooms and onions in a dry pan, then a little oil and a splash of Worcestershire."
+  },
+  "smash": {
+    "speak": "Now the burgers. Get the pan smoking hot. Lay parchment on top and press the beef as flat as you can. Then leave it alone for two minutes while the crust forms. Flip, add the cheese, cover, and let it melt.",
+    "caption": "Smoking-hot pan. Parchment on top, press flat, then hands off for 2 min. Flip, add the cheese, cover, and melt."
+  },
+  "build": {
+    "speak": "Build the bowl in two halves. On the cold side, romaine, tomato, onion, and pickles. On the hot side, potatoes, patties, and mushrooms. Sauce over everything, and beans on the side.",
+    "caption": "Cold side: romaine, tomato, onion, pickles. Hot side: potatoes, patties, mushrooms. Sauce over everything, beans on the side."
+  },
+  "finish": {
+    "speak": "About nine hundred calories and fifty-seven grams of protein. The full recipe is at L M Dav dot com, slash recipes.",
+    "caption": "About 900 calories and 57 g of protein. Full recipe at lmdav.com/recipes."
+  }
+}

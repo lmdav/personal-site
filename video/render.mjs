@@ -1,8 +1,7 @@
-// Renders a recipe's how-to video and poster into the site's public folder.
-// Usage: pnpm render <slug>
-// Needs public/recipes/<slug>/blueprint.png and src/recipes/<slug>.ts first.
+// Renders a recipe's narrated how-to video, its poster, and its blueprint sheet
+// into the site's public folder. Usage: pnpm render <slug>
+// Needs the local Kokoro setup (see README.md) for the narration.
 import { spawnSync } from "node:child_process";
-import { copyFileSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -21,11 +20,9 @@ function run(cmd, args) {
 
 // 1. Recipe data straight from the site's loader.
 run("node", ["--disable-warning=MODULE_TYPELESS_PACKAGE_JSON", "export-recipe.mjs", slug]);
-
-// 2. The blueprint drawing, served to Remotion from video/public.
-mkdirSync(path.join(videoDir, "public", slug), { recursive: true });
-copyFileSync(path.join(siteDir, "blueprint.png"), path.join(videoDir, "public", slug, "blueprint.png"));
-
-// 3. The video (H.264, sized for the web) and a poster frame.
-run("pnpm", ["exec", "remotion", "render", "src/index.ts", slug, path.join(siteDir, "how-to.mp4"), "--codec=h264", "--crf=28"]);
-run("pnpm", ["exec", "remotion", "still", "src/index.ts", slug, path.join(siteDir, "how-to-poster.jpg"), "--frame=70", "--image-format=jpeg", "--jpeg-quality=85"]);
+// 2. Narration, one clip per scene, with durations the scenes are timed to.
+run(path.join(".venv", "bin", "python"), ["narrate.py", slug]);
+// 3. The video, a poster frame, and the blueprint sheet.
+run("pnpm", ["exec", "remotion", "render", "src/index.ts", slug, path.join(siteDir, "how-to.mp4"), "--codec=h264", "--crf=26"]);
+run("pnpm", ["exec", "remotion", "still", "src/index.ts", slug, path.join(siteDir, "how-to-poster.jpg"), "--frame=140", "--image-format=jpeg", "--jpeg-quality=88"]);
+run("pnpm", ["exec", "remotion", "still", "src/index.ts", `${slug}-blueprint`, path.join(siteDir, "blueprint.png")]);

@@ -1,6 +1,6 @@
 # Recipe media v3: spec
 
-Status: approved direction, not built yet. Last updated 2026-11-02.
+Status: built on branch `feat/recipe-blueprint-video`, awaiting review. Last updated 2026-11-02.
 
 This is the source of truth for the next version of the recipe blueprint drawings and how-to videos. It replaces the v2 work in PR #5 (`feat/recipe-blueprint-video`). The recipe format fields, the Remotion package in `video/`, the render pipeline, and ADR 0002 from v2 all stay. The drawings and the video scenes get rebuilt.
 
@@ -18,7 +18,8 @@ This is the source of truth for the next version of the recipe blueprint drawing
 | --- | --- |
 | Look | Cream drafting paper (`#F3ECDD`), navy ink (`#1D3557`), light blue shading for volume (`#DDE7F1` top faces, `#B7C8DC` sides), and coral (`#D4553A`) handwritten notes in Caveat. Type is IBM Plex Mono for labels and Instrument Serif for titles. |
 | Parts | Every ingredient is redrawn as a 3D isometric object in one consistent style, like the approved style test (`scripts/blueprints/style-test-parts.py`). Shapes are traced from free reference photos (Unsplash, which allows modification) so they are accurate. Do not mix in clip art from asset libraries, because the styles would clash. |
-| Voice | Kokoro-82M via `kokoro-onnx`, running locally, free (Apache 2.0). Liam approved the one-time download (about 115 MB from github.com/thewh1teagle/kokoro-onnx releases: the int8 model and `voices-v1.0.bin`). Make 2 to 3 voice samples for Liam to choose from before rendering the full video. |
+| Voice | Chosen: Kokoro `af_heart` (American, female), via `video/narrate.py`. Kokoro-82M via `kokoro-onnx`, running locally, free (Apache 2.0). Liam approved the one-time download (about 115 MB from github.com/thewh1teagle/kokoro-onnx releases: the int8 model and `voices-v1.0.bin`). Make 2 to 3 voice samples for Liam to choose from before rendering the full video. |
+| Architecture | The parts are React SVG components in `video/src/parts.tsx`, with state props (smash, melt, flatten, crisp) so they can animate. The video scenes and the blueprint sheet (a Remotion still) use the same parts. |
 | Video | Real animation, all vector so it stays crisp at 1080p. No zooming into raster images. Each scene shows the action it describes, narrated, with captions on screen. |
 
 ## Parts to redraw (Smash Burger Bowl)

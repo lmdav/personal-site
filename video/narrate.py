@@ -44,7 +44,8 @@ def main():
     voice = sys.argv[2] if len(sys.argv) > 2 else DEFAULT_VOICE
     lines = json.loads((HERE / "src" / "recipes" / f"{target}.narration.json").read_text())
     durations = {}
-    for scene, text in lines.items():
+    for scene, line in lines.items():
+        text = line["speak"] if isinstance(line, dict) else line
         durations[scene] = round(speak(kokoro, text, voice, HERE / "public" / target / "narration" / f"{scene}.wav"), 3)
         print(f"{scene}: {durations[scene]:.1f} s")
     out = HERE / "src" / "data" / f"{target}.narration.json"
