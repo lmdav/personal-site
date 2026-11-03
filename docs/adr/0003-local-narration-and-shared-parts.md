@@ -7,7 +7,7 @@ supersedes: []
 superseded_by: []
 amends: [0002]
 amended_by: []
-related: [0001]
+related: [0001, 0004]
 ---
 
 # 0003: Recipe videos are narrated locally with Kokoro and drawn from shared animated parts
