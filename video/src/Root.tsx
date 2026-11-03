@@ -4,6 +4,8 @@ import recipe from "./data/smash-burger-bowl.json";
 import lines from "./recipes/smash-burger-bowl.narration.json";
 import { PartsSheet } from "./PartsSheet";
 import { BlueprintSheet } from "./Sheet";
+import { PROOF_FRAMES, ProductShot } from "./proof/ProductShot";
+import { BOWL3D_FRAMES, Bowl3D } from "./proof/Bowl3D";
 import { HowToVideo, SCENES, totalFrames, type Scene, type VideoProps } from "./Video";
 
 // One composition per recipe; its id matches the recipe slug.
@@ -30,6 +32,8 @@ export function RemotionRoot() {
         defaultProps={smashBurgerBowl}
       />
       <Still id="smash-burger-bowl-blueprint" component={BlueprintSheet} width={3200} height={2200} />
+      <Composition id="proof-product-shot" component={ProductShot} durationInFrames={PROOF_FRAMES} fps={30} width={1920} height={1080} />
+      <Composition id="proof-bowl-3d" component={Bowl3D} durationInFrames={BOWL3D_FRAMES} fps={30} width={1920} height={1080} />
       <Still id="parts-sheet" component={PartsSheet} width={1920} height={1080} />
     </>
   );
