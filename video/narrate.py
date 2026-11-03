@@ -7,8 +7,9 @@ Usage:
 
 Scene lines come from src/recipes/<slug>.narration.json. A scene is a list of beats, each
 {"speak", "caption"}; the beats are spoken one after another into the scene's WAV. Durations
-and the time each beat starts are written to src/data/<slug>.narration.json, so the video
-can time each scene, caption, and action to its audio.
+and the times each beat starts and ends are written to src/data/<slug>.narration.json, so
+the video can time each scene, caption, and action to its audio, and
+tools/check-narration.mjs can check each spoken line against the script.
 """
 import json
 import re
@@ -94,11 +95,13 @@ def main():
     lines = json.loads((HERE / "src" / "recipes" / f"{target}.narration.json").read_text())
     durations = {}
     starts = {}
+    ends = {}
     clips = {}  # written only once every scene has been spoken, so a failure part way
     # through never leaves new audio next to old timings
     for scene, line in lines.items():
         parts = []
         starts[scene] = []
+        ends[scene] = []
         at = 0.0
         rate = 24000
         for i, beat in enumerate(beats_of(line)):
@@ -109,6 +112,7 @@ def main():
             starts[scene].append(round(at, 3))
             parts.append(audio)
             at += len(audio) / rate
+            ends[scene].append(round(at, 3))
         clips[scene] = (np.concatenate(parts), rate)
         durations[scene] = round(len(clips[scene][0]) / rate, 3)
         print(f"{scene}: {durations[scene]:.1f} s, beats at {starts[scene]}")
@@ -117,7 +121,7 @@ def main():
     print(f"Total narration: {sum(durations.values()):.1f} s")
     out = HERE / "src" / "data" / f"{target}.narration.json"
     out.parent.mkdir(parents=True, exist_ok=True)
-    out.write_text(json.dumps({"voice": voice, "durations": durations, "beats": starts}, indent=2))
+    out.write_text(json.dumps({"voice": voice, "durations": durations, "beats": starts, "ends": ends}, indent=2))
 
 
 if __name__ == "__main__":

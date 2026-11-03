@@ -14,6 +14,7 @@ import { fileURLToPath } from "node:url";
 import { bundle } from "@remotion/bundler";
 import { makeCancelSignal, openBrowser, renderMedia, renderStill, selectComposition } from "@remotion/renderer";
 import { BOWL_SLUG, bakeOf, checkPlan, checkSceneFile, fadeRanges, planVideo, totalFrames } from "./src/howto/scenes.ts";
+import { checkNarration } from "./tools/check-narration.mjs";
 import { checkLoudness } from "./tools/loudness.mjs";
 import { watchProgress } from "./tools/watchdog.mjs";
 
@@ -86,8 +87,20 @@ run("node", ["--disable-warning=MODULE_TYPELESS_PACKAGE_JSON", "export-recipe.mj
 // 2. Narration, one clip per scene, with the timings the scenes follow.
 log("Narrating");
 run(python, ["narrate.py", slug]);
+// 3. Every spoken line, transcribed by whisper.cpp, must match the script, so a word the
+// voice gets wrong stops the run before anything renders.
+log("Checking the narration with whisper");
+{
+  const heard = checkNarration({ slug, script: json(`src/recipes/${slug}.narration.json`), timings: json(`src/data/${slug}.narration.json`) });
+  if (heard.failures.length) {
+    console.error(`Stopped: ${heard.failures.length} narration line${heard.failures.length === 1 ? "" : "s"} did not match the script:\n- ${heard.failures.join("\n- ")}`);
+    console.error("Fix the word in narrate.py's PRONOUNCE dictionary (or the script), then run this again.");
+    process.exit(1);
+  }
+  log(`All ${heard.lines.length} lines match the script`);
+}
 
-// 3. The plan the video draws: checked before anything renders.
+// 4. The plan the video draws: checked before anything renders.
 const sceneFile = `src/recipes/${slug}.scenes.json`;
 if (!existsSync(path.join(videoDir, sceneFile))) {
   console.error(`Stopped: ${sceneFile} does not exist. See docs/adr/0004-recipe-video-scene-files.md.`);
@@ -107,7 +120,7 @@ stopOn(checkPlan(plan));
 const frames = totalFrames(plan);
 log(`${plan.length} scenes, ${frames} frames (${(frames / 30).toFixed(1)} s)`);
 
-// 4. Both cuts from one bundle. ANGLE is the GL backend that draws the 3D scenes; without
+// 5. Both cuts from one bundle. ANGLE is the GL backend that draws the 3D scenes; without
 // it the render stalls.
 mkdirSync(outDir, { recursive: true });
 // The bundle copies public/ (about 60 MB), so it goes in a scratch folder removed on exit.
@@ -151,7 +164,7 @@ try {
   await within(MINUTE, "Closing the browser", browser.close({ silent: true })).catch((e) => console.error(e.message));
 }
 
-// 5. Checks on both cuts: blank or glitched frames outside the fades, and the mix.
+// 6. Checks on both cuts: blank or glitched frames outside the fades, and the mix.
 const failures = [];
 const fades = fadeRanges(plan)
   .map(([a, b]) => `${a}-${b}`)
@@ -177,7 +190,7 @@ if (failures.length) {
   process.exit(1);
 }
 
-// 6. The web copy, smaller and starting to play before it has fully loaded, and the
+// 7. The web copy, smaller and starting to play before it has fully loaded, and the
 // poster: the finished bowl with no title or caption (the <slug>-poster still). Both are
 // made in out/ and copied to the site once made.
 const master = path.join(outDir, `${slug}.mp4`);
