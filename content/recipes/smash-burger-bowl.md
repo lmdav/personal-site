@@ -58,27 +58,48 @@ ingredients:
       - "2 tbsp water"
 
 steps:
-  - title: "Start the potatoes"
+  - title: "Microwave the potatoes"
     minutes: 6
-    text: "Poke the potatoes with a fork and microwave them on high for 5 to 6 minutes, until a fork slides in easily. Let them cool on a cutting board for 5 minutes so the outsides dry. If you are using an air fryer, preheat it to 400°F now."
+    text: "The potatoes take the longest, so start them first. Poke 8 oz baby or small Yukon Gold potatoes (about 3) with a fork and microwave them on high for 5 to 6 minutes, until a fork slides in easily. Preheat the air fryer to 400°F now, or the oven to 425°F if you are roasting."
   - title: "Make the sauce"
     minutes: 2
-    text: "Mix all the special sauce ingredients in a small cup and put it in the fridge for at least 10 minutes so the flavors blend."
+    text: "While the potatoes microwave, stir together 3 tbsp plain nonfat Greek yogurt, 1 tsp mayo, 1 tsp ketchup, 1 tsp yellow mustard, 1 tbsp finely chopped pickles, 1 tsp pickle juice, and a pinch each of garlic powder and smoked paprika in a small cup. Put it in the fridge for at least 10 minutes so the flavors blend."
+  - title: "Prep the vegetables"
+    minutes: 4
+    text: "Keep going while the potatoes microwave. Slice 1/4 onion for the mushrooms and finely dice another 1/4 onion for the toppings and beans. Chop 2 cups romaine, dice 1 small tomato, and slice the mushrooms if they are whole."
+  - title: "Get the burgers ready"
+    minutes: 2
+    text: "Roll 6 oz 90% lean ground beef into 2 loose balls and keep them in the fridge until cooking. Cut 1 slice American cheese in half, and cut 2 squares of parchment paper about 6 inches wide."
+  - title: "Let the potatoes cool"
+    minutes: 5
+    text: "Move the potatoes to a cutting board and let them cool for 5 minutes so the outsides dry."
   - title: "Simmer the beans"
     minutes: 6
-    text: "In a small pot over medium-low heat, combine all the smoky bean ingredients. Simmer, stirring now and then, until the beans are glossy and thick, then turn the heat to low to keep them warm."
+    text: "While the potatoes cool, put 1/2 cup rinsed pinto beans, 1 tbsp ketchup, 1 tsp mustard, 1 tbsp of the diced onion, 1/4 tsp smoked paprika, a pinch of garlic powder, 1/2 tsp maple syrup if you like, and 2 tbsp water in a small pot over medium-low heat. Simmer, stirring now and then, until glossy and thick, then turn the heat to low to keep them warm."
   - title: "Crisp the potatoes"
     minutes: 15
-    text: "Press each potato to about 1/2 inch thick with the bottom of a cup. Brush them with the oil and sprinkle with salt and garlic powder. Air-fry at 400°F for 12 to 15 minutes, or roast on a sheet pan at 425°F for 18 to 20 minutes, flipping once halfway, until they are deep golden with crisp edges."
-  - title: "Cook the mushrooms and onions"
-    minutes: 6
-    text: "Heat a large skillet, preferably cast iron, over medium-high heat. Add the mushrooms and sliced onion to the dry pan in a single layer and leave them alone for 2 minutes. Add the 1/2 tsp oil and stir for 3 to 4 minutes more, until browned. Add the Worcestershire for the last 30 seconds, then move them to a plate."
+    text: "Press each potato to about 1/2 inch thick with the bottom of a cup. Brush them with 1 tsp avocado or olive oil and sprinkle with a pinch of salt and garlic powder. Air-fry at 400°F for 12 to 15 minutes, or roast on a sheet pan at 425°F for 18 to 20 minutes, until deep golden with crisp edges. Set a timer and flip them once halfway through."
+  - title: "Start the mushrooms and onions"
+    minutes: 2
+    text: "While the potatoes crisp, heat a large skillet, preferably cast iron, over medium-high heat. Add 1 cup sliced cremini mushrooms and the sliced onion to the dry pan in a single layer, and leave them alone for 2 minutes."
+  - title: "Finish the mushrooms and onions"
+    minutes: 4
+    text: "Add 1/2 tsp oil and stir for 3 to 4 minutes, until browned. Stir in 1 tsp Worcestershire or low-sodium soy sauce for the last 30 seconds, then move them to a plate."
   - title: "Set up the cold side"
     minutes: 2
-    text: "In a wide bowl, put the romaine, tomato, the rest of the diced onion, and the pickles on one half."
-  - title: "Smash the burgers"
+    text: "In a wide bowl, put the romaine, the tomato, the rest of the diced onion, and 1/4 cup dill pickle chips on one half."
+  - title: "Heat the pan"
     minutes: 3
-    text: "Wipe the skillet, turn the heat to high, and let it heat for 3 minutes, until it just starts to smoke. Add the 1/2 tsp oil, then put the beef balls in the pan. Cover each ball with a square of parchment and, within 10 seconds, press it as flat as you can with a sturdy spatula. Peel off the parchment and season with a small pinch of salt and pepper. Do not touch them for 2 minutes, so a dark crust forms. Scrape under the crust with the edge of the spatula, flip, and put a half slice of cheese on each patty. Add 1 tsp of water to the pan away from the meat and cover for 20 to 30 seconds to melt the cheese."
+    text: "Wipe out the skillet, turn the heat to high, and let it heat for 3 minutes, until it just starts to smoke."
+  - title: "Smash the patties"
+    minutes: 1
+    text: "Add 1/2 tsp avocado or canola oil, then put the 2 beef balls in the pan. Cover each with a parchment square and, within 10 seconds, press it as flat as you can with a sturdy spatula."
+  - title: "Let the crust form"
+    minutes: 2
+    text: "Peel off the parchment and season with a small pinch of salt and pepper. Do not touch the patties for 2 minutes, so a dark crust forms."
+  - title: "Flip and melt the cheese"
+    minutes: 1
+    text: "Scrape under the crust with the edge of the spatula and flip. Put a cheese half on each patty, add 1 tsp of water to the pan away from the meat, and cover the pan for 20 to 30 seconds to melt the cheese."
   - title: "Build the bowl"
     minutes: 1
     text: "Put the potatoes, patties, and mushrooms and onions on the empty half of the bowl. Drizzle the sauce over everything and serve the beans on the side."
