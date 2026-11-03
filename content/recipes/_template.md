@@ -11,13 +11,12 @@ prepMinutes: 10
 cookMinutes: 20
 totalMinutes: 30
 tags: [high-protein, meal-prep]
-# Optional photo. Delete these five lines if there is none. Use your own photo in
+# Optional photo. Delete these three lines if there is none. Use your own photo in
 # public/recipes/ (src: "/recipes/turkey-chili.jpg") or an images.unsplash.com link.
+# Unsplash photos need no credit, so the page shows none.
 image:
   src: "/recipes/recipe-title.jpg"
   alt: "Describe what the photo shows, for screen readers."
-  credit: "Only for photos that are not yours, such as: Photo by Name on Unsplash"
-  creditUrl: "https://unsplash.com/photos/example"
 # Optional how-to video. See README.md, "How-to videos".
 # video:
 #   src: "/recipes/recipe-title/how-to.mp4"
