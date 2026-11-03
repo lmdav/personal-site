@@ -36,6 +36,12 @@ export type Nutrition = {
 export type Recipe = {
   slug: string;
   title: string;
+  /** A short name for this version when a recipe comes in more than one, like
+   * "Sweet potato". Shown on the choice buttons. */
+  variant?: string;
+  /** The slug of the main recipe this one is another version of. A version has no page
+   * or card of its own: it is a choice on the main recipe's page. */
+  variantOf?: string;
   summary: string;
   /** Publish date as YYYY-MM-DD. Sorts the index, newest first. */
   date: string;
@@ -93,6 +99,7 @@ export function loadRecipes(dir: string = RECIPES_DIR, publicDir: string = PUBLI
     }
     return recipe;
   });
+  checkVersions(recipes);
   return recipes.sort(
     (a, b) => b.date.localeCompare(a.date) || a.title.localeCompare(b.title),
   );
@@ -102,12 +109,60 @@ export function getRecipe(slug: string, dir?: string): Recipe | undefined {
   return loadRecipes(dir).find((r) => r.slug === slug);
 }
 
+/** Every version must point at a main recipe, and every recipe in a family needs its
+ * own version name, so the page can offer the choice. */
+function checkVersions(recipes: Recipe[]) {
+  const bySlug = new Map(recipes.map((r) => [r.slug, r]));
+  for (const r of recipes) {
+    if (!r.variantOf) continue;
+    const main = bySlug.get(r.variantOf);
+    if (!main) throw new RecipeError(`${r.slug}.md: variantOf "${r.variantOf}" is not a recipe`);
+    if (main.variantOf) {
+      throw new RecipeError(`${r.slug}.md: variantOf must name a main recipe, but "${main.slug}" is itself a version of "${main.variantOf}"`);
+    }
+    const family = versionsOf(main.slug, recipes);
+    for (const v of family) {
+      if (!v.variant) throw new RecipeError(`${v.slug}.md: variant is required, since this recipe comes in more than one version`);
+    }
+    const keys = family.map(versionKey);
+    if (new Set(keys).size !== keys.length) {
+      throw new RecipeError(`${main.slug}.md: its versions need different variant names (${family.map((v) => v.variant).join(", ")})`);
+    }
+  }
+}
+
+/** The recipes with their own page and card: every one that is not a version of another. */
+export function mainRecipes(recipes: Recipe[] = loadRecipes()): Recipe[] {
+  return recipes.filter((r) => !r.variantOf);
+}
+
+/** A main recipe and its other versions, the main one first. Empty if `slug` is not a
+ * main recipe. */
+export function versionsOf(slug: string, recipes: Recipe[] = loadRecipes()): Recipe[] {
+  const main = recipes.find((r) => r.slug === slug && !r.variantOf);
+  return main ? [main, ...recipes.filter((r) => r.variantOf === slug)] : [];
+}
+
+/** How a version is named in the page address, from its variant name: "Sweet potato"
+ * becomes ?version=sweet-potato. */
+export function versionKey(recipe: Recipe): string {
+  return (recipe.variant ?? recipe.slug).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+}
+
+/** Old addresses of versions that used to be separate recipes now open the main page
+ * with that version chosen. Used by next.config.ts. */
+export function versionRedirects(recipes: Recipe[] = loadRecipes()) {
+  return recipes
+    .filter((r) => r.variantOf)
+    .map((r) => ({ source: `/recipes/${r.slug}`, destination: `/recipes/${r.variantOf}?version=${versionKey(r)}`, permanent: true }));
+}
+
 /* ------------------------------------------------------------------ */
 /* Parsing and validation                                              */
 /* ------------------------------------------------------------------ */
 
 const TOP_FIELDS = [
-  "title", "slug", "summary", "date", "servings", "servingsNote", "prepMinutes",
+  "title", "slug", "variant", "variantOf", "summary", "date", "servings", "servingsNote", "prepMinutes",
   "cookMinutes", "totalMinutes", "tags", "image", "video", "ingredients", "steps", "tips",
   "nutrition",
 ] as const;
@@ -321,9 +376,16 @@ export function parseRecipe(source: string, fileName: string): Recipe {
   const body = match[2] ?? "";
   if (DASHES.test(body)) c.errors.push(`the chef's notes ${DASH_HINT}`);
 
+  const variantOf = c.text(top, "variantOf", "", true);
+  if (variantOf && !KEBAB.test(variantOf)) {
+    c.errors.push(`variantOf must be the slug of another recipe, like "smash-burger-bowl"`);
+  }
+
   const recipe: Recipe = {
     slug: slug ?? "",
     title: c.text(top, "title", "") ?? "",
+    variant: c.text(top, "variant", "", true),
+    variantOf,
     summary: c.text(top, "summary", "") ?? "",
     date: date ?? "",
     servings: c.count(top, "servings", "", { max: MAX_SERVINGS }) ?? 1,

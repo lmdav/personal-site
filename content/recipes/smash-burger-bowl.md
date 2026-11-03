@@ -1,6 +1,7 @@
 ---
 title: "Smash Burger Bowl"
 slug: smash-burger-bowl
+variant: "Small potatoes"
 summary: "Crispy smashed potatoes, crusty smash patties, mushrooms and onions, smoky beans, and a tangy pickle sauce, with the flavor of a burger and fries in a high-protein bowl."
 date: 2026-11-02
 servings: 1

@@ -6,12 +6,14 @@ import { Arrow } from "@/components/arrow-icon";
 import { CheckRow, CookModeRoot, CookModeStatus, CookModeToggle } from "@/components/cook-mode";
 import { IngredientsSheet } from "@/components/ingredients-sheet";
 import { PrintButton } from "@/components/print-button";
+import { RecipeVersions, VersionPicker } from "@/components/recipe-versions";
 import { AnnouncementBar, SiteNav } from "@/components/site-chrome";
 import { recipeJsonLd, serializeJsonLd } from "@/lib/recipe-jsonld";
 import {
   formatMinutes,
-  getRecipe,
-  loadRecipes,
+  mainRecipes,
+  versionKey,
+  versionsOf,
   type Recipe,
   type RecipeImage,
   type RecipeVideo,
@@ -21,15 +23,17 @@ import { RecipesFooter } from "../recipes-footer";
 
 type Props = { params: Promise<{ slug: string }> };
 
-// Only recipes that exist at build time get a page; anything else is a 404.
+// Only recipes that exist at build time get a page; anything else is a 404. A recipe
+// that is another one's version (variantOf) is a choice on that page instead, and its
+// old address redirects there (next.config.ts).
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return loadRecipes().map((r) => ({ slug: r.slug }));
+  return mainRecipes().map((r) => ({ slug: r.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const recipe = getRecipe((await params).slug);
+  const [recipe] = versionsOf((await params).slug);
   if (!recipe) return {};
   const url = `/recipes/${recipe.slug}`;
   const images = recipe.image ? [{ url: recipe.image.src, alt: recipe.image.alt }] : undefined;
@@ -55,7 +59,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function RecipePage({ params }: Props) {
-  const recipe = getRecipe((await params).slug);
+  const versions = versionsOf((await params).slug);
+  const recipe = versions[0];
   if (!recipe) notFound();
   const jsonLd = recipeJsonLd(recipe, `${SITE_URL}/recipes/${recipe.slug}`);
 
@@ -69,22 +74,15 @@ export default async function RecipePage({ params }: Props) {
       <SiteNav current="recipes" />
 
       <article className="recipe-article mx-auto w-full max-w-[1800px] px-6 pb-24 pt-6 md:px-16 md:pb-32 md:pt-10">
-        <RecipeHeader recipe={recipe} />
-
-        <div className="recipe-body mt-8 grid grid-cols-1 gap-12 border-t border-white/12 pt-8 md:mt-10 md:grid-cols-12 md:gap-10 md:pt-10">
-          <Ingredients recipe={recipe} />
-          <Steps recipe={recipe} />
-        </div>
-
-        {recipe.video && <HowToVideo video={recipe.video} title={recipe.title} />}
-        {recipe.image && <RecipePhoto image={recipe.image} />}
-        <Tags tags={recipe.tags} />
-
-        <div className="recipe-extras mt-20 grid grid-cols-1 gap-14 border-t border-white/12 pt-14 md:grid-cols-12 md:gap-10">
-          {recipe.tips.length > 0 && <Tips recipe={recipe} />}
-          <NutritionFacts recipe={recipe} />
-          {recipe.notes.length > 0 && <ChefNotes recipe={recipe} />}
-        </div>
+        {versions.length > 1 ? (
+          <RecipeVersions
+            keys={versions.map(versionKey)}
+            labels={versions.map((v) => v.variant ?? v.title)}
+            panels={versions.map((v) => <RecipeContent key={v.slug} recipe={v} />)}
+          />
+        ) : (
+          <RecipeContent recipe={recipe} />
+        )}
       </article>
 
       <RecipesFooter />
@@ -92,8 +90,32 @@ export default async function RecipePage({ params }: Props) {
   );
 }
 
+/** One version of the recipe, from the title to the chef's notes. */
+function RecipeContent({ recipe }: { recipe: Recipe }) {
+  return (
+    <>
+      <RecipeHeader recipe={recipe} />
+
+      <div className="recipe-body mt-8 grid grid-cols-1 gap-12 border-t border-white/12 pt-8 md:mt-10 md:grid-cols-12 md:gap-10 md:pt-10">
+        <Ingredients recipe={recipe} />
+        <Steps recipe={recipe} />
+      </div>
+
+      {recipe.video && <HowToVideo video={recipe.video} title={recipe.title} />}
+      {recipe.image && <RecipePhoto image={recipe.image} />}
+      <Tags tags={recipe.tags} />
+
+      <div className="recipe-extras mt-20 grid grid-cols-1 gap-14 border-t border-white/12 pt-14 md:grid-cols-12 md:gap-10">
+        {recipe.tips.length > 0 && <Tips recipe={recipe} />}
+        <NutritionFacts recipe={recipe} />
+        {recipe.notes.length > 0 && <ChefNotes recipe={recipe} />}
+      </div>
+    </>
+  );
+}
+
 /* ------------------------------------------------------------------ */
-/* Header - title, summary, meta row                                   */
+/* Header - title, summary, version choice, meta row                   */
 /* ------------------------------------------------------------------ */
 
 function RecipeHeader({ recipe }: { recipe: Recipe }) {
@@ -128,6 +150,7 @@ function RecipeHeader({ recipe }: { recipe: Recipe }) {
       <p className="recipe-summary mt-4 max-w-[46rem] font-serif text-[clamp(1.125rem,1.6vw,1.375rem)] leading-[1.3] text-white/75">
         {recipe.summary}
       </p>
+      <VersionPicker className="mt-6" />
 
       <dl className="recipe-meta mt-6 flex flex-wrap gap-x-7 gap-y-2">
         {meta.map((m) => (
@@ -256,7 +279,7 @@ function IngredientGroups({ recipe }: { recipe: Recipe }) {
         {group.items.map((item, j) => (
           <CheckRow
             key={`${j}-${item}`}
-            id={`ingredient-${i}-${j}`}
+            id={`${recipe.slug}:ingredient-${i}-${j}`}
             label={item}
             className="recipe-ingredient flex gap-3 py-1 text-[17px] leading-[1.45] text-white/85"
             markerClassName="flex shrink-0 items-start"
@@ -288,7 +311,7 @@ function Steps({ recipe }: { recipe: Recipe }) {
         {recipe.steps.map((step, i) => (
           <CheckRow
             key={`${i}-${step.title}`}
-            id={`step-${i}`}
+            id={`${recipe.slug}:step-${i}`}
             label={`Step ${i + 1}: ${step.title}`}
             className="recipe-step grid grid-cols-[2.75rem_1fr] gap-4 border-t border-white/12 py-6 first:border-t-0 first:pt-0 md:grid-cols-[4rem_1fr]"
             markerClassName="flex flex-col items-start gap-2"

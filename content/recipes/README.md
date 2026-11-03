@@ -15,6 +15,8 @@ Only publish a recipe after it has been cooked and tested.
 | --- | --- | --- |
 | `title` | Yes | The recipe name. |
 | `slug` | Yes | Must match the file name without `.md`. |
+| `variant` | For versions | A short name for this version, such as "Sweet potato". It is required on every recipe in a family with more than one version, and is shown on the "Make it with" buttons. |
+| `variantOf` | No | The slug of the main recipe this one is another version of. A version has no page or card of its own; it is a choice on the main recipe's page, and its old address redirects there. |
 | `summary` | Yes | One sentence, shown on the cards and in link previews. |
 | `date` | Yes | Publish date as YYYY-MM-DD. The index lists newest first. |
 | `servings` | Yes | A whole number. |
