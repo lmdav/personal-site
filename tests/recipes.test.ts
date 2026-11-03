@@ -7,9 +7,13 @@ import {
   formatDate,
   formatMinutes,
   loadRecipes,
+  mainRecipes,
   parseRecipe,
   RECIPES_DIR,
   RecipeError,
+  versionKey,
+  versionRedirects,
+  versionsOf,
 } from "../lib/recipes.ts";
 import { isoDuration, recipeJsonLd, serializeJsonLd } from "../lib/recipe-jsonld.ts";
 
@@ -188,12 +192,71 @@ test("skips hidden files and flags an upper-case extension instead of ignoring i
 
 test("requires a local image to exist in the public folder", () => {
   const dir = tempDir({ "test-bowl.md": withImage("/recipes/bowl.jpg") });
-  assert.throws(() => loadRecipes(dir, tempDir({})), /image "\/recipes\/bowl.jpg" is not in the public folder/);
+  assert.throws(() => loadRecipes(dir, tempDir({})), /"\/recipes\/bowl.jpg" is not in the public folder/);
 
   const publicDir = tempDir({});
   mkdirSync(path.join(publicDir, "recipes"));
   writeFileSync(path.join(publicDir, "recipes", "bowl.jpg"), "");
   assert.equal(loadRecipes(dir, publicDir)[0].image?.src, "/recipes/bowl.jpg");
+});
+
+const MEDIA = `video:
+  src: "/recipes/test-bowl/how-to.mp4"
+  poster: "/recipes/test-bowl/how-to-poster.jpg"
+  credits:
+    - "Music: a track by someone on Freesound (CC0)"
+`;
+
+test("accepts a video only when its files are in the public folder", () => {
+  const dir = tempDir({ "test-bowl.md": edit("tags: [quick]", `${MEDIA}tags: [quick]`) });
+  assert.throws(() => loadRecipes(dir, tempDir({})), /"\/recipes\/test-bowl\/how-to.mp4" is not in the public folder/);
+
+  const publicDir = tempDir({});
+  mkdirSync(path.join(publicDir, "recipes", "test-bowl"), { recursive: true });
+  for (const f of ["how-to.mp4", "how-to-poster.jpg"]) {
+    writeFileSync(path.join(publicDir, "recipes", "test-bowl", f), "");
+  }
+  const [r] = loadRecipes(dir, publicDir);
+  assert.equal(r.video?.poster, "/recipes/test-bowl/how-to-poster.jpg");
+  assert.deepEqual(r.video?.credits, ["Music: a track by someone on Freesound (CC0)"]);
+});
+
+test("rejects a video that is not a path in the public folder, or credits that are not text", () => {
+  const remote = MEDIA.replace('"/recipes/test-bowl/how-to.mp4"', '"https://example.com/a.mp4"');
+  assert.match(problems(edit("tags: [quick]", `${remote}tags: [quick]`)), /video\.src must be a path in the public folder/);
+  const badCredit = MEDIA.replace('    - "Music: a track by someone on Freesound (CC0)"', "    - { who: someone }");
+  assert.match(problems(edit("tags: [quick]", `${badCredit}tags: [quick]`)), /video\.credits\[0\]/);
+  const noCredits = MEDIA.replace('  credits:\n    - "Music: a track by someone on Freesound (CC0)"\n', "");
+  assert.deepEqual(parseRecipe(edit("tags: [quick]", `${noCredits}tags: [quick]`), "test-bowl.md").video?.credits, []);
+});
+
+// A second version of the test bowl, named and pointing at the main one.
+const version = (extra = 'variantOf: test-bowl\nvariant: "Sweet potato"') =>
+  edit("slug: test-bowl", `slug: test-bowl-sweet\n${extra}`).replace('title: "Test Bowl"', 'title: "Test Bowl, Sweet"');
+const named = edit("slug: test-bowl", 'slug: test-bowl\nvariant: "Small potatoes"');
+
+test("a recipe with another version has one page, one card, and a redirect from the old address", () => {
+  const all = loadRecipes(tempDir({ "test-bowl.md": named, "test-bowl-sweet.md": version() }));
+  assert.deepEqual(mainRecipes(all).map((r) => r.slug), ["test-bowl"]);
+  const versions = versionsOf("test-bowl", all);
+  assert.deepEqual(versions.map((r) => r.slug), ["test-bowl", "test-bowl-sweet"]);
+  assert.deepEqual(versions.map(versionKey), ["small-potatoes", "sweet-potato"]);
+  assert.deepEqual(versionsOf("test-bowl-sweet", all), []);
+  assert.deepEqual(versionRedirects(all), [
+    { source: "/recipes/test-bowl-sweet", destination: "/recipes/test-bowl?version=sweet-potato", permanent: true },
+  ]);
+});
+
+test("rejects versions that point nowhere, nest, or are not named apart", () => {
+  const load = (main: string, other: string) => () => loadRecipes(tempDir({ "test-bowl.md": main, "test-bowl-sweet.md": other }));
+  assert.throws(load(named, version('variantOf: no-such-bowl\nvariant: "Sweet potato"')), /variantOf "no-such-bowl" is not a recipe/);
+  assert.throws(load(VALID, version()), /test-bowl\.md: variant is required/);
+  assert.throws(load(named, version('variantOf: test-bowl\nvariant: "Small Potatoes!"')), /need different variant names/);
+  const nested = edit("slug: test-bowl", 'slug: test-bowl-third\nvariantOf: test-bowl-sweet\nvariant: "Third"');
+  assert.throws(
+    () => loadRecipes(tempDir({ "test-bowl.md": named, "test-bowl-sweet.md": version(), "test-bowl-third.md": nested })),
+    /is itself a version of "test-bowl"/,
+  );
 });
 
 test("every published recipe and the template are valid", () => {

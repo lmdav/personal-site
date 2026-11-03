@@ -2,6 +2,7 @@
 
 import {
   createContext,
+  Fragment,
   useCallback,
   useContext,
   useEffect,
@@ -173,9 +174,12 @@ export function CheckRow({
             aria-label={label}
           />
         )}
-        {marker}
+        {/* marker and children can come from a server component; keyed wrappers keep
+            React from asking for keys when the row first mounts on the client (as it
+            does when the recipe page switches versions). */}
+        <Fragment key="marker">{marker}</Fragment>
       </span>
-      {children}
+      <Fragment key="content">{children}</Fragment>
     </li>
   );
 }

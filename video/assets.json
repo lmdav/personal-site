@@ -1,0 +1,59 @@
+{
+  "source": "Poly Haven (polyhaven.com), all CC0. Fetched by tools/fetch-assets.mjs into public/polyhaven/.",
+  "models": [
+    "wooden_cutting_board",
+    "yellow_onion"
+  ],
+  "textures": [
+    "beige_wall_001"
+  ],
+  "hdris": [
+    "studio_small_09"
+  ],
+  "resolution": "2k",
+  "sounds": {
+    "note": "Freesound (freesound.org), all Creative Commons 0, checked on each sound's page on 2026-11-02. The public HQ MP3 previews are used, since the original files need a login. Fetched by tools/fetch-assets.mjs into public/audio/<key>.mp3.",
+    "music": {
+      "title": "Calm Background Music",
+      "author": "MrCatfishing",
+      "page": "https://freesound.org/people/MrCatfishing/sounds/788347/",
+      "file": "https://cdn.freesound.org/previews/788/788347_16890479-hq.mp3",
+      "license": "CC0"
+    },
+    "sizzle": {
+      "title": "frying steak.wav",
+      "author": "simosco",
+      "page": "https://freesound.org/people/simosco/sounds/235537/",
+      "file": "https://cdn.freesound.org/previews/235/235537_4258636-hq.mp3",
+      "license": "CC0"
+    },
+    "pan": {
+      "title": "Mushrooms Frying",
+      "author": "davidkay",
+      "page": "https://freesound.org/people/davidkay/sounds/132472/",
+      "file": "https://cdn.freesound.org/previews/132/132472_2424762-hq.mp3",
+      "license": "CC0"
+    },
+    "crackle": {
+      "title": "Bread Crackling Cooling Fresh from Oven",
+      "author": "Erbsland-Music",
+      "page": "https://freesound.org/people/Erbsland-Music/sounds/623368/",
+      "file": "https://cdn.freesound.org/previews/623/623368_522747-hq.mp3",
+      "license": "CC0"
+    },
+    "plop": {
+      "title": "Placing mashed potatoes on the plate",
+      "author": "MilanKovanda",
+      "page": "https://freesound.org/people/MilanKovanda/sounds/377043/",
+      "file": "https://cdn.freesound.org/previews/377/377043_6886013-hq.mp3",
+      "license": "CC0"
+    },
+    "stir": {
+      "title": "noodles - stir 02.wav",
+      "author": "Anthousai",
+      "page": "https://freesound.org/people/Anthousai/sounds/398773/",
+      "file": "https://cdn.freesound.org/previews/398/398773_5923045-hq.mp3",
+      "license": "CC0"
+    }
+  }
+}

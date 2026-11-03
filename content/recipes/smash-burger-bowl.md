@@ -1,6 +1,7 @@
 ---
 title: "Smash Burger Bowl"
 slug: smash-burger-bowl
+variant: "Small potatoes"
 summary: "Crispy smashed potatoes, crusty smash patties, mushrooms and onions, smoky beans, and a tangy pickle sauce, with the flavor of a burger and fries in a high-protein bowl."
 date: 2026-11-02
 servings: 1
@@ -14,6 +15,14 @@ image:
   alt: "A double smash cheeseburger with melted cheese and caramelized onions"
   credit: "Photo for illustration by amirali mirhashemian on Unsplash"
   creditUrl: "https://unsplash.com/photos/double-patty-cheeseburger-jh5XyK4Rr3Y"
+video:
+  src: "/recipes/smash-burger-bowl/how-to.mp4"
+  poster: "/recipes/smash-burger-bowl/how-to-poster.jpg"
+  credits:
+    - "Food photos: Alpha Perspective, Maude Frédérique Lavoie, and Terry Jaskiw on Unsplash"
+    - "3D models and lighting: Kuutti Siitonen, Dimitrios Savva, Rico Cilliers, and Sergej Majboroda on Poly Haven (CC0)"
+    - "Music and sounds: MrCatfishing, simosco, davidkay, Erbsland-Music, MilanKovanda, and Anthousai on Freesound (CC0)"
+    - "Voice: Kokoro (Apache 2.0)"
 
 ingredients:
   - name: "Burger"

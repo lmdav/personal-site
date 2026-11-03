@@ -1,0 +1,30 @@
+{
+  "name": "recipe-videos",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "export": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON export-recipe.mjs",
+    "studio": "remotion studio src/index.ts",
+    "render": "node render.mjs"
+  },
+  "dependencies": {
+    "@dimforge/rapier3d-compat": "^0.21.0",
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "@react-three/postprocessing": "^3.2.2",
+    "@remotion/cli": "4.0.540",
+    "@remotion/google-fonts": "4.0.540",
+    "@remotion/motion-blur": "4.0.540",
+    "@remotion/three": "4.0.540",
+    "postprocessing": "^6.39.6",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "remotion": "4.0.540",
+    "three": "^0.187.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19",
+    "@types/three": "^0.187.0",
+    "typescript": "^5"
+  }
+}

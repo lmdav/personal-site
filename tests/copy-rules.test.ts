@@ -5,7 +5,7 @@ import path from "node:path";
 
 // House style: no em or en dashes anywhere in site copy, code, or docs.
 const DASHES = /[\u2013\u2014]/;
-const SCANNED = ["app", "components", "lib", "content", "docs", "scripts"];
+const SCANNED = ["app", "components", "lib", "content", "docs", "scripts", "video/src"];
 const TEXT_FILE = /\.(tsx?|mjs|css|md)$/;
 
 function files(dir: string): string[] {

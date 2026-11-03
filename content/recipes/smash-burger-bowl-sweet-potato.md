@@ -1,6 +1,8 @@
 ---
 title: "Smash Burger Bowl with Sweet Potato"
 slug: smash-burger-bowl-sweet-potato
+variant: "Sweet potato"
+variantOf: smash-burger-bowl
 summary: "The Smash Burger Bowl made in the oven with roasted sweet potato rounds, for a night with big sweet potatoes and no air fryer."
 date: 2026-11-02
 servings: 1

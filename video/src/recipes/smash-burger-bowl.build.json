@@ -1,0 +1,141 @@
+{
+  "bowl": {
+    "note": "A wide stoneware bowl turned on a lathe from this profile of [radius, height] points. The scene draws it and the physics bake collides with the same shape.",
+    "segments": 128,
+    "rim": 0.1345,
+    "profile": [[0.0005, 0.012], [0.00937, 0.01201], [0.01875, 0.01203], [0.02812, 0.01206], [0.0375, 0.0121], [0.04688, 0.01216], [0.05625, 0.01222], [0.06563, 0.01231], [0.075, 0.0124], [0.08049, 0.01253], [0.08593, 0.01305], [0.09126, 0.01404], [0.09643, 0.01556], [0.1014, 0.01763], [0.10611, 0.02027], [0.11053, 0.02349], [0.1146, 0.02726], [0.11829, 0.03158], [0.12156, 0.03641], [0.12439, 0.0417], [0.12674, 0.04743], [0.12859, 0.05352], [0.12992, 0.05993], [0.13073, 0.06658], [0.131, 0.0734], [0.1325, 0.0748], [0.1345, 0.0752], [0.1362, 0.0742], [0.13551, 0.06656], [0.13381, 0.05902], [0.13126, 0.05167], [0.12796, 0.04461], [0.124, 0.03792], [0.11943, 0.03168], [0.11434, 0.02598], [0.1088, 0.02088], [0.10288, 0.01645], [0.09665, 0.01275], [0.09019, 0.00983], [0.08358, 0.00771], [0.07689, 0.00643], [0.0702, 0.006], [0.066, 0.0035], [0.0645, 0.0], [0.058, 0.0], [0.0565, 0.004], [0.0005, 0.0055]]
+  },
+  "note": "Meters. Layers are in build order. zone is [center x, center z, half width x, half depth z] inside the bowl, where pieces land at random; spots, when given, place each piece at an exact [x, z] instead. The cold half is -x, the hot half is +x. lift is the height the bottom of the layer floats at when the bowl is pulled apart. Kinds: box or cylinder collider half sizes; angularDamping and spin keep flat pieces from landing on edge. level: true turns the piece nearly flat while it floats, so it never shows edge-on.",
+  "layers": [
+    {
+      "id": "romaine",
+      "label": "Romaine",
+      "detail": "2 cups, chopped",
+      "lift": 0.17,
+      "items": [
+        {
+          "kind": "leaf",
+          "count": 40,
+          "zone": [-0.058, 0, 0.042, 0.078]
+        }
+      ]
+    },
+    {
+      "id": "cold",
+      "label": "Tomato, onion, pickles",
+      "detail": "the cold half",
+      "lift": 0.27,
+      "items": [
+        {
+          "kind": "tomato",
+          "count": 14,
+          "zone": [-0.06, 0, 0.042, 0.07]
+        },
+        {
+          "kind": "onion",
+          "count": 16,
+          "zone": [-0.055, 0, 0.045, 0.07]
+        },
+        {
+          "kind": "pickle",
+          "count": 8,
+          "zone": [-0.05, 0.0, 0.04, 0.06]
+        }
+      ]
+    },
+    {
+      "id": "patties",
+      "label": "Smash patties",
+      "detail": "6 oz, cheese melted on",
+      "lift": 0.38,
+      "items": [
+        {
+          "kind": "patty",
+          "count": 2,
+          "zone": [0.05, -0.03, 0.008, 0.008],
+          "spots": [[0.03, -0.01], [0.045, -0.03]]
+        }
+      ]
+    },
+    {
+      "id": "potatoes",
+      "label": "Crispy potatoes",
+      "detail": "8 oz, smashed",
+      "lift": 0.48,
+      "items": [
+        {
+          "kind": "potato",
+          "count": 3,
+          "zone": [0.045, 0.065, 0.03, 0.01],
+          "spots": [[0.1, 0.028], [0.072, 0.072], [0.032, 0.09]]
+        }
+      ]
+    },
+    {
+      "id": "mushrooms",
+      "label": "Mushrooms and onions",
+      "detail": "browned in a dry pan",
+      "lift": 0.58,
+      "items": [
+        {
+          "kind": "mushroom",
+          "count": 14,
+          "zone": [0.065, -0.06, 0.022, 0.018]
+        },
+        {
+          "kind": "onionSlice",
+          "count": 10,
+          "zone": [0.065, -0.06, 0.022, 0.018]
+        }
+      ]
+    }
+  ],
+  "sauce": {
+    "label": "Special sauce",
+    "detail": "Greek yogurt, ketchup, mustard, pickles",
+    "lift": 0.67
+  },
+  "kinds": {
+    "leaf": {
+      "box": [0.025, 0.004, 0.017],
+      "density": 120,
+      "friction": 1.1,
+      "restitution": 0.02
+    },
+    "tomato": {
+      "box": [0.006, 0.0055, 0.006],
+      "restitution": 0.12
+    },
+    "onion": {
+      "box": [0.0035, 0.003, 0.0035]
+    },
+    "pickle": {
+      "cylinder": [0.002, 0.014],
+      "angularDamping": 6,
+      "spin": 0.3
+    },
+    "potato": {
+      "cylinder": [0.0065, 0.031],
+      "angularDamping": 6,
+      "spin": 0.3,
+      "level": true
+    },
+    "patty": {
+      "cylinder": [0.004, 0.046],
+      "friction": 0.9,
+      "angularDamping": 6,
+      "spin": 0.3,
+      "level": true
+    },
+    "mushroom": {
+      "box": [0.018, 0.0025, 0.016],
+      "angularDamping": 6,
+      "spin": 0.3
+    },
+    "onionSlice": {
+      "box": [0.012, 0.0025, 0.005],
+      "angularDamping": 6,
+      "spin": 0.3
+    }
+  }
+}

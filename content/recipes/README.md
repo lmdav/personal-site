@@ -15,6 +15,8 @@ Only publish a recipe after it has been cooked and tested.
 | --- | --- | --- |
 | `title` | Yes | The recipe name. |
 | `slug` | Yes | Must match the file name without `.md`. |
+| `variant` | For versions | A short name for this version, such as "Sweet potato". It is required on every recipe in a family with more than one version, and is shown on the "Make it with" buttons. |
+| `variantOf` | No | The slug of the main recipe this one is another version of. A version has no page or card of its own; it is a choice on the main recipe's page, and its old address redirects there. |
 | `summary` | Yes | One sentence, shown on the cards and in link previews. |
 | `date` | Yes | Publish date as YYYY-MM-DD. The index lists newest first. |
 | `servings` | Yes | A whole number. |
@@ -22,6 +24,7 @@ Only publish a recipe after it has been cooked and tested.
 | `prepMinutes`, `cookMinutes`, `totalMinutes` | Yes | Whole numbers of minutes. |
 | `tags` | Yes | A list, such as `[high-protein, meal-prep, beef]`. |
 | `image` | No | A photo with `src`, `alt`, and, for photos that are not yours, `credit` and `creditUrl`. `src` is a path under `public/` (starting with `/`) or an `images.unsplash.com` link. `alt` describes the photo for screen readers. |
+| `video` | No | A how-to video with `src` and `poster`, both paths under `public/`, and optional `credits` lines shown under it. See "How-to videos" below. |
 | `ingredients` | Yes | A list of groups. Each group has an optional `name` and a list of `items`. |
 | `steps` | Yes | A list. Each step has a `title`, optional `minutes`, and `text`. |
 | `tips` | No | A list. Each tip has an optional `title` and `text`. |
@@ -35,4 +38,10 @@ The text after the second `---` line is the chef's notes: plain paragraphs separ
 - Write full sentences, with no em dashes.
 - Spell measurements the same way every time: tbsp, tsp, cup, oz, lb, °F.
 - Nutrition numbers are estimates, and the page labels them that way.
-- Use only original text and photos.
+- Use only original text. Photos must be your own, or free to use and credited (such as Unsplash photos, with `credit` and `creditUrl`).
+
+## How-to videos
+
+A how-to video is optional and lives in `public/recipes/<slug>/`. It is made in `video/` (see `video/README.md` and `docs/recipes-media-v4.md`). Running `pnpm render <slug>` inside `video/` writes `how-to.mp4` and `how-to-poster.jpg` into the recipe's public folder.
+
+Then add the `video` field to the recipe file, with a `credits` line for each kind of outside material the video uses (photos, models, music and sounds, voice). `video/CREDITS.md` has the full list. The build fails if a listed file is missing.

@@ -18,6 +18,12 @@ image:
   alt: "Describe what the photo shows, for screen readers."
   credit: "Only for photos that are not yours, such as: Photo by Name on Unsplash"
   creditUrl: "https://unsplash.com/photos/example"
+# Optional how-to video. See README.md, "How-to videos".
+# video:
+#   src: "/recipes/recipe-title/how-to.mp4"
+#   poster: "/recipes/recipe-title/how-to-poster.jpg"
+#   credits:
+#     - "Music and sounds: Name on Freesound (CC0)"
 
 ingredients:
   - name: "Optional group name, such as Sauce"

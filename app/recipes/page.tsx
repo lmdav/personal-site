@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Arrow } from "@/components/arrow-icon";
 import { AnnouncementBar, SiteNav } from "@/components/site-chrome";
-import { formatDate, formatMinutes, loadRecipes, type Recipe } from "@/lib/recipes";
+import { formatDate, formatMinutes, loadRecipes, mainRecipes, versionsOf, type Recipe } from "@/lib/recipes";
 import { RecipesFooter } from "./recipes-footer";
 
 const DESCRIPTION =
@@ -18,7 +18,9 @@ export const metadata: Metadata = {
 };
 
 export default function RecipesPage() {
-  const recipes = loadRecipes();
+  // One card per recipe: other versions of it (variantOf) are a choice on its page.
+  const all = loadRecipes();
+  const recipes = mainRecipes(all);
   return (
     <main className="min-h-screen w-full overflow-x-clip bg-black text-white">
       <AnnouncementBar />
@@ -28,7 +30,7 @@ export default function RecipesPage() {
         <ul className="mx-auto grid w-full max-w-[1800px] grid-cols-1 gap-x-10 px-6 pb-24 md:grid-cols-2 md:px-16 md:pb-32 xl:grid-cols-3">
           {recipes.map((recipe, i) => (
             <li key={recipe.slug}>
-              <RecipeCard recipe={recipe} number={recipes.length - i} />
+              <RecipeCard recipe={recipe} versions={versionsOf(recipe.slug, all)} number={recipes.length - i} />
             </li>
           ))}
         </ul>
@@ -87,7 +89,7 @@ function Hero() {
 /* Recipe card                                                         */
 /* ------------------------------------------------------------------ */
 
-function RecipeCard({ recipe, number }: { recipe: Recipe; number: number }) {
+function RecipeCard({ recipe, versions, number }: { recipe: Recipe; versions: Recipe[]; number: number }) {
   return (
     <Link
       href={`/recipes/${recipe.slug}`}
@@ -113,6 +115,11 @@ function RecipeCard({ recipe, number }: { recipe: Recipe; number: number }) {
         {recipe.title}
       </h2>
       <p className="mt-4 font-serif text-[17px] leading-[1.35] text-white/75">{recipe.summary}</p>
+      {versions.length > 1 && (
+        <p className="label-sm mt-4 text-white/60">
+          {versions.length} WAYS: {versions.map((v) => v.variant).join(" OR ")}
+        </p>
+      )}
 
       <dl className="mt-8 flex gap-10">
         <div>

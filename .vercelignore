@@ -1,0 +1,4 @@
+# Not needed by the website build.
+/video
+/scripts/blueprints
+/docs
