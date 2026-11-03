@@ -18,6 +18,13 @@ image:
   alt: "Describe what the photo shows, for screen readers."
   credit: "Only for photos that are not yours, such as: Photo by Name on Unsplash"
   creditUrl: "https://unsplash.com/photos/example"
+# Optional blueprint drawing and how-to video. See README.md, "Blueprints and videos".
+# blueprint:
+#   src: "/recipes/recipe-title/blueprint.png"
+#   alt: "Describe the drawing for screen readers."
+# video:
+#   src: "/recipes/recipe-title/how-to.mp4"
+#   poster: "/recipes/recipe-title/how-to-poster.jpg"
 
 ingredients:
   - name: "Optional group name, such as Sauce"

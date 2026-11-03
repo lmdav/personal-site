@@ -14,6 +14,12 @@ image:
   alt: "A double smash cheeseburger with melted cheese and caramelized onions"
   credit: "Photo for illustration by amirali mirhashemian on Unsplash"
   creditUrl: "https://unsplash.com/photos/double-patty-cheeseburger-jh5XyK4Rr3Y"
+blueprint:
+  src: "/recipes/smash-burger-bowl/blueprint.png"
+  alt: "A blueprint-style drawing of the Smash Burger Bowl: the bowl from above with a cold side and a hot side, a cutaway of the layers, a close-up of the patty crust, a parts list, and a cooking timeline."
+video:
+  src: "/recipes/smash-burger-bowl/how-to.mp4"
+  poster: "/recipes/smash-burger-bowl/how-to-poster.jpg"
 
 ingredients:
   - name: "Burger"

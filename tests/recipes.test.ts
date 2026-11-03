@@ -188,12 +188,41 @@ test("skips hidden files and flags an upper-case extension instead of ignoring i
 
 test("requires a local image to exist in the public folder", () => {
   const dir = tempDir({ "test-bowl.md": withImage("/recipes/bowl.jpg") });
-  assert.throws(() => loadRecipes(dir, tempDir({})), /image "\/recipes\/bowl.jpg" is not in the public folder/);
+  assert.throws(() => loadRecipes(dir, tempDir({})), /"\/recipes\/bowl.jpg" is not in the public folder/);
 
   const publicDir = tempDir({});
   mkdirSync(path.join(publicDir, "recipes"));
   writeFileSync(path.join(publicDir, "recipes", "bowl.jpg"), "");
   assert.equal(loadRecipes(dir, publicDir)[0].image?.src, "/recipes/bowl.jpg");
+});
+
+const MEDIA = `blueprint:
+  src: "/recipes/test-bowl/blueprint.png"
+  alt: "A blueprint drawing of the bowl"
+video:
+  src: "/recipes/test-bowl/how-to.mp4"
+  poster: "/recipes/test-bowl/how-to-poster.jpg"
+`;
+
+test("accepts a blueprint and a video only when their files are in the public folder", () => {
+  const dir = tempDir({ "test-bowl.md": edit("tags: [quick]", `${MEDIA}tags: [quick]`) });
+  assert.throws(() => loadRecipes(dir, tempDir({})), /"\/recipes\/test-bowl\/blueprint.png" is not in the public folder/);
+
+  const publicDir = tempDir({});
+  mkdirSync(path.join(publicDir, "recipes", "test-bowl"), { recursive: true });
+  for (const f of ["blueprint.png", "how-to.mp4", "how-to-poster.jpg"]) {
+    writeFileSync(path.join(publicDir, "recipes", "test-bowl", f), "");
+  }
+  const [r] = loadRecipes(dir, publicDir);
+  assert.equal(r.blueprint?.alt, "A blueprint drawing of the bowl");
+  assert.equal(r.video?.poster, "/recipes/test-bowl/how-to-poster.jpg");
+});
+
+test("rejects a blueprint or video that is not a path in the public folder", () => {
+  const remote = MEDIA.replace('"/recipes/test-bowl/how-to.mp4"', '"https://example.com/a.mp4"');
+  assert.match(problems(edit("tags: [quick]", `${remote}tags: [quick]`)), /video\.src must be a path in the public folder/);
+  const noAlt = MEDIA.replace('  alt: "A blueprint drawing of the bowl"\n', "");
+  assert.match(problems(edit("tags: [quick]", `${noAlt}tags: [quick]`)), /blueprint\.alt is required/);
 });
 
 test("every published recipe and the template are valid", () => {

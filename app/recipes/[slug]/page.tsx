@@ -11,7 +11,9 @@ import {
   getRecipe,
   loadRecipes,
   type Recipe,
+  type RecipeDrawing,
   type RecipeImage,
+  type RecipeVideo,
 } from "@/lib/recipes";
 import { SITE_URL } from "@/lib/site";
 import { RecipesFooter } from "../recipes-footer";
@@ -68,11 +70,14 @@ export default async function RecipePage({ params }: Props) {
       <article className="recipe-article mx-auto w-full max-w-[1800px] px-6 pb-24 pt-10 md:px-16 md:pb-32 md:pt-16">
         <RecipeHeader recipe={recipe} />
         {recipe.image && <RecipePhoto image={recipe.image} />}
+        {recipe.video && <HowToVideo video={recipe.video} title={recipe.title} />}
 
         <div className="recipe-body mt-14 grid grid-cols-1 gap-14 border-t border-white/12 pt-14 md:grid-cols-12 md:gap-10">
           <Ingredients recipe={recipe} />
           <Steps recipe={recipe} />
         </div>
+
+        {recipe.blueprint && <Blueprint drawing={recipe.blueprint} />}
 
         <div className="recipe-extras mt-20 grid grid-cols-1 gap-14 border-t border-white/12 pt-14 md:grid-cols-12 md:gap-10">
           {recipe.tips.length > 0 && <Tips recipe={recipe} />}
@@ -174,6 +179,61 @@ function RecipePhoto({ image }: { image: RecipeImage }) {
         </figcaption>
       )}
     </figure>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* How-to video and blueprint drawing (screen only)                    */
+/* ------------------------------------------------------------------ */
+
+function HowToVideo({ video, title }: { video: RecipeVideo; title: string }) {
+  return (
+    <section aria-labelledby="how-to" className="print-hidden mt-16 md:mt-20">
+      <h2 id="how-to" className="section-tag text-white/60">
+        WATCH THE HOW-TO
+      </h2>
+      <video
+        controls
+        playsInline
+        preload="none"
+        poster={video.poster}
+        aria-label={`${title}: step-by-step how-to video, with no sound`}
+        className="mt-6 aspect-video w-full bg-white/5"
+      >
+        <source src={video.src} type="video/mp4" />
+      </video>
+    </section>
+  );
+}
+
+function Blueprint({ drawing }: { drawing: RecipeDrawing }) {
+  return (
+    <section aria-labelledby="blueprint" className="print-hidden mt-20 border-t border-white/12 pt-14">
+      <div className="flex flex-wrap items-baseline justify-between gap-4">
+        <h2 id="blueprint" className="section-tag text-white/60">
+          THE BLUEPRINT
+        </h2>
+        <a
+          href={drawing.src}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="label inline-flex items-center gap-2 text-white/70 transition-colors hover:text-white"
+        >
+          OPEN FULL SIZE
+          <Arrow className="h-3 w-3" />
+        </a>
+      </div>
+      <a href={drawing.src} target="_blank" rel="noopener noreferrer" className="mt-6 block">
+        <Image
+          src={drawing.src}
+          alt={drawing.alt}
+          width={3200}
+          height={2200}
+          sizes="(min-width: 1800px) 1672px, 100vw"
+          className="h-auto w-full"
+        />
+      </a>
+    </section>
   );
 }
 

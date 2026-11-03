@@ -42,3 +42,9 @@ next-env.d.ts
 
 # tooling
 .claude/
+
+# remotion video project (generated or installed)
+/video/node_modules
+/video/public
+/video/src/data
+/video/out

@@ -19,6 +19,10 @@ export type RecipeImage = {
   credit?: string;
   creditUrl?: string;
 };
+/** A drawing of the recipe, such as a blueprint sheet. Lives in public/. */
+export type RecipeDrawing = { src: string; alt: string };
+/** A short how-to video and its poster frame. Both live in public/. */
+export type RecipeVideo = { src: string; poster: string };
 export type Nutrition = {
   calories: number;
   protein: number;
@@ -43,6 +47,8 @@ export type Recipe = {
   totalMinutes: number;
   tags: string[];
   image?: RecipeImage;
+  blueprint?: RecipeDrawing;
+  video?: RecipeVideo;
   ingredients: IngredientGroup[];
   steps: RecipeStep[];
   tips: RecipeTip[];
@@ -81,9 +87,11 @@ export function loadRecipes(dir: string = RECIPES_DIR, publicDir: string = PUBLI
         `${file}: slug "${recipe.slug}" must match the file name (${recipe.slug}.md)`,
       );
     }
-    const src = recipe.image?.src;
-    if (src?.startsWith("/") && !existsSync(path.join(publicDir, src))) {
-      throw new RecipeError(`${file}: image "${src}" is not in the public folder`);
+    const local = [recipe.image?.src, recipe.blueprint?.src, recipe.video?.src, recipe.video?.poster];
+    for (const src of local) {
+      if (src?.startsWith("/") && !existsSync(path.join(publicDir, src))) {
+        throw new RecipeError(`${file}: "${src}" is not in the public folder`);
+      }
     }
     return recipe;
   });
@@ -102,7 +110,7 @@ export function getRecipe(slug: string, dir?: string): Recipe | undefined {
 
 const TOP_FIELDS = [
   "title", "slug", "summary", "date", "servings", "servingsNote", "prepMinutes",
-  "cookMinutes", "totalMinutes", "tags", "image", "ingredients", "steps", "tips",
+  "cookMinutes", "totalMinutes", "tags", "image", "blueprint", "video", "ingredients", "steps", "tips",
   "nutrition",
 ] as const;
 const NUTRIENTS = ["calories", "protein", "carbs", "fat", "fiber"] as const;
@@ -251,6 +259,23 @@ export function parseRecipe(source: string, fileName: string): Recipe {
     };
   }
 
+  let blueprint: RecipeDrawing | undefined;
+  if (top.blueprint !== undefined && top.blueprint !== null) {
+    const bp = c.object(top.blueprint, "blueprint");
+    c.fields(bp, ["src", "alt"], "blueprint.");
+    blueprint = {
+      src: localPath(c, bp, "src", "blueprint."),
+      alt: c.text(bp, "alt", "blueprint.") ?? "",
+    };
+  }
+
+  let video: RecipeVideo | undefined;
+  if (top.video !== undefined && top.video !== null) {
+    const v = c.object(top.video, "video");
+    c.fields(v, ["src", "poster"], "video.");
+    video = { src: localPath(c, v, "src", "video."), poster: localPath(c, v, "poster", "video.") };
+  }
+
   const tags = c.list(top, "tags", "").map((t, i) => c.textValue(t, `tags[${i}]`) ?? "");
 
   const ingredients = c.list(top, "ingredients", "").map((raw, i) => {
@@ -316,6 +341,8 @@ export function parseRecipe(source: string, fileName: string): Recipe {
     totalMinutes: totalMinutes ?? 0,
     tags,
     image,
+    blueprint,
+    video,
     ingredients,
     steps,
     tips,
@@ -340,6 +367,15 @@ export function parseRecipe(source: string, fileName: string): Recipe {
     );
   }
   return recipe;
+}
+
+/** A required path to a file in public/, such as "/recipes/bowl/blueprint.png". */
+function localPath(c: Checker, obj: Obj, key: string, at: string): string {
+  const value = c.text(obj, key, at);
+  if (value && (!value.startsWith("/") || !isImageReference(value))) {
+    c.errors.push(`${at}${key} must be a path in the public folder, starting with "/"`);
+  }
+  return value ?? "";
 }
 
 /** A site path like "/recipes/bowl.jpg" or an absolute https URL, nothing else. */
