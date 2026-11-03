@@ -26,6 +26,9 @@ test("a mispronounced or wrong word does not match", () => {
   assert.ok(!matches("Crispy potatoes.", "Crispy potato."));
   assert.ok(!matches("Air-fry at four hundred degrees.", "Air fry at 450 degrees."));
   assert.ok(!matches("Stir until pink, and chill.", ""));
+  // An empty script line never matches, not even silence (2026-11-03 review).
+  assert.ok(!matches("", " [BLANK_AUDIO]"));
+  assert.ok(!matches("(pause)", ""));
 });
 
 test("numbers are spelled the way the script says them", () => {
@@ -33,4 +36,6 @@ test("numbers are spelled the way the script says them", () => {
   assert.equal(numberWords(400), "four hundred");
   assert.equal(numberWords(1250), "one thousand two hundred fifty");
   assert.equal(sounds("1,250"), sounds("one thousand two hundred fifty"));
+  assert.equal(sounds("1,250,000"), sounds("1250000"));
+  assert.notEqual(sounds("Bake for 1000000 hours"), sounds("Bake for hours"));
 });

@@ -29,7 +29,10 @@ export function numberWords(n) {
   if (n < 100) return TENS[Math.floor(n / 10)] + (n % 10 ? ` ${ONES[n % 10]}` : "");
   if (n < 1000) return `${ONES[Math.floor(n / 100)]} hundred${n % 100 ? ` ${numberWords(n % 100)}` : ""}`;
   if (n < 1_000_000) return `${numberWords(Math.floor(n / 1000))} thousand${n % 1000 ? ` ${numberWords(n % 1000)}` : ""}`;
-  return String(n);
+  return String(n)
+    .split("")
+    .map((d) => ONES[Number(d)])
+    .join(" ");
 }
 
 // Words a listener cannot tell apart, which the transcriber picks between freely.
@@ -42,7 +45,7 @@ export function sounds(text) {
   return text
     .toLowerCase()
     .replace(/\[[^\]]*\]|\([^)]*\)/g, " ") // [BLANK_AUDIO], (music)
-    .replace(/(\d),(\d{3})/g, "$1$2")
+    .replace(/(\d),(?=\d{3}\b)/g, "$1")
     .replace(/([a-z0-9])\.(?=[a-z])/g, "$1 dot ")
     .replace(/°/g, " degrees ")
     .replace(/\d+/g, (n) => ` ${numberWords(Number(n))} `)
@@ -53,16 +56,18 @@ export function sounds(text) {
     .join("");
 }
 
-/** Whether what was heard matches what the script says. */
-export const matches = (said, heard) => sounds(said) === sounds(heard);
+/** Whether what was heard matches what the script says. A line with no words never
+ * matches, so silence cannot pass for an empty script line. */
+export const matches = (said, heard) => sounds(said) !== "" && sounds(said) === sounds(heard);
 
 /** Transcribes part of a WAV (seconds) with whisper.cpp. */
 function transcribe(wav, from, to, model, scratch) {
   const clip = path.join(scratch, "line.wav");
   // whisper.cpp wants 16 kHz mono; a little silence either side helps it with short lines.
-  const cut = spawnSync("ffmpeg", ["-v", "error", "-y", "-ss", from.toFixed(3), "-to", to.toFixed(3), "-i", wav, "-af", "adelay=300|300,apad=pad_dur=0.3", "-ar", "16000", "-ac", "1", clip]);
+  const cut = spawnSync("ffmpeg", ["-v", "error", "-y", "-ss", from.toFixed(3), "-to", to.toFixed(3), "-i", wav, "-af", "adelay=300|300,apad=pad_dur=0.3", "-ar", "16000", "-ac", "1", clip], { encoding: "utf8", timeout: 60_000 });
+  if (cut.error) throw new Error(`ffmpeg could not run (${cut.error.message}); install it with: brew install ffmpeg`);
   if (cut.status !== 0) throw new Error(`ffmpeg could not cut ${wav}: ${cut.stderr}`);
-  const run = spawnSync("whisper-cli", ["-m", model, "-f", clip, "-l", "en", "-nt", "-np"], { encoding: "utf8" });
+  const run = spawnSync("whisper-cli", ["-m", model, "-f", clip, "-l", "en", "-nt", "-np"], { encoding: "utf8", timeout: 120_000 });
   if (run.error) throw new Error(`whisper-cli could not start (${run.error.message}); install it with: brew install whisper-cpp`);
   if (run.status !== 0) throw new Error(`whisper-cli failed on ${wav}: ${run.stderr.slice(-400)}`);
   return run.stdout.replace(/\s+/g, " ").trim();
