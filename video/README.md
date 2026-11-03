@@ -21,13 +21,14 @@ The model files (about 115 MB) and `.venv` stay on your machine. Git ignores the
 pnpm render smash-burger-bowl
 ```
 
-This runs five steps:
+This runs every step in one go, and stops with a non-zero exit if a step or check fails:
 
 1. Exports the recipe from `content/recipes/<slug>.md` through the site's own loader into `src/data/<slug>.json`, so titles, times, and nutrition always match the page.
 2. Reads the narration script in `src/recipes/<slug>.narration.json` aloud in the Heart voice. It writes one clip per scene and records how long each scene and beat runs.
-3. Renders the wide cut (composition `<slug>`) and the vertical cut (`<slug>-vertical`) into `out/`.
-4. Writes a smaller web copy of the wide cut to `public/recipes/<slug>/how-to.mp4`.
-5. Writes `how-to-poster.jpg` there too.
+3. Checks the scene file and lays out the video from it.
+4. Bundles once, then renders the wide cut (composition `<slug>`) and the vertical cut (`<slug>-vertical`) into `out/`, with the ANGLE GL backend at concurrency 5. A render that makes no progress for 2 minutes is stopped.
+5. Writes a smaller web copy of the wide cut to `public/recipes/<slug>/how-to.mp4`, and `how-to-poster.jpg` beside it.
+6. Checks both cuts for blank or glitched frames outside the fades (`tools/check_frames.py`), and checks the mix's loudness (`tools/loudness.mjs`).
 
 Run `node tools/fetch-assets.mjs` once first, to download the 3D assets and sounds.
 
