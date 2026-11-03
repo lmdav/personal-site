@@ -298,16 +298,24 @@ details > summary::-webkit-details-marker {
     font-size: 14pt !important;
   }
   .recipe-meta {
-    margin-top: 14pt !important;
-    grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
-    gap: 8pt !important;
+    margin-top: 10pt !important;
+    gap: 4pt 16pt !important;
+  }
+  .recipe-meta dt {
+    font-size: 10pt !important;
   }
   .recipe-meta dd {
-    margin-top: 4pt !important;
-    font-size: 14pt !important;
+    font-size: 12pt !important;
   }
-  .recipe-meta dd + dd {
+  .recipe-serving-note,
+  .recipe-overlap {
     font-size: 10pt !important;
+  }
+  /* The screen-only sticky, scrolling ingredients column prints in full. */
+  .recipe-ingredients {
+    position: static !important;
+    max-height: none !important;
+    overflow: visible !important;
   }
   /* Side-by-side columns keep most recipes to one or two pages. */
   .recipe-body,
@@ -334,17 +342,23 @@ details > summary::-webkit-details-marker {
     margin-top: 10pt !important;
   }
   .recipe-ingredients li {
-    margin: 0 0 4pt !important;
-    font-size: 12pt !important;
+    margin: 0 0 2pt !important;
+    padding: 0 !important;
+    font-size: 11.5pt !important;
     line-height: 1.3 !important;
   }
-  .recipe-ingredients li > span {
+  .recipe-ingredients .ingredient-dash {
     background: #000000 !important;
+  }
+  .cook-box,
+  .recipe-page dialog {
+    display: none !important;
   }
   .recipe-step p,
   .recipe-tips li {
-    font-size: 12.5pt !important;
-    line-height: 1.35 !important;
+    margin-top: 2pt !important;
+    font-size: 11.5pt !important;
+    line-height: 1.3 !important;
   }
   .recipe-tips li {
     margin: 0 0 6pt !important;
@@ -354,10 +368,15 @@ details > summary::-webkit-details-marker {
     font-size: 11pt !important;
   }
   .recipe-step {
-    padding: 6pt 0 !important;
+    grid-template-columns: 2.2rem 1fr !important;
+    gap: 6pt !important;
+    padding: 5pt 0 !important;
+  }
+  .recipe-step .display-serif {
+    font-size: 18pt !important;
   }
   .recipe-step h3 {
-    font-size: 14pt !important;
+    font-size: 12.5pt !important;
     font-weight: 600 !important;
   }
   .recipe-group,
@@ -372,17 +391,55 @@ details > summary::-webkit-details-marker {
   }
 }
 
-/* A recipe photo prints small so it does not crowd out the steps. */
-@media print {
-  .recipe-photo {
-    margin-top: 12pt !important;
+/* ------------------------------------------------------------------ */
+/* Recipe cook mode - large dark text on a light page, tap to check off */
+/* ------------------------------------------------------------------ */
+
+@media screen {
+  .recipe-page[data-cook-mode] {
+    background: var(--color-offwhite);
   }
-  .recipe-photo-frame {
-    aspect-ratio: auto !important;
-    height: 1.3in !important;
+  /* Swapping the white and black tokens flips every white-on-black utility in the article. */
+  .recipe-page[data-cook-mode] .recipe-article {
+    --color-white: #141413;
+    --color-black: #faf9f5;
+    --color-acid: #4a5200;
+    color: var(--color-white);
   }
-  .recipe-photo figcaption {
-    margin-top: 3pt !important;
-    font-size: 8pt !important;
+  /* The sticky nav stays dark, so make it solid over the light page. */
+  .recipe-page[data-cook-mode] nav {
+    background: #000000;
+  }
+  .recipe-page[data-cook-mode] .cook-hide {
+    display: none;
+  }
+  .recipe-page[data-cook-mode] .recipe-ingredient {
+    min-height: 44px;
+    align-items: center;
+    font-size: 21px;
+    cursor: pointer;
+  }
+  .recipe-page[data-cook-mode] .recipe-step {
+    cursor: pointer;
+  }
+  .recipe-page[data-cook-mode] .recipe-step h3 {
+    font-size: 23px;
+  }
+  .recipe-page[data-cook-mode] .recipe-step-text {
+    max-width: 36rem;
+    font-size: 21px;
+  }
+  .recipe-page[data-cook-mode] [data-done] {
+    opacity: 0.45;
+  }
+  .recipe-page[data-cook-mode] .recipe-ingredient[data-done] > span:last-child {
+    text-decoration: line-through;
+  }
+  .cook-box {
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    accent-color: #141413;
+    cursor: pointer;
   }
 }

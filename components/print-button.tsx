@@ -6,9 +6,9 @@ export function PrintButton() {
     <button
       type="button"
       onClick={() => window.print()}
-      className="label inline-flex h-[38px] items-center border border-white/30 px-3 text-white transition-colors hover:bg-white hover:text-black"
+      className="inline-flex h-11 items-center border border-white/30 px-3 text-[13px] uppercase tracking-[0.08em] text-white transition-colors hover:bg-white hover:text-black"
     >
-      PRINT RECIPE
+      Print
     </button>
   );
 }
