@@ -203,8 +203,6 @@ test("requires a local image to exist in the public folder", () => {
 const MEDIA = `video:
   src: "/recipes/test-bowl/how-to.mp4"
   poster: "/recipes/test-bowl/how-to-poster.jpg"
-  credits:
-    - "Music: a track by someone on Freesound (CC0)"
 `;
 
 test("accepts a video only when its files are in the public folder", () => {
@@ -218,16 +216,11 @@ test("accepts a video only when its files are in the public folder", () => {
   }
   const [r] = loadRecipes(dir, publicDir);
   assert.equal(r.video?.poster, "/recipes/test-bowl/how-to-poster.jpg");
-  assert.deepEqual(r.video?.credits, ["Music: a track by someone on Freesound (CC0)"]);
 });
 
-test("rejects a video that is not a path in the public folder, or credits that are not text", () => {
+test("rejects a video that is not a path in the public folder", () => {
   const remote = MEDIA.replace('"/recipes/test-bowl/how-to.mp4"', '"https://example.com/a.mp4"');
   assert.match(problems(edit("tags: [quick]", `${remote}tags: [quick]`)), /video\.src must be a path in the public folder/);
-  const badCredit = MEDIA.replace('    - "Music: a track by someone on Freesound (CC0)"', "    - { who: someone }");
-  assert.match(problems(edit("tags: [quick]", `${badCredit}tags: [quick]`)), /video\.credits\[0\]/);
-  const noCredits = MEDIA.replace('  credits:\n    - "Music: a track by someone on Freesound (CC0)"\n', "");
-  assert.deepEqual(parseRecipe(edit("tags: [quick]", `${noCredits}tags: [quick]`), "test-bowl.md").video?.credits, []);
 });
 
 // A second version of the test bowl, named and pointing at the main one.

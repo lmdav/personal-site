@@ -169,9 +169,10 @@ One independent correctness pass covered the new code. Its eight findings were e
 
 - The wide cut has the recipe's own id, `smash-burger-bowl`. `pnpm render <slug>` in `video/` renders both cuts into `video/out/`, then writes the web copy and the poster into `public/recipes/<slug>/`.
   - The web copy is CRF 28 with fast start: 16 MB, against 40 MB for the master. At full size it looks the same as the master, apart from slightly smoother meat texture.
-  - The poster is the last frame of the opening scene: the title, with no caption.
+  - The poster is the `<slug>-poster` still: the finished bowl, centered, with no title or caption.
   - Only the pieces of that script were checked, not a full end-to-end run.
-- The page shows the video after the steps, with a short credits list under it from the recipe's `video.credits`.
+- The video sits beside the recipe's title on wider screens, and under the recipe details on a phone. Liam asked for that on 2026-11-02 after it first went live at the bottom of the page.
+- The page lists no credits (Liam: not necessary). The sources and licenses stay in `video/CREDITS.md`.
 - The v3 blueprint sheet is not on the page, and the recipe format no longer has a `blueprint` field.
 - The old v3 composition is still in `video/src/Video.tsx` but no longer registered.
 
@@ -196,4 +197,4 @@ One independent correctness pass covered the new code. Its eight findings were e
 | Music bed and cooking sounds | Built. The six CC0 files were downloaded with Liam's OK. In the final mix, the music and effects sit 11 to 20 dB under the voice, scene by scene, with a peak of -3.5 dBFS. This is measured, not listened to. |
 | Credits file `video/CREDITS.md` | Built. Every photo, model, texture, sound, font, voice, and library is credited. |
 | Wiring the video into the recipe page | Built (see "On the recipe page") |
-| Asset credits on the recipe page | Built: short credit lines under the video, with the full list in `video/CREDITS.md` |
+| Asset credits on the recipe page | Dropped at Liam's request; the record stays in `video/CREDITS.md` |

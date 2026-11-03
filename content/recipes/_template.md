@@ -22,8 +22,6 @@ image:
 # video:
 #   src: "/recipes/recipe-title/how-to.mp4"
 #   poster: "/recipes/recipe-title/how-to-poster.jpg"
-#   credits:
-#     - "Music and sounds: Name on Freesound (CC0)"
 
 ingredients:
   - name: "Optional group name, such as Sauce"
