@@ -1,6 +1,7 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { parse as parseYaml } from "yaml";
+import { REMOTE_IMAGE_HOSTS } from "./site.ts";
 
 /* ------------------------------------------------------------------ */
 /* Types                                                               */
@@ -9,6 +10,15 @@ import { parse as parseYaml } from "yaml";
 export type IngredientGroup = { name?: string; items: string[] };
 export type RecipeStep = { title: string; minutes?: number; text: string };
 export type RecipeTip = { title?: string; text: string };
+export type RecipeImage = {
+  /** Path under /public or an https URL. */
+  src: string;
+  /** Describes the photo for screen readers. */
+  alt: string;
+  /** Required for photos that are not your own, such as "Photo by Name on Unsplash". */
+  credit?: string;
+  creditUrl?: string;
+};
 export type Nutrition = {
   calories: number;
   protein: number;
@@ -32,8 +42,7 @@ export type Recipe = {
   cookMinutes: number;
   totalMinutes: number;
   tags: string[];
-  /** Path under /public or an https URL. */
-  image?: string;
+  image?: RecipeImage;
   ingredients: IngredientGroup[];
   steps: RecipeStep[];
   tips: RecipeTip[];
@@ -72,8 +81,9 @@ export function loadRecipes(dir: string = RECIPES_DIR, publicDir: string = PUBLI
         `${file}: slug "${recipe.slug}" must match the file name (${recipe.slug}.md)`,
       );
     }
-    if (recipe.image?.startsWith("/") && !existsSync(path.join(publicDir, recipe.image))) {
-      throw new RecipeError(`${file}: image "${recipe.image}" is not in the public folder`);
+    const src = recipe.image?.src;
+    if (src?.startsWith("/") && !existsSync(path.join(publicDir, src))) {
+      throw new RecipeError(`${file}: image "${src}" is not in the public folder`);
     }
     return recipe;
   });
@@ -217,9 +227,28 @@ export function parseRecipe(source: string, fileName: string): Recipe {
     c.errors.push(`date must be a real date written as YYYY-MM-DD`);
   }
 
-  const image = c.text(top, "image", "", true);
-  if (image && !isImageReference(image)) {
-    c.errors.push(`image must be a path under /public (starting with "/") or an https URL`);
+  let image: RecipeImage | undefined;
+  if (top.image !== undefined && top.image !== null) {
+    const img = c.object(top.image, "image");
+    c.fields(img, ["src", "alt", "credit", "creditUrl"], "image.");
+    const src = c.text(img, "src", "image.");
+    if (src && !isImageReference(src)) {
+      c.errors.push(`image.src must be a path under /public (starting with "/") or an https URL`);
+    } else if (src?.startsWith("https://") && !REMOTE_IMAGE_HOSTS.includes(new URL(src).hostname)) {
+      c.errors.push(
+        `image.src can only link to ${REMOTE_IMAGE_HOSTS.join(", ")}. Put other photos in the public folder.`,
+      );
+    }
+    const creditUrl = c.text(img, "creditUrl", "image.", true);
+    if (creditUrl && !(creditUrl.startsWith("https://") && isImageReference(creditUrl))) {
+      c.errors.push("image.creditUrl must be an https URL");
+    }
+    image = {
+      src: src ?? "",
+      alt: c.text(img, "alt", "image.") ?? "",
+      credit: c.text(img, "credit", "image.", true),
+      creditUrl,
+    };
   }
 
   const tags = c.list(top, "tags", "").map((t, i) => c.textValue(t, `tags[${i}]`) ?? "");

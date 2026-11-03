@@ -314,8 +314,8 @@ details > summary::-webkit-details-marker {
   .recipe-extras {
     display: grid !important;
     gap: 0.3in !important;
-    margin-top: 14pt !important;
-    padding-top: 14pt !important;
+    margin-top: 10pt !important;
+    padding-top: 10pt !important;
   }
   .recipe-body {
     grid-template-columns: 1fr 2fr !important;
@@ -343,8 +343,8 @@ details > summary::-webkit-details-marker {
   }
   .recipe-step p,
   .recipe-tips li {
-    font-size: 13pt !important;
-    line-height: 1.4 !important;
+    font-size: 12.5pt !important;
+    line-height: 1.35 !important;
   }
   .recipe-tips li {
     margin: 0 0 6pt !important;
@@ -354,7 +354,7 @@ details > summary::-webkit-details-marker {
     font-size: 11pt !important;
   }
   .recipe-step {
-    padding: 8pt 0 !important;
+    padding: 6pt 0 !important;
   }
   .recipe-step h3 {
     font-size: 14pt !important;
@@ -369,5 +369,20 @@ details > summary::-webkit-details-marker {
   .recipe-page h2,
   .recipe-page h3 {
     break-after: avoid;
+  }
+}
+
+/* A recipe photo prints small so it does not crowd out the steps. */
+@media print {
+  .recipe-photo {
+    margin-top: 12pt !important;
+  }
+  .recipe-photo-frame {
+    aspect-ratio: auto !important;
+    height: 1.3in !important;
+  }
+  .recipe-photo figcaption {
+    margin-top: 3pt !important;
+    font-size: 8pt !important;
   }
 }

@@ -140,14 +140,25 @@ test("rejects em and en dashes in any text field and in the notes", () => {
   assert.match(problems(edit("First note paragraph.", `First ${em} note.`)), /chef's notes must not contain em/);
 });
 
+const withImage = (src: string, extra = "") =>
+  edit("tags: [quick]", `image:\n  src: "${src}"\n  alt: "A bowl"${extra}\ntags: [quick]`);
+
 test("accepts only site paths and https URLs as images", () => {
-  const withImage = (value: string) => edit("tags: [quick]", `image: "${value}"\ntags: [quick]`);
-  for (const ok of ["/recipes/bowl.jpg", "https://images.example.com/bowl.jpg"]) {
-    assert.equal(parseRecipe(withImage(ok), "test-bowl.md").image, ok);
+  for (const ok of ["/recipes/bowl.jpg", "https://images.unsplash.com/photo-1?w=1600&q=80"]) {
+    assert.equal(parseRecipe(withImage(ok), "test-bowl.md").image?.src, ok);
   }
+  assert.match(problems(withImage("https://images.example.com/bowl.jpg")), /image\.src can only link to images\.unsplash\.com/);
   for (const bad of ["https://", "//evil.example/x.png", "https://exa mple.com/a.png", "http://example.com/a.png", "bowl.jpg"]) {
-    assert.match(problems(withImage(bad)), /image must be a path under \/public/, bad);
+    assert.match(problems(withImage(bad)), /image\.src must be a path under \/public/, bad);
   }
+});
+
+test("requires alt text on an image and an https credit link", () => {
+  const noAlt = edit("tags: [quick]", 'image:\n  src: "/recipes/bowl.jpg"\ntags: [quick]');
+  assert.match(problems(noAlt), /image\.alt is required/);
+  const credited = withImage("/a.jpg", '\n  credit: "Photo by A on Unsplash"\n  creditUrl: "https://unsplash.com/photos/a"');
+  assert.equal(parseRecipe(credited, "test-bowl.md").image?.credit, "Photo by A on Unsplash");
+  assert.match(problems(withImage("/a.jpg", '\n  creditUrl: "/photos/a"')), /creditUrl must be an https URL/);
 });
 
 /* ------------------------------------------------------------------ */
@@ -176,14 +187,13 @@ test("skips hidden files and flags an upper-case extension instead of ignoring i
 });
 
 test("requires a local image to exist in the public folder", () => {
-  const source = VALID.replace("tags: [quick]", 'image: "/recipes/bowl.jpg"\ntags: [quick]');
-  const dir = tempDir({ "test-bowl.md": source });
+  const dir = tempDir({ "test-bowl.md": withImage("/recipes/bowl.jpg") });
   assert.throws(() => loadRecipes(dir, tempDir({})), /image "\/recipes\/bowl.jpg" is not in the public folder/);
 
   const publicDir = tempDir({});
   mkdirSync(path.join(publicDir, "recipes"));
   writeFileSync(path.join(publicDir, "recipes", "bowl.jpg"), "");
-  assert.equal(loadRecipes(dir, publicDir)[0].image, "/recipes/bowl.jpg");
+  assert.equal(loadRecipes(dir, publicDir)[0].image?.src, "/recipes/bowl.jpg");
 });
 
 test("every published recipe and the template are valid", () => {
@@ -233,8 +243,8 @@ test("builds schema.org Recipe data with every ingredient and step", () => {
   assert.equal(ld.nutrition.proteinContent, "30 g");
   assert.equal("image" in ld, false);
 
-  const withImage = recipeJsonLd({ ...r, image: "/recipes/bowl.jpg" }, "https://lmdav.com/recipes/test-bowl");
-  assert.deepEqual(withImage.image, ["https://lmdav.com/recipes/bowl.jpg"]);
+  const pictured = recipeJsonLd({ ...r, image: { src: "/recipes/bowl.jpg", alt: "A bowl" } }, "https://lmdav.com/recipes/test-bowl");
+  assert.deepEqual(pictured.image, ["https://lmdav.com/recipes/bowl.jpg"]);
 });
 
 test("escapes < so recipe text cannot close the script tag", () => {

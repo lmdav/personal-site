@@ -18,7 +18,7 @@ export function recipeJsonLd(recipe: Recipe, pageUrl: string) {
     url: pageUrl,
     datePublished: recipe.date,
     author: { "@type": "Person", name: "Liam Davis" },
-    ...(recipe.image ? { image: [new URL(recipe.image, pageUrl).href] } : {}),
+    ...(recipe.image ? { image: [new URL(recipe.image.src, pageUrl).href] } : {}),
     recipeYield: recipe.servings === 1 ? "1 serving" : `${recipe.servings} servings`,
     prepTime: isoDuration(recipe.prepMinutes),
     cookTime: isoDuration(recipe.cookMinutes),

@@ -1,11 +1,18 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Arrow } from "@/components/arrow-icon";
 import { PrintButton } from "@/components/print-button";
 import { AnnouncementBar, SiteNav } from "@/components/site-chrome";
 import { recipeJsonLd, serializeJsonLd } from "@/lib/recipe-jsonld";
-import { formatMinutes, getRecipe, loadRecipes, type Recipe } from "@/lib/recipes";
+import {
+  formatMinutes,
+  getRecipe,
+  loadRecipes,
+  type Recipe,
+  type RecipeImage,
+} from "@/lib/recipes";
 import { SITE_URL } from "@/lib/site";
 import { RecipesFooter } from "../recipes-footer";
 
@@ -22,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const recipe = getRecipe((await params).slug);
   if (!recipe) return {};
   const url = `/recipes/${recipe.slug}`;
-  const images = recipe.image ? [recipe.image] : undefined;
+  const images = recipe.image ? [{ url: recipe.image.src, alt: recipe.image.alt }] : undefined;
   return {
     title: `${recipe.title} - Liam Davis`,
     description: recipe.summary,
@@ -60,6 +67,7 @@ export default async function RecipePage({ params }: Props) {
 
       <article className="recipe-article mx-auto w-full max-w-[1800px] px-6 pb-24 pt-10 md:px-16 md:pb-32 md:pt-16">
         <RecipeHeader recipe={recipe} />
+        {recipe.image && <RecipePhoto image={recipe.image} />}
 
         <div className="recipe-body mt-14 grid grid-cols-1 gap-14 border-t border-white/12 pt-14 md:grid-cols-12 md:gap-10">
           <Ingredients recipe={recipe} />
@@ -104,9 +112,9 @@ function RecipeHeader({ recipe }: { recipe: Recipe }) {
         <PrintButton />
       </div>
 
-      <ul className="print-hidden mt-12 flex flex-wrap gap-2 md:mt-16" aria-label="Tags">
-        {recipe.tags.map((tag) => (
-          <li key={tag} className="label-sm border border-white/20 px-2 py-1.5 text-white/70">
+      <ul role="list" className="print-hidden mt-12 flex flex-wrap gap-2 md:mt-16" aria-label="Tags">
+        {recipe.tags.map((tag, i) => (
+          <li key={`${i}-${tag}`} className="label-sm border border-white/20 px-2 py-1.5 text-white/70">
             {tag.replace(/-/g, " ")}
           </li>
         ))}
@@ -133,6 +141,43 @@ function RecipeHeader({ recipe }: { recipe: Recipe }) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Photo - wide, with a credit line for photos that are not Liam's     */
+/* ------------------------------------------------------------------ */
+
+function RecipePhoto({ image }: { image: RecipeImage }) {
+  return (
+    <figure className="recipe-photo mt-12 md:mt-16">
+      <div className="recipe-photo-frame relative aspect-[4/3] w-full overflow-hidden bg-white/5 sm:aspect-[16/9] lg:aspect-[21/9]">
+        <Image
+          src={image.src}
+          alt={image.alt}
+          fill
+          priority
+          sizes="(min-width: 1800px) 1672px, 100vw"
+          className="object-cover"
+        />
+      </div>
+      {image.credit && (
+        <figcaption className="mt-3 text-[13px] text-white/60">
+          {image.creditUrl ? (
+            <a
+              href={image.creditUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline decoration-white/30 underline-offset-4 transition-colors hover:text-white"
+            >
+              {image.credit}
+            </a>
+          ) : (
+            image.credit
+          )}
+        </figcaption>
+      )}
+    </figure>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* Ingredients and steps                                               */
 /* ------------------------------------------------------------------ */
 
@@ -143,13 +188,13 @@ function Ingredients({ recipe }: { recipe: Recipe }) {
         INGREDIENTS
       </h2>
       {recipe.ingredients.map((group, i) => (
-        <div key={group.name ?? i} className="recipe-group mt-8">
+        <div key={i} className="recipe-group mt-8">
           {group.name && (
             <h3 className="label text-[var(--color-acid)]">{group.name}</h3>
           )}
-          <ul className="mt-4 space-y-3">
-            {group.items.map((item) => (
-              <li key={item} className="flex gap-3 text-[17px] leading-[1.5] text-white/85">
+          <ul role="list" className="mt-4 space-y-3">
+            {group.items.map((item, j) => (
+              <li key={`${j}-${item}`} className="flex gap-3 text-[17px] leading-[1.5] text-white/85">
                 <span aria-hidden className="mt-[0.75em] h-px w-3 shrink-0 bg-white/40" />
                 {item}
               </li>
@@ -167,10 +212,10 @@ function Steps({ recipe }: { recipe: Recipe }) {
       <h2 id="steps" className="section-tag text-white/60">
         STEPS
       </h2>
-      <ol className="mt-8">
+      <ol role="list" className="mt-8">
         {recipe.steps.map((step, i) => (
           <li
-            key={step.title}
+            key={`${i}-${step.title}`}
             className="recipe-step grid grid-cols-[2.75rem_1fr] gap-4 border-t border-white/12 py-7 first:border-t-0 first:pt-0 md:grid-cols-[4rem_1fr]"
           >
             <span aria-hidden className="display-serif text-[32px] text-white/50">
@@ -204,9 +249,9 @@ function Tips({ recipe }: { recipe: Recipe }) {
       <h2 id="tips" className="section-tag text-white/60">
         TIPS
       </h2>
-      <ul className="mt-8 space-y-5">
-        {recipe.tips.map((tip) => (
-          <li key={tip.text} className="text-[17px] leading-[1.55] text-white/80">
+      <ul role="list" className="mt-8 space-y-5">
+        {recipe.tips.map((tip, i) => (
+          <li key={`${i}-${tip.text}`} className="text-[17px] leading-[1.55] text-white/80">
             {tip.title && <strong className="font-medium text-white">{tip.title}: </strong>}
             {tip.text}
           </li>
@@ -255,8 +300,8 @@ function ChefNotes({ recipe }: { recipe: Recipe }) {
         CHEF&apos;S NOTES
       </h2>
       <div className="mt-8 space-y-4">
-        {recipe.notes.map((paragraph) => (
-          <p key={paragraph} className="font-serif text-[19px] leading-[1.4] text-white/75">
+        {recipe.notes.map((paragraph, i) => (
+          <p key={i} className="font-serif text-[19px] leading-[1.4] text-white/75">
             {paragraph}
           </p>
         ))}

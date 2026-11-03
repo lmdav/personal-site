@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { Arrow } from "@/components/arrow-icon";
 import { AnnouncementBar, SiteNav } from "@/components/site-chrome";
@@ -92,6 +93,17 @@ function RecipeCard({ recipe, number }: { recipe: Recipe; number: number }) {
       href={`/recipes/${recipe.slug}`}
       className="group flex h-full flex-col border-t border-white/12 py-10 transition-colors hover:bg-white/[0.02]"
     >
+      {recipe.image && (
+        <div className="relative mb-8 aspect-[4/3] w-full overflow-hidden bg-white/5">
+          <Image
+            src={recipe.image.src}
+            alt=""
+            fill
+            sizes="(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+          />
+        </div>
+      )}
       <div className="flex items-baseline justify-between gap-4">
         <span className="section-tag text-white/60">/{String(number).padStart(2, "0")}</span>
         <span className="label-sm text-white/60">{formatDate(recipe.date)}</span>
@@ -108,14 +120,14 @@ function RecipeCard({ recipe, number }: { recipe: Recipe; number: number }) {
           <dd className="mt-2 font-serif text-[20px] text-white">{formatMinutes(recipe.totalMinutes)}</dd>
         </div>
         <div>
-          <dt className="label-sm text-white/60">PROTEIN</dt>
+          <dt className="label-sm text-white/60">PROTEIN PER SERVING</dt>
           <dd className="mt-2 font-serif text-[20px] text-white">{recipe.nutrition.protein} g</dd>
         </div>
       </dl>
 
-      <ul className="mt-6 flex flex-wrap gap-2" aria-label="Tags">
-        {recipe.tags.map((tag) => (
-          <li key={tag} className="label-sm border border-white/20 px-2 py-1.5 text-white/70">
+      <ul role="list" className="mt-6 flex flex-wrap gap-2" aria-label="Tags">
+        {recipe.tags.map((tag, i) => (
+          <li key={`${i}-${tag}`} className="label-sm border border-white/20 px-2 py-1.5 text-white/70">
             {tag.replace(/-/g, " ")}
           </li>
         ))}

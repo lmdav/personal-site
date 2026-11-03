@@ -21,7 +21,7 @@ Only publish a recipe after it has been cooked and tested.
 | `servingsNote` | No | A short note under the servings, such as "Double everything for two." |
 | `prepMinutes`, `cookMinutes`, `totalMinutes` | Yes | Whole numbers of minutes. |
 | `tags` | Yes | A list, such as `[high-protein, meal-prep, beef]`. |
-| `image` | No | A path under `public/` (starting with `/`) or an https link. |
+| `image` | No | A photo with `src`, `alt`, and, for photos that are not yours, `credit` and `creditUrl`. `src` is a path under `public/` (starting with `/`) or an `images.unsplash.com` link. `alt` describes the photo for screen readers. |
 | `ingredients` | Yes | A list of groups. Each group has an optional `name` and a list of `items`. |
 | `steps` | Yes | A list. Each step has a `title`, optional `minutes`, and `text`. |
 | `tips` | No | A list. Each tip has an optional `title` and `text`. |
