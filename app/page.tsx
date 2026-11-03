@@ -1,15 +1,16 @@
 import Image from "next/image";
-import Link from "next/link";
 import { AboutSection } from "@/components/about-section";
 import { FeaturesAccordion } from "@/components/features-accordion";
 import { HospitalityAtScale } from "@/components/hospitality-at-scale";
 import { QuestionCarousel } from "@/components/question-carousel";
+import { Arrow } from "@/components/arrow-icon";
+import { AnnouncementBar, SiteFooter, SiteNav } from "@/components/site-chrome";
 
 export default function Home() {
   return (
     <main className="min-h-screen w-full bg-black text-white overflow-x-clip">
       <AnnouncementBar />
-      <Nav />
+      <SiteNav current="home" />
       <Hero />
       <FeaturesAccordion />
       <QuestionCarousel />
@@ -17,72 +18,6 @@ export default function Home() {
       <AboutSection />
       <Footer />
     </main>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Announcement bar - yellow on black                                  */
-/* ------------------------------------------------------------------ */
-
-function AnnouncementBar() {
-  return (
-    <div className="w-full bg-[var(--color-acid)] text-black">
-      <div className="mx-auto flex max-w-[1800px] items-center justify-between gap-3 px-5 py-3 md:px-7">
-        <span className="label truncate">STAYZA IS LIVE IN PRIVATE BETA</span>
-        <Link
-          href="https://trystayza.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="label inline-flex items-center gap-2 border-b border-black pb-[2px]"
-        >
-          VISIT STAYZA
-          <Arrow className="h-3.5 w-3.5" />
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Nav - fixed, transparent over hero                                  */
-/* ------------------------------------------------------------------ */
-
-function Nav() {
-  return (
-    <nav className="sticky top-0 z-50 w-full bg-black/40 backdrop-blur-md">
-      <div className="mx-auto flex max-w-[1800px] items-center justify-between px-6 py-5 md:px-16">
-        <Link href="/" className="flex items-center gap-3 text-white">
-          <Image
-            src="/brand/liam.png"
-            alt="Liam Davis"
-            width={28}
-            height={28}
-            priority
-            className="h-7 w-7 object-contain"
-          />
-          <span className="label text-white">LIAM</span>
-        </Link>
-
-        <div className="hidden items-center gap-10 md:flex">
-          <Link href="/projects" className="label text-white/60 hover:text-white transition-colors">
-            PROJECTS
-          </Link>
-          <Link href="#approach" className="label text-white/60 hover:text-white transition-colors">
-            APPROACH
-          </Link>
-          <Link href="#about" className="label text-white/60 hover:text-white transition-colors">
-            ABOUT
-          </Link>
-        </div>
-
-        <Link
-          href="#contact"
-          className="label inline-flex h-[38px] items-center bg-white px-3 text-black"
-        >
-          CONTACT
-        </Link>
-      </div>
-    </nav>
   );
 }
 
@@ -260,142 +195,36 @@ function TickerRow({
 /* ------------------------------------------------------------------ */
 
 /* ------------------------------------------------------------------ */
-/* Footer                                                              */
+/* Footer - with the mailing-list form                                 */
 /* ------------------------------------------------------------------ */
 
 function Footer() {
   return (
-    <footer id="contact" className="w-full bg-[#0a0a0a] text-white">
-      <div className="mx-auto max-w-[1800px] px-6 pb-20 pt-20 md:px-16 md:pb-24 md:pt-24">
-        <div className="mb-12 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-white/10 pt-8 md:mb-16">
-          <span className="section-tag text-white/60">/08 - GET IN TOUCH</span>
-          <span className="section-tag text-white/60">THE DOOR&apos;S OPEN</span>
-        </div>
-
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-20">
-          <div className="col-span-1 md:col-span-7">
-            <h2 className="display-serif text-[clamp(2.75rem,8vw,8rem)] leading-[0.95] text-white">
-              Say hello.
-            </h2>
-            <p className="mt-8 max-w-lg font-serif text-[20px] leading-[1.2] text-white/75">
-              Building in AI, go-to-market, or growth? I&apos;d love to hear
-              from you. Always open to partnerships and good conversation. I
-              read every email.
-            </p>
-
-            <form
-              action="#"
-              className="mt-12 flex max-w-md items-stretch border border-white/15"
-            >
-              <input
-                type="email"
-                placeholder="YOU@EXAMPLE.COM"
-                className="label flex-1 bg-[#0a0a0a] px-3 py-3 text-white placeholder-white/40 outline-none"
-              />
-              <button
-                type="submit"
-                className="label inline-flex shrink-0 items-center gap-2 whitespace-nowrap bg-[var(--color-acid)] px-4 text-black"
-              >
-                JOIN LIST
-                <Arrow className="h-3 w-3" />
-              </button>
-            </form>
-          </div>
-
-          <div className="col-span-1 grid grid-cols-2 gap-8 md:col-span-5 md:gap-10">
-            <FooterColumn
-              heading="DIRECT"
-              links={[
-                { label: "limdavis@ucsc.edu", href: "mailto:limdavis@ucsc.edu" },
-                { label: "linkedin / lmdav", href: "https://www.linkedin.com/in/lmdav" },
-                { label: "github / lmdav", href: "https://github.com/lmdav" },
-              ]}
-            />
-            <FooterColumn
-              heading="PROJECTS"
-              links={[
-                { label: "STAYZA", href: "https://trystayza.com" },
-                { label: "ALL PROJECTS", href: "/projects" },
-                { label: "WRITING (SOON)", href: "#" },
-              ]}
-            />
-          </div>
-        </div>
-
-        {/* Giant wordmark */}
-        <div className="mt-20 flex items-end justify-between gap-8 border-t border-white/10 pt-10 md:mt-32">
-          <div className="flex items-center gap-4 md:gap-8">
-            <Image
-              src="/brand/liam.png"
-              alt="Liam Davis"
-              width={160}
-              height={160}
-              className="h-[clamp(4rem,11vw,10rem)] w-auto object-contain"
-            />
-            <span className="display-sans text-[clamp(5rem,15vw,14rem)] leading-[0.85] text-white">
-              liam
-            </span>
-          </div>
-        </div>
-
-        <div className="mt-10 flex items-center justify-between text-white/50">
-          <span className="label-sm">© {new Date().getFullYear()} LIAM DAVIS</span>
-          <span className="label-sm">BUILT IN PUBLIC</span>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-function FooterColumn({
-  heading,
-  links,
-}: {
-  heading: string;
-  links: { label: string; href: string }[];
-}) {
-  return (
-    <div>
-      <p className="label text-white/50">{heading}</p>
-      <ul className="mt-6 space-y-3">
-        {links.map((l) => {
-          const isExternal = /^(https?:|mailto:)/.test(l.href);
-          return (
-            <li key={l.label}>
-              <Link
-                href={l.href}
-                target={isExternal ? "_blank" : undefined}
-                rel={isExternal ? "noopener noreferrer" : undefined}
-                className="label-sm whitespace-nowrap text-white/80 hover:text-white transition-colors"
-              >
-                {l.label.toUpperCase()}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Tiny primitives                                                     */
-/* ------------------------------------------------------------------ */
-
-function Arrow({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 14 14"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="square"
-      className={className}
-      aria-hidden="true"
+    <SiteFooter
+      tag="/08 - GET IN TOUCH"
+      projectLinks={[
+        { label: "STAYZA", href: "https://trystayza.com" },
+        { label: "ALL PROJECTS", href: "/projects" },
+        { label: "WRITING (SOON)", href: "#" },
+      ]}
     >
-      <line x1="2" y1="7" x2="12" y2="7" />
-      <polyline points="8,3 12,7 8,11" />
-    </svg>
+      <form
+        action="#"
+        className="mt-12 flex max-w-md items-stretch border border-white/15"
+      >
+        <input
+          type="email"
+          placeholder="YOU@EXAMPLE.COM"
+          className="label flex-1 bg-[#0a0a0a] px-3 py-3 text-white placeholder-white/40 outline-none"
+        />
+        <button
+          type="submit"
+          className="label inline-flex shrink-0 items-center gap-2 whitespace-nowrap bg-[var(--color-acid)] px-4 text-black"
+        >
+          JOIN LIST
+          <Arrow className="h-3 w-3" />
+        </button>
+      </form>
+    </SiteFooter>
   );
 }
-

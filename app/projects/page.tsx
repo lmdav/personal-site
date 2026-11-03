@@ -1,5 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
+import { Arrow } from "@/components/arrow-icon";
+import { AnnouncementBar, SiteFooter, SiteNav } from "@/components/site-chrome";
 
 type Project = {
   number: string;
@@ -117,77 +118,11 @@ export default function ProjectsPage() {
   return (
     <main className="min-h-screen w-full overflow-x-clip bg-black text-white">
       <AnnouncementBar />
-      <Nav />
+      <SiteNav current="projects" />
       <Hero />
       <ProjectList />
       <Footer />
     </main>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Announcement bar - reused                                           */
-/* ------------------------------------------------------------------ */
-
-function AnnouncementBar() {
-  return (
-    <div className="w-full bg-[var(--color-acid)] text-black">
-      <div className="mx-auto flex max-w-[1800px] items-center justify-between gap-3 px-5 py-3 md:px-7">
-        <span className="label truncate">STAYZA IS LIVE IN PRIVATE BETA</span>
-        <Link
-          href="https://trystayza.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="label inline-flex items-center gap-2 border-b border-black pb-[2px]"
-        >
-          VISIT STAYZA
-          <Arrow className="h-3.5 w-3.5" />
-        </Link>
-      </div>
-    </div>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-/* Nav - reused                                                        */
-/* ------------------------------------------------------------------ */
-
-function Nav() {
-  return (
-    <nav className="sticky top-0 z-50 w-full bg-black/40 backdrop-blur-md">
-      <div className="mx-auto flex max-w-[1800px] items-center justify-between px-6 py-5 md:px-16">
-        <Link href="/" className="flex items-center gap-3 text-white">
-          <Image
-            src="/brand/liam.png"
-            alt="Liam Davis"
-            width={28}
-            height={28}
-            priority
-            className="h-7 w-7 object-contain"
-          />
-          <span className="label text-white">LIAM</span>
-        </Link>
-
-        <div className="hidden items-center gap-10 md:flex">
-          <Link href="/projects" className="label nav-glow text-white transition-colors">
-            PROJECTS
-          </Link>
-          <Link href="/#approach" className="label text-white/60 transition-colors hover:text-white">
-            APPROACH
-          </Link>
-          <Link href="/#about" className="label text-white/60 transition-colors hover:text-white">
-            ABOUT
-          </Link>
-        </div>
-
-        <Link
-          href="/#contact"
-          className="label inline-flex h-[38px] items-center bg-white px-3 text-black"
-        >
-          CONTACT
-        </Link>
-      </div>
-    </nav>
   );
 }
 
@@ -269,22 +204,8 @@ function ProjectCard({
   project: Project;
   isFirst: boolean;
 }) {
-  const Wrapper = ({ children }: { children: React.ReactNode }) =>
-    project.href ? (
-      <Link
-        href={project.href}
-        className="group block"
-        target={project.href.startsWith("http") ? "_blank" : undefined}
-        rel={project.href.startsWith("http") ? "noopener noreferrer" : undefined}
-      >
-        {children}
-      </Link>
-    ) : (
-      <div className="group block">{children}</div>
-    );
-
   return (
-    <Wrapper>
+    <CardWrapper href={project.href}>
       <div
         className={`grid grid-cols-1 gap-6 border-b border-white/12 py-10 transition-colors md:grid-cols-12 md:gap-10 md:py-20 ${
           isFirst ? "border-t border-white/12" : ""
@@ -369,7 +290,29 @@ function ProjectCard({
           )}
         </div>
       </div>
-    </Wrapper>
+    </CardWrapper>
+  );
+}
+
+/** Makes the whole card a link when the project has one, otherwise a plain block. */
+function CardWrapper({
+  href,
+  children,
+}: {
+  href?: string;
+  children: React.ReactNode;
+}) {
+  if (!href) return <div className="group block">{children}</div>;
+  const isExternal = href.startsWith("http");
+  return (
+    <Link
+      href={href}
+      className="group block"
+      target={isExternal ? "_blank" : undefined}
+      rel={isExternal ? "noopener noreferrer" : undefined}
+    >
+      {children}
+    </Link>
   );
 }
 
@@ -379,115 +322,13 @@ function ProjectCard({
 
 function Footer() {
   return (
-    <footer id="contact" className="w-full bg-[#0a0a0a] text-white">
-      <div className="mx-auto max-w-[1800px] px-6 pb-20 pt-20 md:px-16 md:pb-24 md:pt-24">
-        <div className="mb-12 flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2 border-t border-white/10 pt-8 md:mb-16">
-          <span className="section-tag text-white/60">/99 - GET IN TOUCH</span>
-          <span className="section-tag text-white/60">THE DOOR&apos;S OPEN</span>
-        </div>
-
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-12 md:gap-20">
-          <div className="col-span-1 md:col-span-7">
-            <h2 className="display-serif text-[clamp(2.75rem,8vw,8rem)] leading-[0.95] text-white">
-              Say hello.
-            </h2>
-            <p className="mt-8 max-w-lg font-serif text-[20px] leading-[1.2] text-white/75">
-              Building in AI, go-to-market, or growth? I&apos;d love to hear
-              from you. Always open to partnerships and good conversation. I
-              read every email.
-            </p>
-          </div>
-
-          <div className="col-span-1 grid grid-cols-2 gap-8 md:col-span-5 md:gap-10">
-            <FooterColumn
-              heading="DIRECT"
-              links={[
-                { label: "limdavis@ucsc.edu", href: "mailto:limdavis@ucsc.edu" },
-                { label: "linkedin / lmdav", href: "https://www.linkedin.com/in/lmdav" },
-                { label: "github / lmdav", href: "https://github.com/lmdav" },
-              ]}
-            />
-            <FooterColumn
-              heading="PROJECTS"
-              links={[
-                { label: "STAYZA", href: "https://trystayza.com" },
-                { label: "ALL PROJECTS", href: "/projects" },
-                { label: "HOME", href: "/" },
-              ]}
-            />
-          </div>
-        </div>
-
-        <div className="mt-20 flex items-end justify-between gap-8 border-t border-white/10 pt-10 md:mt-32">
-          <div className="flex items-center gap-4 md:gap-8">
-            <Image
-              src="/brand/liam.png"
-              alt="Liam Davis"
-              width={160}
-              height={160}
-              className="h-[clamp(4rem,11vw,10rem)] w-auto object-contain"
-            />
-            <span className="display-sans text-[clamp(5rem,15vw,14rem)] leading-[0.85] text-white">
-              liam
-            </span>
-          </div>
-        </div>
-
-        <div className="mt-10 flex items-center justify-between text-white/50">
-          <span className="label-sm">
-            © {new Date().getFullYear()} LIAM DAVIS
-          </span>
-          <span className="label-sm">BUILT IN PUBLIC</span>
-        </div>
-      </div>
-    </footer>
-  );
-}
-
-function FooterColumn({
-  heading,
-  links,
-}: {
-  heading: string;
-  links: { label: string; href: string }[];
-}) {
-  return (
-    <div>
-      <p className="label text-white/50">{heading}</p>
-      <ul className="mt-6 space-y-3">
-        {links.map((l) => {
-          const isExternal = /^(https?:|mailto:)/.test(l.href);
-          return (
-            <li key={l.label}>
-              <Link
-                href={l.href}
-                target={isExternal ? "_blank" : undefined}
-                rel={isExternal ? "noopener noreferrer" : undefined}
-                className="label-sm whitespace-nowrap text-white/80 transition-colors hover:text-white"
-              >
-                {l.label.toUpperCase()}
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-    </div>
-  );
-}
-
-function Arrow({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 14 14"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="square"
-      className={className}
-      aria-hidden="true"
-    >
-      <line x1="2" y1="7" x2="12" y2="7" />
-      <polyline points="8,3 12,7 8,11" />
-    </svg>
+    <SiteFooter
+      tag="/99 - GET IN TOUCH"
+      projectLinks={[
+        { label: "STAYZA", href: "https://trystayza.com" },
+        { label: "ALL PROJECTS", href: "/projects" },
+        { label: "HOME", href: "/" },
+      ]}
+    />
   );
 }
