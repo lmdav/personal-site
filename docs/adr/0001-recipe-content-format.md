@@ -7,7 +7,7 @@ supersedes: []
 superseded_by: []
 amends: []
 amended_by: []
-related: []
+related: [0002, 0003]
 ---
 
 # 0001: Recipes are Markdown files with validated YAML frontmatter

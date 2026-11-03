@@ -6,8 +6,8 @@ date: 2026-11-02
 supersedes: []
 superseded_by: []
 amends: []
-amended_by: []
-related: [0001]
+amended_by: [0003]
+related: [0001, 0004]
 ---
 
 # 0002: Recipe how-to videos are rendered with Remotion in a separate package
