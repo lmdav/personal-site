@@ -1,6 +1,6 @@
 # Recipe videos and blueprint sheets
 
-Narrated how-to videos and blueprint drawing sheets for the recipes, made with [Remotion](https://www.remotion.dev) and a free local voice ([Kokoro](https://github.com/thewh1teagle/kokoro-onnx)). This folder is its own package so the website does not install or build any of it. The current design is described in `docs/recipes-media-v3.md`.
+Narrated how-to videos and blueprint drawing sheets for the recipes, made with [Remotion](https://www.remotion.dev) and a free local voice ([Kokoro](https://github.com/thewh1teagle/kokoro-onnx)). This folder is its own package so the website does not install or build any of it. The current design, the v4 3D product shot, is described in `docs/recipes-media-v4.md`.
 
 ## One-time setup
 
@@ -39,7 +39,7 @@ To preview while editing, run `pnpm export <slug>` and `.venv/bin/python narrate
 
 ## Add a recipe
 
-1. Write `src/recipes/<slug>.narration.json` with the same eight scenes: one line to speak and one caption each.
+1. Write `src/recipes/<slug>.narration.json` with the same eight scenes. Each scene is a list of beats, and each beat has a line to speak and a caption.
 2. Add its parts and scene details. New ingredients become new parts in `src/parts.tsx`.
 3. Register a `<Composition>` with the slug as its id and a `<Still>` with id `<slug>-blueprint` in `src/Root.tsx`.
 4. Run `pnpm render <slug>`, then add the `blueprint` and `video` fields to the recipe file.
