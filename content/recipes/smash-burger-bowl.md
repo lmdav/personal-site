@@ -90,7 +90,7 @@ steps:
     text: "In a wide bowl, put the romaine, the tomato, the rest of the diced onion, and 1/4 cup dill pickle chips on one half."
   - title: "Heat the pan"
     minutes: 3
-    text: "Wipe out the skillet, turn the heat to high, and let it heat for 3 minutes, until it just starts to smoke."
+    text: "If the potatoes are roasting in the oven, wait until they have about 7 minutes left. Wipe out the skillet, turn the heat to high, and let it heat for 3 minutes, until it just starts to smoke."
   - title: "Smash the patties"
     minutes: 1
     text: "Add 1/2 tsp avocado or canola oil, then put the 2 beef balls in the pan. Cover each with a parchment square and, within 10 seconds, press it as flat as you can with a sturdy spatula."
