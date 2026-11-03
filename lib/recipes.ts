@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { parse as parseYaml } from "yaml";
 
@@ -45,19 +45,25 @@ export type Recipe = {
 export class RecipeError extends Error {}
 
 export const RECIPES_DIR = path.join(process.cwd(), "content", "recipes");
+export const PUBLIC_DIR = path.join(process.cwd(), "public");
 
 /* ------------------------------------------------------------------ */
 /* Loading                                                             */
 /* ------------------------------------------------------------------ */
 
 /**
- * Reads every recipe in `dir`, newest first. README.md and files starting
- * with "_" (the template) are skipped. Throws a RecipeError naming the file
- * and every bad field, which fails the build.
+ * Reads every recipe in `dir`, newest first. README.md, files starting with
+ * "_" (the template), and hidden files (such as macOS "._" copies) are
+ * skipped. Throws a RecipeError naming the file and every bad field, which
+ * fails the build.
  */
-export function loadRecipes(dir: string = RECIPES_DIR): Recipe[] {
+export function loadRecipes(dir: string = RECIPES_DIR, publicDir: string = PUBLIC_DIR): Recipe[] {
   const files = readdirSync(dir).filter(
-    (f) => f.endsWith(".md") && f !== "README.md" && !f.startsWith("_"),
+    (f) =>
+      f.toLowerCase().endsWith(".md") &&
+      f !== "README.md" &&
+      !f.startsWith("_") &&
+      !f.startsWith("."),
   );
   const recipes = files.map((file) => {
     const recipe = parseRecipe(readFileSync(path.join(dir, file), "utf8"), file);
@@ -65,6 +71,9 @@ export function loadRecipes(dir: string = RECIPES_DIR): Recipe[] {
       throw new RecipeError(
         `${file}: slug "${recipe.slug}" must match the file name (${recipe.slug}.md)`,
       );
+    }
+    if (recipe.image?.startsWith("/") && !existsSync(path.join(publicDir, recipe.image))) {
+      throw new RecipeError(`${file}: image "${recipe.image}" is not in the public folder`);
     }
     return recipe;
   });
@@ -89,6 +98,12 @@ const TOP_FIELDS = [
 const NUTRIENTS = ["calories", "protein", "carbs", "fat", "fiber"] as const;
 
 const KEBAB = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+// House style: no em or en dashes anywhere in published copy.
+const DASHES = /[\u2013\u2014]/;
+const DASH_HINT = "must not contain em or en dashes (use a comma, colon, or period)";
+// Upper bounds catch typos such as an extra zero.
+const MAX_MINUTES = 7 * 24 * 60;
+const MAX_SERVINGS = 100;
 
 type Obj = Record<string, unknown>;
 
@@ -115,21 +130,29 @@ class Checker {
   }
 
   textValue(value: unknown, at: string): string | undefined {
-    if (typeof value === "string" && value.trim() !== "") return value.trim();
+    if (typeof value === "string" && value.trim() !== "") {
+      if (DASHES.test(value)) this.errors.push(`${at} ${DASH_HINT}`);
+      return value.trim();
+    }
     // A bare `- 1/2 onion: sliced` reads as a key-value pair in YAML.
     const hint = isObj(value) ? ' (wrap it in quotes if it contains ": ")' : "";
     this.errors.push(`${at} must be text${hint}`);
     return undefined;
   }
 
-  count(obj: Obj, key: string, at: string, { optional = false, min = 1 } = {}) {
+  count(
+    obj: Obj,
+    key: string,
+    at: string,
+    { optional = false, min = 1, max = MAX_MINUTES } = {},
+  ) {
     const value = obj[key];
     if (value === undefined || value === null) {
       if (!optional) this.errors.push(`${at}${key} is required`);
       return undefined;
     }
-    if (!Number.isInteger(value) || (value as number) < min) {
-      this.errors.push(`${at}${key} must be a whole number of at least ${min}`);
+    if (!Number.isInteger(value) || (value as number) < min || (value as number) > max) {
+      this.errors.push(`${at}${key} must be a whole number from ${min} to ${max}`);
       return undefined;
     }
     return value as number;
@@ -166,7 +189,9 @@ class Checker {
 
 /** Splits a recipe file into YAML frontmatter and body, then validates it. */
 export function parseRecipe(source: string, fileName: string): Recipe {
-  const match = /^---\r?\n([\s\S]*?)\r?\n---[^\S\r\n]*(?:\r?\n([\s\S]*))?$/.exec(source);
+  // Some editors save a byte-order mark before the first "---".
+  const text = source.replace(/^\uFEFF/, "");
+  const match = /^---\r?\n([\s\S]*?)\r?\n---[^\S\r\n]*(?:\r?\n([\s\S]*))?$/.exec(text);
   if (!match) {
     throw new RecipeError(`${fileName}: must start with YAML frontmatter between two --- lines`);
   }
@@ -193,7 +218,7 @@ export function parseRecipe(source: string, fileName: string): Recipe {
   }
 
   const image = c.text(top, "image", "", true);
-  if (image && !image.startsWith("/") && !image.startsWith("https://")) {
+  if (image && !isImageReference(image)) {
     c.errors.push(`image must be a path under /public (starting with "/") or an https URL`);
   }
 
@@ -235,16 +260,31 @@ export function parseRecipe(source: string, fileName: string): Recipe {
     c.errors.push("nutrition.estimate must be true (the page labels the numbers as estimates)");
   }
 
+  const prepMinutes = c.count(top, "prepMinutes", "", { min: 0 });
+  const cookMinutes = c.count(top, "cookMinutes", "", { min: 0 });
+  const totalMinutes = c.count(top, "totalMinutes", "");
+  if (
+    prepMinutes !== undefined &&
+    cookMinutes !== undefined &&
+    totalMinutes !== undefined &&
+    totalMinutes < Math.max(prepMinutes, cookMinutes)
+  ) {
+    c.errors.push("totalMinutes must be at least as long as prepMinutes and cookMinutes");
+  }
+
+  const body = match[2] ?? "";
+  if (DASHES.test(body)) c.errors.push(`the chef's notes ${DASH_HINT}`);
+
   const recipe: Recipe = {
     slug: slug ?? "",
     title: c.text(top, "title", "") ?? "",
     summary: c.text(top, "summary", "") ?? "",
     date: date ?? "",
-    servings: c.count(top, "servings", "") ?? 1,
+    servings: c.count(top, "servings", "", { max: MAX_SERVINGS }) ?? 1,
     servingsNote: c.text(top, "servingsNote", "", true),
-    prepMinutes: c.count(top, "prepMinutes", "", { min: 0 }) ?? 0,
-    cookMinutes: c.count(top, "cookMinutes", "", { min: 0 }) ?? 0,
-    totalMinutes: c.count(top, "totalMinutes", "") ?? 0,
+    prepMinutes: prepMinutes ?? 0,
+    cookMinutes: cookMinutes ?? 0,
+    totalMinutes: totalMinutes ?? 0,
     tags,
     image,
     ingredients,
@@ -259,7 +299,7 @@ export function parseRecipe(source: string, fileName: string): Recipe {
       estimate: true,
       note: c.text(nut, "note", "nutrition.", true),
     },
-    notes: (match[2] ?? "")
+    notes: body
       .split(/\r?\n\s*\r?\n/)
       .map((p) => p.replace(/\s+/g, " ").trim())
       .filter(Boolean),
@@ -271,6 +311,18 @@ export function parseRecipe(source: string, fileName: string): Recipe {
     );
   }
   return recipe;
+}
+
+/** A site path like "/recipes/bowl.jpg" or an absolute https URL, nothing else. */
+function isImageReference(value: string): boolean {
+  if (/\s/.test(value) || value.startsWith("//")) return false;
+  if (value.startsWith("/")) return true;
+  try {
+    const url = new URL(value);
+    return url.protocol === "https:" && url.hostname !== "";
+  } catch {
+    return false;
+  }
 }
 
 function isCalendarDate(value: string): boolean {

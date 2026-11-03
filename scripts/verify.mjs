@@ -4,7 +4,8 @@
  * everything, and exits non-zero if any gate failed. Usage: `pnpm verify`.
  */
 import { spawnSync } from "node:child_process";
-import { pathToFileURL } from "node:url";
+import { realpathSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 /** Local gates. A CI job must map to one of these names or to CI_EXCUSES. */
 export const GATES = [
@@ -31,4 +32,7 @@ function run() {
   process.exit(results.every((r) => r.result === "PASS") ? 0 : 1);
 }
 
-if (import.meta.url === pathToFileURL(process.argv[1]).href) run();
+// Run only when executed directly (tests import GATES). Compare real paths so a
+// symlinked invocation still runs the gates instead of silently passing.
+const invokedPath = process.argv[1] ? realpathSync(process.argv[1]) : "";
+if (invokedPath === realpathSync(fileURLToPath(import.meta.url))) run();
