@@ -1,6 +1,6 @@
 # Run file: Beef Broccoli Bowls
 
-Slug: `beef-broccoli-bowls`. Started 2026-11-03 at 16:32 PST. Next gate: "publish".
+Slug: `beef-broccoli-bowls`. Started 2026-11-03 at 16:32 PST. Published 2026-11-03 at 16:54 PST. Next: Liam's call on the video (stage 2), which needs kit work first.
 
 ## What Liam sent
 
@@ -68,7 +68,7 @@ Skipped for now. The kit has no rice, broccoli, steak, egg, or avocado, no sear 
 
 ## Before publishing
 
-The recipes index says "Every one has been cooked and tested." Liam confirmed on 2026-11-03 that he has cooked this with these amounts, so that line holds. His "publish" is the only thing left.
+The recipes index says "Every one has been cooked and tested." Liam confirmed on 2026-11-03 that he has cooked this with these amounts, so that line holds. He then said "publish".
 
 ## Proven and untested
 
@@ -78,16 +78,16 @@ The recipes index says "Every one has been cooked and tested." Liam confirmed on
 | The page renders | Viewed on the dev server at desktop and 375 px phone widths: photo, cook mode, phone ingredients panel, index card, no console or server errors, no sideways scroll |
 | The recipe works when cooked | Liam's word that he has cooked it and the amounts match. The step times, temperatures, and rice water ratio were not confirmed separately. |
 | The nutrition numbers | Estimated by hand from USDA values recalled from memory, without checking them against FoodData Central |
-| The production page | Untested. Nothing is merged or deployed. |
+| The production page | Viewed at lmdav.com/recipes/beef-broccoli-bowls after the deploy: status 200, photo loaded, nutrition shown, listed on the index, no console errors. The Smash Burger Bowl page still returns 200. Checked at desktop width only. |
 
 ## Timing
 
-Stage 1 took about 6 minutes on the clock, 16:32 to 16:38 PST, including two verify failures on the fresh worktree. The kickoff answers came later, in a few quick replies. This does not measure the 10 to 15 minute target, which covers all three gates and the video.
+Stage 1 took about 6 minutes on the clock, 16:32 to 16:38 PST, including two verify failures on the fresh worktree. The kickoff answers and "publish" came later, in a few quick replies, and the merge and deploy took a few minutes more. This covers one gate of three, so it does not measure the 10 to 15 minute target, which also covers the video.
 
 ## Status
 
 | Stage | State |
 | --- | --- |
 | 0. Kickoff | Answered |
-| 1. Recipe | File written, verify green, [PR #17](https://github.com/lmdav/personal-site/pull/17) open, waiting on "publish" |
+| 1. Recipe | Done: [PR #17](https://github.com/lmdav/personal-site/pull/17) merged as `9a9eaca`, deployed by hand to production, and live |
 | 2 to 4. Video | Skipped until item C |
