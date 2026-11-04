@@ -64,7 +64,13 @@ The amounts, times, and temperatures below were estimated for the first draft. L
 
 ## Stage 2 and later: video
 
-Skipped for now. The kit has no rice, broccoli, steak, egg, or avocado, no sear or egg method, and the bowl templates draw only the Smash Burger Bowl (playbook item C). The page works without a video.
+Liam said go on 2026-11-03 and asked for this recipe only. The kit gained what it lacked: a bowl per recipe, steak, broccoli, rice, avocado, eggs, and sesame, and the sear, char, eggs, pot, and board methods. No photos or sounds were downloaded.
+
+- **Scenes:** hero, pull-apart, rice, steak, broccoli, eggs, slice, build, finish. 176.5 s at house pacing.
+- **Not drawn, narration and chips only:** rinsing the rice, trimming the fat cap, the thermometer, fluffing the rice, and the lime.
+- **Smash Burger Bowl unchanged:** its bake is byte-identical, and 44 stills (22 moments, wide and vertical) show zero pixel difference from `main`. A re-render of `main` also showed zero, so the renderer adds no noise.
+- **Narration:** all 30 lines match the script in the whisper check. It caught "rice" as "rise", "Calrose" as "cowl rose", "bowl" as "balls", and the spelled-out URL, each fixed in the script or the dictionary.
+- **Times and temperatures:** the narration states the recipe's, which Liam has not confirmed separately (see Proven and untested). He hears them in the review pack.
 
 ## Before publishing
 
@@ -90,4 +96,5 @@ Stage 1 took about 6 minutes on the clock, 16:32 to 16:38 PST, including two ver
 | --- | --- |
 | 0. Kickoff | Answered |
 | 1. Recipe | Done: [PR #17](https://github.com/lmdav/personal-site/pull/17) merged as `9a9eaca`, deployed by hand to production, and live |
-| 2 to 4. Video | Skipped until item C |
+| 2. Video plan | Review pack sent 2026-11-03, waiting on Liam's approval of the narration and stills |
+| 3 to 4. Render and publish | Not started. Render only after approval, on mains power. |
