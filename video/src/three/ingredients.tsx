@@ -8,10 +8,11 @@ import * as THREE from "three";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
 import { rng } from "../geo";
 import { cheeseShape } from "./cooking";
+import { EGG, buildFoods } from "./foods";
 import { mushroomTexture, pickleTexture, tomatoTexture } from "./paint";
 import { reliefGeometry } from "./relief";
 
-export type Kind = "leaf" | "tomato" | "onion" | "pickle" | "potato" | "patty" | "mushroom" | "onionSlice";
+export type Kind = "leaf" | "tomato" | "onion" | "pickle" | "potato" | "patty" | "mushroom" | "onionSlice" | "steak" | "broccoli" | "avocado" | "egg" | "rice";
 
 const POTATO_PHOTOS = [0, 1, 3];
 
@@ -201,7 +202,10 @@ function buildKit(photos: { patty: THREE.Texture; leaf: THREE.Texture; potatoes:
   }
   const mushroomMap = mushroomTexture(paintMushroom);
   mushroomMap.offset.set(0.5, 0.5);
+  let foods: ReturnType<typeof buildFoods> | undefined;
   return {
+    /** The rice-bowl foods (foods.ts), built the first time something asks. */
+    foods: () => (foods ??= buildFoods(photos.patty)),
     leaf: {
       geos: Array.from({ length: 30 }, (_, i) => leafGeometry(100 + i)),
       materials: [0, 1, 2, 3].map(
@@ -260,7 +264,7 @@ export function KitProvider({ children }: { children: React.ReactNode }) {
 export const useKit = () => useContext(KitContext)!;
 
 /** One piece of food of the given kind, centered on its collider. */
-export function pieceObject(kit: Kit, kind: Kind, variant: number): THREE.Object3D {
+export function pieceObject(kit: Kit, kind: Kind, variant: number, rice?: number[][]): THREE.Object3D {
   const mesh = (geo: THREE.BufferGeometry, material: THREE.Material) => {
     const m = new THREE.Mesh(geo, material);
     m.castShadow = m.receiveShadow = true;
@@ -295,11 +299,47 @@ export function pieceObject(kit: Kit, kind: Kind, variant: number): THREE.Object
       return scaled(mesh(kit.mushroom.geos[variant % kit.mushroom.geos.length], kit.mushroom.material));
     case "onionSlice":
       return scaled(mesh(kit.onionSlice.geo, kit.onionSlice.material));
+    case "steak": {
+      const { strips, stripMaterials } = kit.foods().steak;
+      const m = new THREE.Mesh(strips[variant % strips.length], stripMaterials);
+      m.castShadow = m.receiveShadow = true;
+      return m;
+    }
+    case "broccoli": {
+      const { geos, cooked, proxy, hidden } = kit.foods().broccoli;
+      const group = new THREE.Group();
+      const m = mesh(geos[variant % geos.length], cooked.material);
+      // Rays for the sauce and seeds hit a simple stand-in, not the tens of thousands of buds.
+      m.raycast = () => {};
+      const stand = new THREE.Mesh(proxy, hidden);
+      stand.visible = false;
+      group.add(m, stand);
+      group.scale.setScalar(jitter);
+      return group;
+    }
+    case "avocado": {
+      const { geo, material } = kit.foods().avocado;
+      return scaled(mesh(geo, material));
+    }
+    case "egg": {
+      const { whites, white, yolk, yolkMaterial } = kit.foods().egg;
+      const group = new THREE.Group();
+      const w = mesh(whites[variant % whites.length], white);
+      w.position.y = -0.0035;
+      const y = mesh(yolk, yolkMaterial);
+      y.position.set(EGG.yolkAt[0], 0.0012, EGG.yolkAt[1]);
+      group.add(w, y);
+      group.scale.set(0.82, 1, 0.82);
+      return group;
+    }
+    case "rice":
+      if (!rice) throw new Error("The rice piece needs its profile from the build file (kinds.rice.lathe)");
+      return kit.foods().riceBed(rice, 7000);
   }
 }
 
-export function Piece({ kind, variant }: { kind: Kind; variant: number }) {
+export function Piece({ kind, variant, rice }: { kind: Kind; variant: number; rice?: number[][] }) {
   const kit = useKit();
-  const object = useMemo(() => pieceObject(kit, kind, variant), [kit, kind, variant]);
+  const object = useMemo(() => pieceObject(kit, kind, variant, rice), [kit, kind, variant, rice]);
   return <primitive object={object} />;
 }

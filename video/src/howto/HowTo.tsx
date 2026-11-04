@@ -6,9 +6,11 @@
 import type { ComponentType } from "react";
 import { AbsoluteFill, Audio, Easing, Sequence, interpolate, staticFile, useCurrentFrame } from "remotion";
 import { BACKDROP } from "../three/Studio";
+import { BoardScene } from "./BoardScene";
 import { BuildScene, FinishScene, HeroScene, PullApartScene } from "./bowlScenes";
 import { MixScene } from "./MixScene";
 import { Captions, Chip, Fade } from "./overlay";
+import { PotScene } from "./PotScene";
 import { PrepScene } from "./PrepScene";
 import { recipeOf } from "./recipes";
 import { LEAD, type Planned, type Template } from "./scenes";
@@ -22,6 +24,8 @@ const VIEWS: Record<Template, ComponentType<TemplateProps>> = {
   prep: PrepScene,
   mix: MixScene,
   skillet: SkilletScene,
+  pot: PotScene,
+  board: BoardScene,
   build: BuildScene,
   finish: FinishScene,
 };
@@ -56,7 +60,7 @@ export function HowTo({ slug, draft = false, tall = false, sound = true }: { slu
         const View = VIEWS[template];
         return (
           <Sequence key={id} from={p.from} durationInFrames={p.len} name={id}>
-            <View s={{ len: p.len, beats: p.beats, draft, tall }} p={p} file={file} />
+            <View s={{ len: p.len, beats: p.beats, draft, tall }} p={p} file={file} slug={slug} />
             <Chips chips={p.chips} />
             {sound && <Cues cues={p.cues} />}
             <Captions lines={p.captions} beats={p.beats} len={p.len} />

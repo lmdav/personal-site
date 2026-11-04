@@ -5,7 +5,7 @@
 import { ThreeCanvas } from "@remotion/three";
 import { AbsoluteFill, Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from "remotion";
 import { Bowl } from "../three/Bowl";
-import { BowlFood, CameraRig, LAYERS, Labels, Sauce, build, clamp, droppedPose, items, liftedPose, orbit } from "../three/bowlShot";
+import { BowlFood, CameraRig, Labels, Sauce, bowlOf, clamp, orbit } from "../three/bowlShot";
 import { KitProvider } from "../three/ingredients";
 import { BACKDROP, Lens, Studio, dprFor } from "../three/Studio";
 import { MONO, SERIF } from "../theme";
@@ -22,6 +22,8 @@ function cameraAt(frame: number, apart: number) {
 }
 
 function Scene({ lens }: { lens: boolean }) {
+  const bowl = bowlOf("smash-burger-bowl");
+  const { LAYERS, build, items, droppedPose, liftedPose } = bowl;
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
@@ -45,10 +47,10 @@ function Scene({ lens }: { lens: boolean }) {
       <Bowl spec={build.bowl} />
       <CameraRig position={position} target={target} />
       <KitProvider>
-        <BowlFood poseOf={poseOf} idle={idle} frame={frame} />
-        <Sauce lift={sauceLift} opacity={sauceOpacity} drawn={sauceDrawn} />
+        <BowlFood bowl={bowl} poseOf={poseOf} idle={idle} frame={frame} />
+        <Sauce bowl={bowl} lift={sauceLift} opacity={sauceOpacity} drawn={sauceDrawn} />
       </KitProvider>
-      <Labels showOf={(li) => labelShow(li === LAYERS ? 0 : LAYERS - li)} />
+      <Labels bowl={bowl} showOf={(li) => labelShow(li === LAYERS ? 0 : LAYERS - li)} />
       {lens && <Lens focus={[target.x, target.y, target.z]} />}
     </>
   );

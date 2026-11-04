@@ -1,0 +1,140 @@
+{
+  "hero": [
+    {
+      "speak": "Beef broccoli bowls. Seared strip steak and charred broccoli over sticky rice, in about thirty five minutes.",
+      "caption": "Seared strip steak and charred broccoli over sticky rice. One serving, about 35 minutes."
+    }
+  ],
+  "apart": [
+    {
+      "speak": "Here is what goes in it.",
+      "caption": "Here is what goes in it."
+    },
+    {
+      "speak": "Calrose rice.",
+      "caption": "Calrose rice."
+    },
+    {
+      "speak": "Six ounces of New York strip.",
+      "caption": "6 oz of NY strip."
+    },
+    {
+      "speak": "A cup of broccoli.",
+      "caption": "1 cup of broccoli."
+    },
+    {
+      "speak": "Half an avocado.",
+      "caption": "Half an avocado."
+    },
+    {
+      "speak": "Two eggs fried in teriyaki.",
+      "caption": "2 eggs fried in teriyaki."
+    },
+    {
+      "speak": "And a light drizzle of teriyaki, with toasted sesame seeds.",
+      "caption": "A light drizzle of teriyaki, with toasted sesame seeds."
+    }
+  ],
+  "rice": [
+    {
+      "speak": "Start with the rice, since it takes the longest. Rinse a third of a cup of Calrose rice until the water runs mostly clear, and put it in a small pot.",
+      "caption": "Start the rice first. Rinse 1/3 cup Calrose until the water runs mostly clear."
+    },
+    {
+      "speak": "Add half a cup of water, and bring it to a boil over high heat.",
+      "caption": "Add 1/2 cup water. Bring it to a boil over high heat."
+    },
+    {
+      "speak": "Cover it, turn the heat to low, and set a timer for fifteen minutes.",
+      "caption": "Cover, turn the heat to low, and set a timer for 15 minutes."
+    },
+    {
+      "speak": "When the timer goes off, turn off the heat, and leave the lid on for ten more minutes.",
+      "caption": "When it goes off, turn off the heat. Leave the lid on for 10 more minutes."
+    }
+  ],
+  "steak": [
+    {
+      "speak": "While the rice simmers, trim the fat cap to about an eighth of an inch, pat the steak very dry, and season it with salt and pepper. When the timer has about five minutes left, heat a heavy skillet on high for three minutes, until it just starts to smoke.",
+      "caption": "Trim the fat cap to 1/8 inch, pat dry, and season. With 5 minutes left on the rice, heat a heavy skillet on high for 3 minutes."
+    },
+    {
+      "speak": "Add a teaspoon of oil, then the steak, and leave it alone for three minutes.",
+      "caption": "Add 1 tsp oil, then the steak. Leave it alone for 3 minutes."
+    },
+    {
+      "speak": "Flip it, and cook three minutes more.",
+      "caption": "Flip it, and cook 3 minutes more."
+    },
+    {
+      "speak": "Take it off at one hundred thirty degrees for medium rare, or cook it about two minutes more and take it off at one hundred forty five, the U S D A safe minimum. Let it rest for five minutes.",
+      "caption": "Off at 130°F for medium-rare, or about 2 minutes more to 145°F, the USDA safe minimum. Rest 5 minutes."
+    }
+  ],
+  "broccoli": [
+    {
+      "speak": "While the steak rests, turn the same pan down to medium high. Add the broccoli and a pinch of salt.",
+      "caption": "While the steak rests, turn the same pan to medium-high. Add the broccoli and a pinch of salt."
+    },
+    {
+      "speak": "Stand back, add two tablespoons of water, and cover it for two minutes to steam.",
+      "caption": "Stand back, add 2 tbsp water, and cover for 2 minutes to steam."
+    },
+    {
+      "speak": "Then uncover it and leave it alone for two to three minutes, until the water is gone and the edges are charred.",
+      "caption": "Uncover and leave it for 2 to 3 minutes, until the water is gone and the edges char."
+    }
+  ],
+  "eggs": [
+    {
+      "speak": "As soon as the broccoli is covered, heat half a teaspoon of oil in a small nonstick pan over medium heat. Crack in two eggs, and cook for two to three minutes, until the whites are almost set.",
+      "caption": "When the broccoli is covered, heat 1/2 tsp oil in a small nonstick pan over medium. Crack in 2 eggs. Cook 2 to 3 minutes."
+    },
+    {
+      "speak": "Pour a tablespoon of teriyaki around the eggs, and spoon it over the whites for thirty to sixty seconds, until they are set and glossy and the yolks are still soft.",
+      "caption": "Pour 1 tbsp teriyaki around the eggs. Spoon it over the whites for 30 to 60 seconds."
+    },
+    {
+      "speak": "Turn off the heat. For firm yolks, the U S D A safe choice, cover the pan for a minute or two more.",
+      "caption": "Turn off the heat. For firm yolks, the USDA safe choice, cover for 1 to 2 minutes more."
+    }
+  ],
+  "slice": [
+    {
+      "speak": "Slice the rested steak across the grain into quarter inch strips.",
+      "caption": "Slice the steak across the grain into 1/4 inch strips."
+    },
+    {
+      "speak": "Slice the avocado, and fluff the rice with a fork.",
+      "caption": "Slice the avocado, and fluff the rice with a fork."
+    }
+  ],
+  "build": [
+    {
+      "speak": "Now it is time to build the bowl.",
+      "caption": "Now build the bowl."
+    },
+    {
+      "speak": "Rice goes in a wide bowl.",
+      "caption": "Rice goes in a wide bowl."
+    },
+    {
+      "speak": "Then the steak, broccoli, and avocado on top, in three sections.",
+      "caption": "Then the steak, broccoli, and avocado on top, in three sections."
+    },
+    {
+      "speak": "Slide the eggs into the middle, with any sauce left in their pan.",
+      "caption": "Slide the eggs into the middle, with any sauce left in their pan."
+    }
+  ],
+  "finish": [
+    {
+      "speak": "Drizzle two teaspoons of teriyaki over the steak and broccoli, and sprinkle with a teaspoon of toasted sesame seeds. Add a squeeze of lime if you are using it.",
+      "caption": "Drizzle 2 tsp teriyaki over the steak and broccoli. Sprinkle with 1 tsp toasted sesame seeds. Lime, if you like."
+    },
+    {
+      "speak": "Fifty nine grams of protein. The full recipe is on the site.",
+      "caption": "59 g protein. The full recipe is at lmdav.com/recipes."
+    }
+  ]
+}

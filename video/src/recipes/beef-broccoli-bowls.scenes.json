@@ -1,0 +1,78 @@
+{
+  "title": "Beef Broccoli Bowls",
+  "facts": ["59 G PROTEIN · 980 CALORIES", "ONE SERVING · ABOUT 35 MIN"],
+  "endCard": "LMDAV.COM/RECIPES",
+  "scenes": [
+    { "id": "hero", "template": "hero", "fade": "in" },
+    { "id": "apart", "template": "pullApart", "fade": "out", "labels": ["b1", "b2", "b3", "b4", "b5", "b6"] },
+    {
+      "id": "rice",
+      "template": "pot",
+      "fade": "both",
+      "steps": { "rice": "b0+50", "water": "b1", "lid": "b2", "off": "b3" },
+      "chips": [
+        { "text": "HIGH HEAT · TO A BOIL", "show": ["water+20", "lid"] },
+        { "text": "LOW, COVERED · 15 MIN", "show": ["lid+10", "off"], "timer": ["lid+10", "off-6"] },
+        { "text": "HEAT OFF, LID ON · 10 MIN", "show": ["off", "end"], "timer": ["off+6", "end-6"] }
+      ]
+    },
+    {
+      "id": "steak",
+      "template": "skillet",
+      "cook": "sear",
+      "fade": "both",
+      "camera": [-0.08, 0.1],
+      "steps": { "heat": 6, "add": "b1+24", "flip": "b2", "out": "b3+340" },
+      "chips": [
+        { "text": "HIGH HEAT · 3 MIN", "show": [8, "add"], "timer": [8, "add-6"] },
+        { "text": "HANDS OFF · 3 MIN", "show": ["add+8", "flip"], "timer": ["add+8", "flip-4"] },
+        { "text": "SECOND SIDE · 3 MIN", "show": ["flip+18", "b3"], "timer": ["flip+18", "b3-4"] },
+        { "text": "130°F MEDIUM-RARE · 145°F USDA", "show": ["b3", "out"] }
+      ],
+      "sounds": [
+        { "sound": "sizzle", "at": "add", "until": "out", "volume": 0.13, "fade": 8 },
+        { "sound": "sizzle", "at": "flip+10", "frames": 60, "volume": 0.07, "offset": 9, "fade": 15 }
+      ]
+    },
+    {
+      "id": "broccoli",
+      "template": "skillet",
+      "cook": "char",
+      "fade": "both",
+      "camera": [0.08, -0.08],
+      "food": [{ "piece": "broccoli", "count": 7 }],
+      "steps": { "add": "b0+50", "cover": "b1+30", "uncover": "b2" },
+      "chips": [
+        { "text": "MEDIUM-HIGH", "show": ["add", "cover-10"] },
+        { "text": "COVER · 2 MIN", "show": ["cover", "uncover"], "timer": ["cover", "uncover-6"] },
+        { "text": "HANDS OFF · 2 TO 3 MIN", "show": ["uncover+8", "end"], "timer": ["uncover+8", "end-6"] }
+      ],
+      "sounds": [{ "sound": "pan", "at": "add+2", "until": "end", "volume": 0.1, "fade": 15 }]
+    },
+    {
+      "id": "eggs",
+      "template": "skillet",
+      "cook": "eggs",
+      "fade": "both",
+      "camera": [-0.1, 0.06],
+      "steps": { "crack": "b0+120", "pour": "b1", "off": "b2" },
+      "chips": [
+        { "text": "MEDIUM · 2 TO 3 MIN", "show": ["crack", "pour"], "timer": ["crack", "pour-6"] },
+        { "text": "BASTE · 30 TO 60 SEC", "show": ["pour+18", "b2"], "timer": ["pour+18", "b2-6"] },
+        { "text": "FIRM YOLKS: COVER · 1 TO 2 MIN", "show": ["b2+30", "end"] }
+      ],
+      "sounds": [{ "sound": "sizzle", "at": "crack", "until": "end", "volume": 0.06, "fade": 12 }]
+    },
+    {
+      "id": "slice",
+      "template": "board",
+      "fade": "both",
+      "foods": [
+        { "food": "steak", "x": -0.09, "cut": "b0+8" },
+        { "food": "avocado", "x": 0.11, "cut": "b1+2" }
+      ]
+    },
+    { "id": "build", "template": "build", "fade": "in", "steps": { "base": "b1-4", "top": "b2-2", "eggs": "b3" }, "waves": { "base": [0], "top": [1, 2, 3], "eggs": [4] } },
+    { "id": "finish", "template": "finish", "fade": "out", "steps": { "drizzle": "b0+4", "card": "b1" }, "topping": "b0+110" }
+  ]
+}

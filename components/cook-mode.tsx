@@ -8,6 +8,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  useSyncExternalStore,
   type ReactNode,
 } from "react";
 
@@ -28,13 +29,24 @@ function useCookMode(): CookMode {
   return cook;
 }
 
+/** Phones and tablets: a touch screen is the main input. */
+const TOUCH_DEVICE = "(hover: none) and (pointer: coarse)";
+const noSubscribe = () => () => {};
+const isTouchDevice = () => window.matchMedia(TOUCH_DEVICE).matches;
+const notOnServer = () => false;
+/** Turns cook mode on before the first paint, so a phone never flashes the dark page. */
+const COOK_ON_FIRST_PAINT = `if(matchMedia(${JSON.stringify(TOUCH_DEVICE)}).matches)document.currentScript.parentElement.dataset.cookMode="on"`;
+
 /**
- * Wraps a recipe page in its <main>. Cook mode keeps the screen awake where
- * the browser allows it, and globals.css switches the article to large dark
- * text on a light background while `data-cook-mode` is set.
+ * Wraps a recipe page in its <main>. Cook mode starts on for touch devices and
+ * off elsewhere, until the cook chooses. It keeps the screen awake where the
+ * browser allows it, and globals.css switches the article to large dark text on
+ * a light background while `data-cook-mode` is set.
  */
 export function CookModeRoot({ className, children }: { className?: string; children: ReactNode }) {
-  const [on, setOn] = useState(false);
+  const touch = useSyncExternalStore(noSubscribe, isTouchDevice, notOnServer);
+  const [choice, setOn] = useState<boolean | null>(null);
+  const on = choice ?? touch;
   const [awake, setAwake] = useState(false);
   const [done, setDone] = useState<ReadonlySet<string>>(() => new Set());
 
@@ -87,7 +99,9 @@ export function CookModeRoot({ className, children }: { className?: string; chil
 
   return (
     <CookModeContext value={value}>
-      <main className={className} data-cook-mode={on ? "on" : undefined}>
+      {/* The script can set the attribute before hydration, on purpose. */}
+      <main className={className} data-cook-mode={on ? "on" : undefined} suppressHydrationWarning>
+        <script dangerouslySetInnerHTML={{ __html: COOK_ON_FIRST_PAINT }} />
         {children}
       </main>
     </CookModeContext>

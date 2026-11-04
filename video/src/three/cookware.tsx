@@ -1,7 +1,8 @@
-// Cookware for the how-to scenes, at real size in meters: a cast iron skillet, a cup for
-// pressing the potatoes, a spatula, a spoon, a fork, a plate, a square of parchment, and
-// small stoneware bowls (the serving bowl, scaled down). Round things are turned on a
-// lathe, like the bowl.
+// Cookware for the how-to scenes, at real size in meters: a cast iron skillet (or a small
+// nonstick, the same shape scaled down), a pot with a lid, a pan lid, a cup for pressing the
+// potatoes, a spatula, a spoon, a fork, a knife, a plate, a square of parchment, and small
+// stoneware bowls (the serving bowl, scaled down). Round things are turned on a lathe, like
+// the bowl.
 import type { ThreeElements } from "@react-three/fiber";
 import { useMemo } from "react";
 import * as THREE from "three";
@@ -22,6 +23,8 @@ function lathe(points: [number, number][], segments = 96) {
 
 /** Inside the skillet: the height of its cooking surface and how far out food can sit. */
 export const SKILLET = { floor: 0.007, radius: 0.1 };
+/** The small nonstick pan is the skillet at this scale. */
+export const SMALL_PAN = 0.68;
 
 const SKILLET_PROFILE: [number, number][] = [
   [0.0005, 0], [0.098, 0], [0.104, 0.0012], [0.108, 0.004], [0.111, 0.009], [0.124, 0.044], [0.1265, 0.048],
@@ -29,22 +32,96 @@ const SKILLET_PROFILE: [number, number][] = [
   [0.101, 0.007], [0.0005, 0.007],
 ];
 
-/** A seasoned 10-inch cast iron skillet with its handle pointing along +x. */
-export function Skillet(props: Group) {
+/** A seasoned 10-inch cast iron skillet with its handle pointing along +x. nonstick: a
+ * dark coated pan instead (scale it down for a small one). */
+export function Skillet({ nonstick = false, ...props }: Group & { nonstick?: boolean }) {
   const { body, handle, lug, iron } = useMemo(
     () => ({
       body: lathe(SKILLET_PROFILE, 128),
       handle: new RoundedBoxGeometry(0.15, 0.014, 0.026, 3, 0.005),
       lug: new RoundedBoxGeometry(0.035, 0.009, 0.045, 3, 0.004),
-      iron: new THREE.MeshPhysicalMaterial({ color: "#2A2725", metalness: 0.55, roughness: 0.5, clearcoat: 0.35, clearcoatRoughness: 0.45, side: THREE.DoubleSide }),
+      iron: nonstick
+        ? new THREE.MeshPhysicalMaterial({ color: "#232326", metalness: 0.25, roughness: 0.38, clearcoat: 0.5, clearcoatRoughness: 0.3, side: THREE.DoubleSide })
+        : new THREE.MeshPhysicalMaterial({ color: "#2A2725", metalness: 0.55, roughness: 0.5, clearcoat: 0.35, clearcoatRoughness: 0.45, side: THREE.DoubleSide }),
     }),
-    [],
+    [nonstick],
   );
   return (
     <group {...props}>
       <mesh geometry={body} material={iron} castShadow receiveShadow />
       <mesh geometry={handle} material={iron} position={[0.195, 0.046, 0]} rotation-z={0.13} castShadow receiveShadow />
       <mesh geometry={lug} material={iron} position={[-0.135, 0.047, 0]} castShadow receiveShadow />
+    </group>
+  );
+}
+
+/** Inside the pot: its floor, inside radius, and rim height. */
+export const POT = { floor: 0.006, radius: 0.076, rim: 0.094 };
+
+/** A small stainless saucepan with two side handles, its base at the origin. */
+export function Pot(props: Group) {
+  const { body, handle, steel } = useMemo(
+    () => ({
+      body: lathe([[0.0005, 0], [0.078, 0], [0.081, 0.003], [0.082, 0.09], [0.084, POT.rim], [0.08, POT.rim], [POT.radius + 0.002, 0.09], [POT.radius, 0.009], [POT.radius - 0.004, POT.floor], [0.0005, POT.floor]], 96),
+      handle: new RoundedBoxGeometry(0.06, 0.012, 0.03, 3, 0.005),
+      steel: new THREE.MeshPhysicalMaterial({ color: "#C4C5C7", metalness: 1, roughness: 0.3, side: THREE.DoubleSide }),
+    }),
+    [],
+  );
+  return (
+    <group {...props}>
+      <mesh geometry={body} material={steel} castShadow receiveShadow />
+      {[-1, 1].map((side) => (
+        <mesh key={side} geometry={handle} material={steel} position={[side * 0.108, 0.078, 0]} castShadow />
+      ))}
+    </group>
+  );
+}
+
+/** A domed lid with a knob, sitting on its rim at the origin. radius: the rim's radius. */
+export function Lid({ radius, ...props }: Group & { radius: number }) {
+  const { dome, knob, steel, black } = useMemo(() => {
+    const h = radius * 0.24;
+    const points: [number, number][] = [[radius, 0]];
+    for (let k = 1; k <= 12; k++) points.push([radius * Math.cos((k / 12) * (Math.PI / 2)) + 0.0005, h * Math.sin((k / 12) * (Math.PI / 2))]);
+    return {
+      dome: lathe(points, 96),
+      knob: new THREE.CylinderGeometry(0.013, 0.01, 0.018, 24),
+      steel: new THREE.MeshPhysicalMaterial({ color: "#C8C9CB", metalness: 1, roughness: 0.26, side: THREE.DoubleSide }),
+      black: new THREE.MeshPhysicalMaterial({ color: "#26221F", roughness: 0.45 }),
+    };
+  }, [radius]);
+  return (
+    <group {...props}>
+      <mesh geometry={dome} material={steel} castShadow receiveShadow />
+      <mesh geometry={knob} material={black} position-y={radius * 0.24 + 0.009} castShadow />
+    </group>
+  );
+}
+
+/** A chef's knife, edge down at the origin, blade along z with the handle toward +z. */
+export function Knife(props: Group) {
+  const { blade, handle, steel, dark } = useMemo(() => {
+    const shape = new THREE.Shape();
+    shape.moveTo(-0.11, 0);
+    shape.quadraticCurveTo(-0.02, -0.002, 0.07, 0);
+    shape.lineTo(0.07, 0.042);
+    shape.lineTo(-0.02, 0.04);
+    shape.quadraticCurveTo(-0.08, 0.03, -0.11, 0);
+    const blade = new THREE.ExtrudeGeometry(shape, { depth: 0.0016, bevelEnabled: false });
+    blade.translate(0, 0, -0.0008);
+    blade.rotateY(-Math.PI / 2);
+    return {
+      blade,
+      handle: new RoundedBoxGeometry(0.014, 0.022, 0.1, 3, 0.006),
+      steel: new THREE.MeshPhysicalMaterial({ color: "#D3D4D6", metalness: 1, roughness: 0.22 }),
+      dark: new THREE.MeshPhysicalMaterial({ color: "#2B2420", roughness: 0.5, clearcoat: 0.3 }),
+    };
+  }, []);
+  return (
+    <group {...props}>
+      <mesh geometry={blade} material={steel} castShadow />
+      <mesh geometry={handle} material={dark} position={[0, 0.03, 0.12]} castShadow />
     </group>
   );
 }

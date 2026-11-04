@@ -71,7 +71,7 @@
         { "sound": "sizzle", "at": "turn+6", "frames": 60, "volume": 0.07, "offset": 9, "fade": 15 }
       ]
     },
-    { "id": "build", "template": "build", "fade": "in", "steps": { "cold": "b1-2", "hot": "b2-4" } },
+    { "id": "build", "template": "build", "fade": "in", "steps": { "cold": "b1-2", "hot": "b2-4" }, "waves": { "cold": [0, 1], "hot": [2, 3, 4] } },
     { "id": "finish", "template": "finish", "fade": "out", "steps": { "drizzle": "b0+4", "card": "b1" }, "side": { "food": "beans", "at": "b0+46" } }
   ]
 }

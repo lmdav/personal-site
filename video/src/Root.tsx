@@ -20,7 +20,7 @@ export function RemotionRoot() {
         <Fragment key={slug}>
           <Composition id={slug} component={HowTo} durationInFrames={frames} fps={FPS} width={1920} height={1080} defaultProps={{ slug, draft: false, tall: false }} />
           <Composition id={`${slug}-vertical`} component={HowTo} durationInFrames={frames} fps={FPS} width={1080} height={1920} defaultProps={{ slug, draft: false, tall: true }} />
-          <Still id={`${slug}-poster`} component={PosterShot} width={1920} height={1080} />
+          <Still id={`${slug}-poster`} component={PosterShot} width={1920} height={1080} defaultProps={{ slug }} />
         </Fragment>
       ))}
       <Still id="smash-burger-bowl-blueprint" component={BlueprintSheet} width={3200} height={2200} />

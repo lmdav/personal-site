@@ -13,7 +13,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { bundle } from "@remotion/bundler";
 import { makeCancelSignal, openBrowser, renderMedia, renderStill, selectComposition } from "@remotion/renderer";
-import { BOWL_SLUG, bakeOf, checkPlan, checkSceneFile, fadeRanges, planVideo, totalFrames } from "./src/howto/scenes.ts";
+import { NO_BAKE, bakeOf, checkPlan, checkSceneFile, fadeRanges, planVideo, totalFrames } from "./src/howto/scenes.ts";
 import { checkNarration } from "./tools/check-narration.mjs";
 import { checkLoudness } from "./tools/loudness.mjs";
 import { watchProgress } from "./tools/watchdog.mjs";
@@ -113,9 +113,16 @@ function stopOn(problems) {
   console.error(`Stopped: ${sceneFile} has problems:\n- ${problems.join("\n- ")}`);
   process.exit(1);
 }
-const bowl = json(`src/recipes/${BOWL_SLUG}.build.json`);
-stopOn(checkSceneFile(scenes, script, slug, { slug: BOWL_SLUG, labels: bowl.layers.length + 1 }));
-const plan = planVideo(scenes, script, json(`src/data/${slug}.narration.json`), bakeOf(json(`src/data/${BOWL_SLUG}.drop.json`)));
+// The bake is deterministic and takes seconds, so the plan and the bundle always read a
+// fresh one, even in a new checkout.
+const hasBowl = existsSync(path.join(videoDir, `src/recipes/${slug}.build.json`));
+if (hasBowl) {
+  log("Baking the bowl");
+  run("node", ["tools/bake-drop.mjs", slug]);
+}
+const layers = hasBowl ? json(`src/recipes/${slug}.build.json`).layers.length : 0;
+stopOn(checkSceneFile(scenes, script, slug, hasBowl ? { layers, labels: layers + 1 } : null));
+const plan = planVideo(scenes, script, json(`src/data/${slug}.narration.json`), hasBowl ? bakeOf(json(`src/data/${slug}.drop.json`)) : NO_BAKE);
 stopOn(checkPlan(plan));
 const frames = totalFrames(plan);
 log(`${plan.length} scenes, ${frames} frames (${(frames / 30).toFixed(1)} s)`);

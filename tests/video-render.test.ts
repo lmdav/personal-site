@@ -2,7 +2,6 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import path from "node:path";
-import { BOWL_SLUG } from "../video/src/howto/scenes.ts";
 import { judge, parseSummary } from "../video/tools/loudness.mjs";
 import { watchProgress } from "../video/tools/watchdog.mjs";
 
@@ -101,10 +100,4 @@ test("the loudness meter's summary is read, including a silent peak", () => {
   const text = "...t: 113.5 M: -30.1\n[Parsed_ebur128_0] Summary:\n\n  Integrated loudness:\n    I:         -22.8 LUFS\n    Threshold: -33.4 LUFS\n\n  True peak:\n    Peak:       -inf dBFS\n";
   assert.deepEqual(parseSummary(text), { integrated: -22.8, peak: -Infinity });
   assert.throws(() => parseSummary("no audio"), /no summary/);
-});
-
-test("the bowl's slug matches the build file and bake bowlShot.tsx draws", () => {
-  const source = readFileSync(path.join(process.cwd(), "video", "src", "three", "bowlShot.tsx"), "utf8");
-  assert.match(source, new RegExp(`from "\\.\\./data/${BOWL_SLUG}\\.drop\\.json"`));
-  assert.match(source, new RegExp(`from "\\.\\./recipes/${BOWL_SLUG}\\.build\\.json"`));
 });

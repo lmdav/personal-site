@@ -143,6 +143,13 @@ function RecipeHeader({ recipe }: { recipe: Recipe }) {
       </div>
       <CookModeStatus className="mt-3 text-[16px] text-white/80" />
 
+      {/* On a phone the photo is the cover, above the title. Wider screens show it after the steps. */}
+      {recipe.image && (
+        <div className="recipe-cover print-hidden relative mt-5 aspect-[16/10] w-full overflow-hidden bg-white/5 md:hidden">
+          <Image src={recipe.image.src} alt={recipe.image.alt} fill sizes="100vw" fetchPriority="high" className="object-cover" />
+        </div>
+      )}
+
       {/* With a video, it sits beside the title on wider screens and under the details
           on a phone, so it is the first thing after the recipe's name. */}
       <div className={recipe.video ? "lg:grid lg:grid-cols-12 lg:items-start lg:gap-12" : undefined}>
@@ -179,7 +186,7 @@ function RecipeHeader({ recipe }: { recipe: Recipe }) {
 
 function RecipePhoto({ image }: { image: RecipeImage }) {
   return (
-    <figure className="recipe-photo print-hidden mt-16 max-w-[56rem] border-t border-white/12 pt-10">
+    <figure className="recipe-photo print-hidden mt-16 hidden max-w-[56rem] border-t border-white/12 pt-10 md:block">
       <div className="relative aspect-[4/3] w-full overflow-hidden bg-white/5 sm:aspect-[16/9]">
         <Image
           src={image.src}

@@ -6,7 +6,7 @@ date: 2026-11-03
 supersedes: []
 superseded_by: []
 amends: []
-amended_by: []
+amended_by: [0005]
 related: [0002, 0003]
 ---
 
@@ -28,7 +28,7 @@ The Smash Burger Bowl's how-to video (PR #5) was built from about 600 lines of s
 
 - A recipe whose methods the kit already has is new data only: a scene file, a narration script, and a bowl build. A new method is a new template, written once.
 - The Smash Burger Bowl's scene file reproduces the hand-written video; stills at the key moment of every scene were compared by PSNR before the old scenes were deleted.
-- Not yet per recipe: the bowl scenes (`hero`, `pullApart`, `build`, `finish`) draw the Smash Burger Bowl's build and bake. Validation refuses them for any other slug until the kit work (playbook item C) makes the bowl per recipe. Foods are limited to what the kit has (`potato`; `mushroom` and `onion` slices; beef), and validation names the gap.
+- Superseded by ADR 0005, 2026-11-03: the bowl scenes (`hero`, `pullApart`, `build`, `finish`) draw the Smash Burger Bowl's build and bake. Validation refuses them for any other slug until the kit work (playbook item C) makes the bowl per recipe. Foods are limited to what the kit has (`potato`; `mushroom` and `onion` slices; beef), and validation names the gap.
 
 ## Alternatives
 

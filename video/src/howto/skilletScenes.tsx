@@ -2,15 +2,17 @@
 // cooking. saute: slices fall into a hot, dry pan (step "add"), sit, then get a stir and
 // brown ("stir"). smash: the pan smokes ("heat"), two balls of beef drop in ("add"),
 // parchment goes on, a spatula presses each flat, the parchment comes off, salt and
-// pepper, a rest for the crust ("rest"), a flip ("flip"), and the cheese melts.
+// pepper, a rest for the crust ("rest"), a flip ("flip"), and the cheese melts. sear, char,
+// and eggs are in panCooks.tsx.
 import { useMemo } from "react";
 import { Easing, useCurrentFrame } from "remotion";
 import * as THREE from "three";
 import { mix } from "../three/bowlShot";
 import { rng } from "../geo";
 import { cookable, meltingCheese, Steam, useRawFood } from "../three/cooking";
-import { Parchment, SKILLET, Skillet, Spatula } from "../three/cookware";
+import { Parchment, SKILLET, SMALL_PAN, Skillet, Spatula } from "../three/cookware";
 import { KitProvider, useKit } from "../three/ingredients";
+import { Char, Eggs, PLATE_X, Sear } from "./panCooks";
 import { Studio } from "../three/Studio";
 import type { SceneData } from "./scenes";
 import { SLICES, panLayout } from "./skillet";
@@ -19,17 +21,19 @@ import { Shot, Stage, aim, plop, ramp, type SceneProps, type TemplateProps } fro
 type SkilletData = Extract<SceneData, { template: "skillet" }>;
 const FLOOR = SKILLET.floor;
 
-function PanShot({ s, children, az }: { s: SceneProps; children: React.ReactNode; az: readonly [number, number] }) {
+function PanShot({ s, children, az, small = false, fromPlate }: { s: SceneProps; children: React.ReactNode; az: readonly [number, number]; small?: boolean; fromPlate?: number }) {
   const f = useCurrentFrame();
   const t = f / s.len;
-  const { position, target } = aim([0.01, FLOOR + 0.01, 0], mix(az[0], az[1], t), 0.95, mix(0.54, 0.5, t) + (s.tall ? 0.1 : 0));
+  // A scene that starts at the plate beside the pan pans over to the pan at frame fromPlate.
+  const away = fromPlate === undefined ? 0 : PLATE_X * (1 - ramp(f, fromPlate - 24, 40));
+  const { position, target } = aim(s.tall ? [0.01, FLOOR + 0.01, -away] : [0.01 + away, FLOOR + 0.01, 0], mix(az[0], az[1], t), 0.95, (mix(0.54, 0.5, t) + (s.tall ? 0.1 : 0)) * (small ? 0.72 : 1));
   return (
     <Stage s={s}>
       <Shot position={position} target={target} draft={s.draft} />
       <Studio props={false} />
       {/* In the vertical cut the pan turns so its handle runs up the frame. */}
       <group rotation-y={s.tall ? Math.PI / 2 : 0}>
-        <Skillet />
+        {small ? <Skillet nonstick scale={SMALL_PAN} /> : <Skillet />}
         <KitProvider>{children}</KitProvider>
       </group>
     </Stage>
@@ -173,5 +177,12 @@ function Smash({ scene, at }: { scene: Extract<SkilletData, { cook: "smash" }>; 
 
 export function SkilletScene({ s, p }: TemplateProps) {
   const scene = p.scene as SkilletData;
-  return <PanShot s={s} az={scene.camera}>{scene.cook === "smash" ? <Smash scene={scene} at={p.at} /> : <Saute scene={scene} at={p.at} />}</PanShot>;
+  const views = {
+    smash: () => <Smash scene={scene as Extract<SkilletData, { cook: "smash" }>} at={p.at} />,
+    saute: () => <Saute scene={scene as Extract<SkilletData, { cook: "saute" }>} at={p.at} />,
+    sear: () => <Sear at={p.at} />,
+    char: () => <Char scene={scene as Extract<SkilletData, { cook: "char" }>} at={p.at} />,
+    eggs: () => <Eggs at={p.at} />,
+  };
+  return <PanShot s={s} az={scene.camera} small={scene.cook === "eggs"} fromPlate={scene.cook === "sear" ? p.at.add : undefined}>{views[scene.cook]()}</PanShot>;
 }

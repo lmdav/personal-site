@@ -21,8 +21,8 @@ export type SceneProps = {
 };
 
 /** What every template gets: the scene's frame props, its plan (steps, times, chips,
- * and sounds in scene frames), and the recipe's scene file. */
-export type TemplateProps = { s: SceneProps; p: Planned; file: SceneFile };
+ * and sounds in scene frames), the recipe's scene file, and its slug. */
+export type TemplateProps = { s: SceneProps; p: Planned; file: SceneFile; slug: string };
 
 /** The lens's vertical field of view: wider for the vertical cut, so the subject still
  * fits across the narrow frame. */
