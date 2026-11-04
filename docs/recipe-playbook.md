@@ -42,7 +42,7 @@ The recipe itself was drafted before this run, in a claude.ai chat, and handed o
 3. **The cooking scenes were written by hand for this recipe.** The potato, sauce, and skillet scenes are about 600 lines (`video/src/howto/PotatoScene.tsx`, `SauceScene.tsx`, `panScenes.tsx`), and `HowTo.tsx` names this recipe's scenes directly. *Fix:* scene templates driven by a per-recipe scene file (proposal item B).
 4. **Kitchen facts arrived after publishing.** No air fryer tonight, and big sweet potatoes instead of Yukon Golds, each became its own follow-up PR and deploy. *Fix:* kickoff questions, asked once before anything is written.
 5. **Renders were slow, and one stalled.** The 15-second proof took 16.5 minutes before the lens settings were tuned (30 frames went from 112.8 s to 17.8 s). Later, an audio-only render ran without `--gl=angle`, sat idle for 10 minutes, and the retry took another 10, because an audio-only render still draws every frame. *Fix:* one render command with the flag built in, a stall timeout, and the mix measured from the final render's own audio.
-6. **Deploys are manual.** The Vercel project's Git link points at a deleted repo (`personal-site1`), so merging does not deploy, and every publish needs `vercel deploy --prod` by hand. *Fix:* relink the project to `lmdav/personal-site` (item F).
+6. **Deploys were manual.** The Vercel project's Git link pointed at a deleted repo (`personal-site1`), so merging did not deploy, and every publish needed `vercel deploy --prod` by hand. *Fix:* the project was relinked to `lmdav/personal-site` on 2026-11-03 (item F).
 7. **One long session carried too much.** The main session compacted twice, and each summary drops detail. *Fix:* one session per stage, with this playbook and the v4 spec as the hand-off between them.
 8. **Approvals came one at a time:** the voice, the format, the sounds, the narration. Each one paused the work. *Fix:* the house defaults, plus one review pack per run.
 
@@ -101,7 +101,7 @@ All video commands run inside `video/`, once the PRs for items B, D, and E (#13 
 5. `.venv/bin/python narrate.py <slug>`, then `node tools/check-narration.mjs <slug>`: whisper.cpp checks every spoken line against the script.
 6. `node tools/stills.mjs <bundle> <slug> <out-dir> <frame> ...` renders stills for the review pack, from a bundle made with `pnpm exec remotion bundle src/index.ts --out-dir <bundle>`.
 7. `pnpm render <slug>`, in the background: narration and its whisper check, the scene check, both cuts with ANGLE at concurrency 5, the frame and loudness checks, then the web copy and poster into the site. It stops on a stall and exits non-zero on any failed check.
-8. In the site root: `pnpm verify`, then a PR. After Liam's OK, merge, then deploy from `main` with `vercel deploy --prod --yes --scope liam87davis-5781s-projects`, until item F fixes deploy on merge.
+8. In the site root: `pnpm verify`, then a PR. After Liam's OK, merge, and merging deploys to production. If no deployment starts, deploy from `main` with `vercel deploy --prod --yes --scope liam87davis-5781s-projects`.
 
 Keep the Mac on power for a render. On 2026-11-03 it hibernated at 1% battery 6 minutes into one; the render's browser crashed, and the stall check stopped it on wake.
 
@@ -132,6 +132,6 @@ Ranked by payoff for the effort.
 | D. One render command | Built (PR #14). `pnpm render smash-burger-bowl` passed in one run on 2026-11-03: exit 0 in 27.1 min (13.2 and 12.6 min per cut), no blank or glitched frames, the mix at -22.8 LUFS with a -3.5 dBFS peak and every scene within 0.1 LU of its narration. The stall stop fired correctly when the Mac hibernated mid-render; a planted loud bed fails the loudness check. |
 | E. Pronunciation check | Built (PR #15). All 29 narration lines match; a planted wrong line and the unfixed "romaine" both fail. |
 | C. Kit for the four tested recipes | Not started |
-| F. Deploy on merge | Not done; a setting in Liam's Vercel account |
+| F. Deploy on merge | Linked on 2026-11-03: project `personal-site1`, repo `lmdav/personal-site`, production branch `main`. The merge that adds this line is the first test. |
 | G. Video hosting | Not started |
 | The 10 to 15 minute target | Untested until the next recipe runs through `/recipe` |
