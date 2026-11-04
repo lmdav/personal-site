@@ -73,6 +73,10 @@ Liam said go on 2026-11-03 and asked for this recipe only. The kit gained what i
 - **Narration:** all 30 lines match the script in the whisper check. It caught "rice" as "rise", "Calrose" as "cowl rose", "bowl" as "balls", and the spelled-out URL, each fixed in the script or the dictionary.
 - **Times and temperatures:** the narration states the recipe's, which Liam has not confirmed separately (see Proven and untested). He hears them in the review pack.
 
+## Recipe page changes in this PR (Liam, 2026-11-03)
+
+Cook mode starts on for touch devices, and the cook can still turn it off. On a phone the cover photo sits above the title and the video follows the details. Both apply to every recipe. Computers are unchanged.
+
 ## Before publishing
 
 The recipes index says "Every one has been cooked and tested." Liam confirmed on 2026-11-03 that he has cooked this with these amounts, so that line holds. He then said "publish".
