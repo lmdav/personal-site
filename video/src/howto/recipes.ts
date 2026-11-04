@@ -2,8 +2,8 @@
 // script in src/recipes, and the narration timings narrate.py writes to src/data. A recipe
 // without timings yet is left out until it is narrated. A scene file with problems stops
 // the bundle with all of them listed.
-import { LAYERS, items, samples } from "../three/bowlShot";
-import { BOWL_SLUG, bakeOf, checkPlan, checkSceneFile, planVideo, totalFrames, type Planned, type SceneFile, type Script, type Timings } from "./scenes";
+import { bowlOf, hasBowl } from "../three/bowlShot";
+import { bakeOf, NO_BAKE, checkPlan, checkSceneFile, planVideo, totalFrames, type Planned, type SceneFile, type Script, type Timings } from "./scenes";
 
 // webpack's require.context, which Remotion's bundler provides.
 type Context = { keys(): string[]; (key: string): unknown };
@@ -16,7 +16,6 @@ const timings = require.context("../data", false, /\.narration\.json$/);
 export type Recipe = { slug: string; file: SceneFile; plan: Planned[]; frames: number };
 
 const has = (ctx: Context, key: string) => ctx.keys().includes(key);
-const bake = bakeOf({ frames: samples, items });
 
 export const RECIPES: Recipe[] = sceneFiles
   .keys()
@@ -28,11 +27,12 @@ export const RECIPES: Recipe[] = sceneFiles
     if (!has(timings, scriptKey)) return [];
     const raw = sceneFiles(key);
     const script = scripts(scriptKey) as Script;
-    const problems = checkSceneFile(raw, script, slug, { slug: BOWL_SLUG, labels: LAYERS + 1 });
+    const bowl = hasBowl(slug) ? bowlOf(slug) : null;
+    const problems = checkSceneFile(raw, script, slug, bowl && { layers: bowl.LAYERS, labels: bowl.LAYERS + 1 });
     const fail = (list: string[]) => new Error(`src/recipes/${slug}.scenes.json has problems:\n- ${list.join("\n- ")}`);
     if (problems.length) throw fail(problems);
     const file = raw as SceneFile;
-    const plan = planVideo(file, script, timings(scriptKey) as Timings, bake);
+    const plan = planVideo(file, script, timings(scriptKey) as Timings, bowl ? bakeOf({ frames: bowl.samples, items: bowl.items }) : NO_BAKE);
     const planProblems = checkPlan(plan);
     if (planProblems.length) throw fail(planProblems);
     return [{ slug, file, plan, frames: totalFrames(plan) }];

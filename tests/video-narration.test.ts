@@ -39,3 +39,10 @@ test("numbers are spelled the way the script says them", () => {
   assert.equal(sounds("1,250,000"), sounds("1250000"));
   assert.notEqual(sounds("Bake for 1000000 hours"), sounds("Bake for hours"));
 });
+
+test("the narration check hears fractions and Calrose as said, and still catches real misses", () => {
+  assert.ok(matches("Rinse a third of a cup of Calrose rice.", "Rinse 1/3 of a cup of Kalrose rice."));
+  assert.ok(!matches("Rinse a third of a cup of Calrose rice.", "Rinse 1/3 of a cup of cowl rose rice."));
+  assert.ok(!matches("Now build the bowl.", "Now build the balls."));
+  assert.ok(!matches("Start with the rice.", "Start with the rise."));
+});

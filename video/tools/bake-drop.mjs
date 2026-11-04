@@ -3,7 +3,9 @@
 // natural resting arrangement. The pulled-apart pose is that arrangement lifted layer by
 // layer. Pass 2 drops the lifted layers back in and records every item's transform 60
 // times a second, so the 30 fps video plays the drop in 2x slow motion. The result goes
-// to src/data/<slug>.drop.json, and every render plays back exactly the same motion.
+// to src/data/<slug>.drop.json, and every render plays back exactly the same motion. A
+// kind with a lathe profile (a bed of rice) is one fixed mass the other pieces land on: it
+// sits on the bowl's floor in pass 1, and falls straight down in pass 2.
 // Usage: node tools/bake-drop.mjs [slug]
 import RAPIER from "@dimforge/rapier3d-compat";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -48,6 +50,8 @@ function latheMesh({ profile, segments }) {
   return { positions: new Float32Array(positions), indices: new Uint32Array(indices) };
 }
 const bowl = latheMesh(spec.bowl);
+const BED_Y = spec.bowl.profile[0][1];
+const isBed = (item) => Boolean(spec.kinds[item.kind].lathe);
 
 function makeWorld() {
   const world = new RAPIER.World({ x: 0, y: -9.81, z: 0 });
@@ -60,15 +64,21 @@ function makeWorld() {
 function addBody(world, item, pos, rot, dynamic) {
   const kind = spec.kinds[item.kind];
   const desc = dynamic ? RAPIER.RigidBodyDesc.dynamic() : RAPIER.RigidBodyDesc.kinematicPositionBased();
+  // flat: it can only turn around the vertical, so an egg never lands yolk down.
+  if (kind.flat) desc.enabledRotations(false, true, false);
   const body = world.createRigidBody(desc.setTranslation(pos.x, pos.y, pos.z).setRotation(rot).setCcdEnabled(true).setLinearDamping(0.4).setAngularDamping(kind.angularDamping ?? 1.5));
-  const shape = kind.box ? RAPIER.ColliderDesc.cuboid(...kind.box) : RAPIER.ColliderDesc.cylinder(kind.cylinder[0], kind.cylinder[1]);
+  let shape;
+  if (kind.lathe) {
+    const bed = latheMesh({ profile: kind.lathe, segments: 64 });
+    shape = RAPIER.ColliderDesc.trimesh(bed.positions, bed.indices);
+  } else shape = kind.box ? RAPIER.ColliderDesc.cuboid(...kind.box) : RAPIER.ColliderDesc.cylinder(kind.cylinder[0], kind.cylinder[1]);
   world.createCollider(shape.setDensity(kind.density ?? 1000).setFriction(kind.friction ?? 0.8).setRestitution(kind.restitution ?? 0.03), body);
   return body;
 }
 
-function yawTilt(tilt) {
+function yawTilt(tilt, yaw) {
   const ax = (rand() - 0.5) * tilt;
-  const ay = rand() * Math.PI * 2;
+  const ay = yaw ?? rand() * Math.PI * 2;
   const az = (rand() - 0.5) * tilt;
   const c1 = Math.cos(ax / 2), c2 = Math.cos(ay / 2), c3 = Math.cos(az / 2);
   const s1 = Math.sin(ax / 2), s2 = Math.sin(ay / 2), s3 = Math.sin(az / 2);
@@ -89,7 +99,7 @@ const items = [];
 spec.layers.forEach((layer, li) => {
   for (const group of layer.items) {
     const variants = items.filter((it) => it.kind === group.kind).length;
-    for (let k = 0; k < group.count; k++) items.push({ layer: li, kind: group.kind, variant: variants + k, zone: group.zone, spot: group.spots?.[k] });
+    for (let k = 0; k < group.count; k++) items.push({ layer: li, kind: group.kind, variant: variants + k, zone: group.zone, spot: group.spots?.[k], yaw: group.yaw });
   }
 });
 
@@ -100,9 +110,10 @@ const outside = (p) => Math.hypot(p[0], p[2]) > spec.bowl.rim - 0.01 || p[1] < 0
 const world1 = makeWorld();
 const built = [];
 const drop = (item, narrow) => {
+  if (isBed(item)) return addBody(world1, item, { x: 0, y: BED_Y, z: 0 }, { x: 0, y: 0, z: 0, w: 1 }, false);
   const top = Math.max(0.1, ...built.filter(Boolean).map((b) => b.translation().y + 0.03));
   const [cx, cz, hx, hz] = item.spot ? [...item.spot, 0.004, 0.004] : item.zone;
-  return addBody(world1, item, { x: spread(cx, hx * narrow), y: top + rand() * 0.01, z: spread(cz, hz * narrow) }, yawTilt(0.5), true);
+  return addBody(world1, item, { x: spread(cx, hx * narrow), y: top + rand() * 0.01, z: spread(cz, hz * narrow) }, item.yaw === undefined ? yawTilt(0.5) : yawTilt(spec.kinds[item.kind].flat ? 0 : 0.1, item.yaw), true);
 };
 for (const item of items) {
   built.push(drop(item, 1));
@@ -161,7 +172,10 @@ function dropBack() {
   const frames = [];
   for (let f = 0; f < DROP_SAMPLES; f++) {
     bodies.forEach((body, i) => {
-      if (f === release[i]) {
+      if (isBed(items[i])) {
+        const t = Math.max(0, f - release[i]) / RATE;
+        body.setNextKinematicTranslation({ x: 0, y: Math.max(BED_Y, lifted[i][1] - 0.5 * 9.81 * t * t), z: 0 });
+      } else if (f === release[i]) {
         body.setBodyType(RAPIER.RigidBodyType.Dynamic, true);
         const spin = 1.5 * (spec.kinds[items[i].kind].spin ?? 1);
         body.setAngvel({ x: (rand() - 0.5) * spin, y: (rand() - 0.5) * spin, z: (rand() - 0.5) * spin }, true);

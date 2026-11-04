@@ -29,11 +29,13 @@ SPEED = 0.9  # a little slower than normal, easier to follow
 GAP = 0.45  # seconds of quiet between beats
 
 # Words the voice gets wrong, with the phonemes to say instead. Without these, "romaine"
-# comes out as RAH-mayn (like "ramen"), "patties" as PAT-iz, and "paprika" as PAP-rih-kuh.
+# comes out as RAH-mayn (like "ramen"), "patties" as PAT-iz, "paprika" as PAP-rih-kuh, and
+# "Calrose" as "cowl rose".
 PRONOUNCE = {
     "romaine": "ɹoʊmˈeɪn",  # roh-MAYN
     "patties": "pˈæɾiz",  # PAT-eez
     "paprika": "pəpɹˈiːkə",  # puh-PREE-kuh
+    "calrose": "kˈælɹoʊz",  # KAL-rohz
 }
 
 SAMPLE_LINE = (

@@ -93,7 +93,8 @@
   "sauce": {
     "label": "Special sauce",
     "detail": "Greek yogurt, ketchup, mustard, pickles",
-    "lift": 0.67
+    "lift": 0.67,
+    "drizzle": { "color": "#EDB38A", "from": -0.075, "span": 0.16, "center": 0, "amp": 0.042, "waves": 9 }
   },
   "kinds": {
     "leaf": {

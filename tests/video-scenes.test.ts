@@ -27,9 +27,9 @@ const TIMINGS = {
     finish: [0.0, 3.97],
   },
 };
-const BAKE = { last: 149, hotFirst: 20 };
+const BAKE = { last: 149, firstRelease: [0, 10, 20, 30, 40] };
 // The Smash Burger Bowl has five layers, so its pull-apart has six labels.
-const BOWL = { slug: SLUG, labels: 6 };
+const BOWL = { layers: 5, labels: 6 };
 
 test("times resolve against beats, steps, and the scene's end", () => {
   const beats = [12, 70, 163];
@@ -116,10 +116,56 @@ test("the check names every problem in a scene file", () => {
   assert.equal(problems.length, expect.length, problems.join("\n"));
 });
 
-test("the check refuses bowl scenes for another recipe, and scenes the script lacks", () => {
-  const problems = checkSceneFile(sceneFile(), { ...script, extra: [{ speak: "x", caption: "x" }] }, "chili", BOWL);
-  assert.ok(problems.some((p) => /hero.*draws the smash-burger-bowl bowl/.test(p)));
+test("the check refuses bowl scenes for a recipe with no baked bowl, and scenes the script lacks", () => {
+  const problems = checkSceneFile(sceneFile(), { ...script, extra: [{ speak: "x", caption: "x" }] }, "chili", null);
+  assert.ok(problems.some((p) => /hero.*no baked src\/recipes\/chili\.build\.json/.test(p)));
   assert.ok(problems.some((p) => /scene "extra" is in the narration script but not the scene file/.test(p)));
+});
+
+test("the check wants every layer of the bowl dropped exactly once", () => {
+  const cases: [number[][], RegExp][] = [
+    [[[0, 1], [2, 3]], /waves must drop each of the bowl's 5 layers exactly once/],
+    [[[0, 1], [1, 2, 3, 4]], /waves must drop each of the bowl's 5 layers exactly once/],
+  ];
+  for (const [[cold, hot], expected] of cases) {
+    const problems = planWith("build", (s) => (s.waves = { cold, hot }));
+    assert.ok(problems.some((p) => expected.test(p)), problems.join("\n"));
+  }
+  assert.ok(planWith("build", (s) => delete s.waves).some((p) => /waves needs each step's list of layers/.test(p)));
+});
+
+test("the Beef Broccoli Bowls scene file checks out against its script and bowl", () => {
+  const slug = "beef-broccoli-bowls";
+  const bowl = read(`${slug}.build.json`);
+  const file = read(`${slug}.scenes.json`) as SceneFile;
+  const beef = read(`${slug}.narration.json`) as Script;
+  const info = { layers: bowl.layers.length, labels: bowl.layers.length + 1 };
+  assert.deepEqual(checkSceneFile(file, beef, slug, info), []);
+  const scene = (id: string) => (file.scenes as unknown as Record<string, unknown>[]).find((s) => s.id === id)!;
+  // Its new methods refuse what the kit cannot draw, and steps that name nothing.
+  (scene("broccoli").food as Record<string, unknown>[])[0].piece = "kale";
+  (scene("slice").foods as Record<string, unknown>[])[0].food = "tofu";
+  (scene("eggs").steps as Record<string, unknown>).off = "never";
+  scene("steak").cook = "boil";
+  const problems = checkSceneFile(file, beef, slug, info);
+  for (const re of [/food\[0\]\.piece "kale" is not in the kit yet \(broccoli\)/, /foods\[0\]\.food "tofu" is not in the kit yet/, /eggs.*steps\.off.*"never"/, /cook must be one of saute, smash, sear, char, eggs/])
+    assert.ok(problems.some((p) => re.test(p)), `no problem matching ${re}:\n${problems.join("\n")}`);
+});
+
+test("the pot's steps must leave room, and a board cut must end inside its scene", () => {
+  const slug = "beef-broccoli-bowls";
+  const beef = read(`${slug}.narration.json`) as Script;
+  const seconds = Object.fromEntries(Object.entries(beef).map(([id, beats]) => [id, beats.map((_, i) => i * 8)]));
+  const timings = { durations: Object.fromEntries(Object.entries(seconds).map(([id, b]) => [id, b.length * 8])), beats: seconds };
+  const bake = { last: 149, firstRelease: [0, 10, 20, 30, 40] };
+  const file = read(`${slug}.scenes.json`) as SceneFile;
+  const scene = (id: string) => (file.scenes as unknown as Record<string, unknown>[]).find((s) => s.id === id)!;
+  assert.deepEqual(checkPlan(planVideo(file, beef, timings, bake)), []);
+  Object.assign(scene("rice").steps as Record<string, unknown>, { rice: "b1", water: "b1+5" });
+  (scene("slice").foods as Record<string, unknown>[])[1].cut = "end-5";
+  const problems = checkPlan(planVideo(file, beef, timings, bake));
+  assert.ok(problems.some((p) => /water must come at least 30 frames after rice/.test(p)), problems.join("\n"));
+  assert.ok(problems.some((p) => /the end of the avocado cut is at frame \d+, outside the scene/.test(p)), problems.join("\n"));
 });
 
 test("the check names foods and kinds the kit does not have", () => {

@@ -36,7 +36,9 @@ export function numberWords(n) {
 }
 
 // Words a listener cannot tell apart, which the transcriber picks between freely.
-const SOUND_ALIKE = { two: "to", too: "to", four: "for", won: "one", ate: "eight" };
+const SOUND_ALIKE = { two: "to", too: "to", four: "for", won: "one", ate: "eight", kalrose: "calrose" };
+// Fractions the transcriber writes as digits: "1/3 of a cup" is "a third of a cup" aloud.
+const FRACTIONS = { "1/2": "a half", "1/3": "a third", "1/4": "a quarter", "1/8": "an eighth" };
 
 /** What a line sounds like, for comparing: lowercase words, numbers spelled out, a dot
  * between letters said as "dot", sound-alikes folded together, and the spaces dropped, so
@@ -45,6 +47,7 @@ export function sounds(text) {
   return text
     .toLowerCase()
     .replace(/\[[^\]]*\]|\([^)]*\)/g, " ") // [BLANK_AUDIO], (music)
+    .replace(/\b1\/[2348]\b/g, (f) => FRACTIONS[f])
     .replace(/(\d),(?=\d{3}\b)/g, "$1")
     .replace(/([a-z0-9])\.(?=[a-z])/g, "$1 dot ")
     .replace(/°/g, " degrees ")

@@ -39,6 +39,12 @@ export type MixIngredient = {
   plop?: { onset: number; volume: number };
 };
 export type { SkilletPiece };
+/** A food to slice on the board: where it sits (x along the board) and when the cut starts. */
+export type BoardFood = { food: "steak" | "avocado"; x: number; cut: When };
+/** Frames the knife takes per slice, and frames the slices take to fan out afterward. */
+export const CUT_FRAMES = 5;
+export const FAN_FRAMES = 24;
+export const SLICES_OF = { steak: 17, avocado: 7 } as const;
 
 type Base = { id: string; fade: "in" | "out" | "both" | "none" };
 export type SceneData = Base &
@@ -49,8 +55,16 @@ export type SceneData = Base &
     | { template: "mix"; color: string; steps: Record<"stir", When>; ingredients: MixIngredient[]; sounds?: SoundData[] }
     | { template: "skillet"; cook: "saute"; camera: [number, number]; food: { piece: SkilletPiece; count: number }[]; steps: Record<"add" | "stir", When>; chips?: ChipData[]; sounds?: SoundData[] }
     | { template: "skillet"; cook: "smash"; camera: [number, number]; cheese?: boolean; parchment?: boolean; steps: Record<"heat" | "add" | "rest" | "flip", When>; chips?: ChipData[]; sounds?: SoundData[] }
-    | { template: "build"; steps: Record<"cold" | "hot", When> }
-    | { template: "finish"; steps: Record<"drizzle" | "card", When>; side?: { food: "beans"; at: When } }
+    | { template: "skillet"; cook: "sear"; camera: [number, number]; steps: Record<"heat" | "add" | "flip" | "out", When>; chips?: ChipData[]; sounds?: SoundData[] }
+    | { template: "skillet"; cook: "char"; camera: [number, number]; food: { piece: SkilletPiece; count: number }[]; steps: Record<"add" | "cover" | "uncover", When>; chips?: ChipData[]; sounds?: SoundData[] }
+    | { template: "skillet"; cook: "eggs"; camera: [number, number]; steps: Record<"crack" | "pour" | "off", When>; chips?: ChipData[]; sounds?: SoundData[] }
+    /** Rice in a covered pot: grains in, water in, the lid on, the heat off. */
+    | { template: "pot"; steps: Record<"rice" | "water" | "lid" | "off", When>; chips?: ChipData[]; sounds?: SoundData[] }
+    /** Food cut on the board: each food is whole until its cut, then fans out. */
+    | { template: "board"; foods: BoardFood[]; chips?: ChipData[]; sounds?: SoundData[] }
+    /** Each step drops a wave of layers (indexes into the bowl's build file). */
+    | { template: "build"; steps: Record<string, When>; waves: Record<string, number[]> }
+    | { template: "finish"; steps: Record<"drizzle" | "card", When>; side?: { food: "beans"; at: When }; topping?: When }
   );
 export type Template = SceneData["template"];
 
@@ -59,31 +73,31 @@ export type SceneFile = { title: string; facts: string[]; endCard: string; scene
 export type Script = Record<string, { speak: string; caption: string }[]>;
 /** What narrate.py records: each scene's clip length and when each beat starts, in seconds. */
 export type Timings = { durations: Record<string, number>; beats: Record<string, number[]> };
-/** What the build scene needs from the physics bake: its last sample and the sample the
- * first hot layer is released at. */
-export type Bake = { last: number; hotFirst: number };
+/** What the build scene needs from the physics bake: its last sample and the sample each
+ * layer is first released at. */
+export type Bake = { last: number; firstRelease: number[] };
+/** For a recipe with no bowl. */
+export const NO_BAKE: Bake = { last: 0, firstRelease: [] };
 
 const STEPS: Partial<Record<Template, readonly string[]>> = {
   prep: ["poke", "microwave", "cool", "press", "crisp"],
   mix: ["stir"],
-  build: ["cold", "hot"],
+  pot: ["rice", "water", "lid", "off"],
   finish: ["drizzle", "card"],
 };
-const SKILLET_STEPS = { saute: ["add", "stir"], smash: ["heat", "add", "rest", "flip"] } as const;
-/** The recipe whose bowl src/three/bowlShot.tsx draws (it imports that recipe's build
- * file and bake; a test keeps the two in step). Per-recipe bowls come with the kit. */
-export const BOWL_SLUG = "smash-burger-bowl";
+const SKILLET_STEPS = { saute: ["add", "stir"], smash: ["heat", "add", "rest", "flip"], sear: ["heat", "add", "flip", "out"], char: ["add", "cover", "uncover"], eggs: ["crack", "pour", "off"] } as const;
 /** Templates that draw the finished bowl. They read the bowl's build file and bake. */
 export const BOWL_TEMPLATES: readonly Template[] = ["hero", "pullApart", "build", "finish"];
-const TEMPLATES: readonly Template[] = ["hero", "pullApart", "prep", "mix", "skillet", "build", "finish"];
+const TEMPLATES: readonly Template[] = ["hero", "pullApart", "prep", "mix", "skillet", "pot", "board", "build", "finish"];
 
 export const bakeOf = (drop: { frames: unknown[]; items: { layer: number; release: number }[] }): Bake => ({
   last: drop.frames.length - 1,
-  hotFirst: Math.min(...drop.items.filter((it) => it.layer >= 2).map((it) => it.release)),
+  firstRelease: [...new Set(drop.items.map((it) => it.layer))].sort((a, b) => a - b).map((li) => Math.min(...drop.items.filter((it) => it.layer === li).map((it) => it.release))),
 });
 
 export function stepsOf(scene: SceneData): readonly string[] {
   if (scene.template === "skillet") return SKILLET_STEPS[scene.cook];
+  if (scene.template === "build") return isObject(scene.waves) ? Object.keys(scene.waves) : [];
   return STEPS[scene.template] ?? [];
 }
 
@@ -103,9 +117,12 @@ export function minFrames(scene: SceneData, steps: Record<string, number>, bake:
     case "mix":
       return steps.stir + 82; // the stir and the spoon lifting out
     case "skillet":
-      return scene.cook === "smash" ? steps.flip + 100 : 0; // the flip and the cheese melting
+      // The flip and the cheese melting; the steak leaving; the char; the sauce and basting.
+      return { smash: steps.flip + 100, saute: 0, sear: steps.out + 24, char: steps.uncover + 60, eggs: steps.off + 10 }[scene.cook];
+    case "pot":
+      return steps.off + 20;
     case "build":
-      return Math.max(steps.cold + 2 + bake.last, steps.hot + 2 + bake.last - bake.hotFirst);
+      return Math.max(...Object.entries(scene.waves).map(([step, layers]) => steps[step] + 2 + bake.last - Math.min(...layers.map((li) => bake.firstRelease[li]))));
     default:
       return 0;
   }
@@ -140,9 +157,9 @@ export function frameOf(when: When, beats: number[], names: Record<string, numbe
   return base + (sign === "-" ? -1 : 1) * Number(n ?? 0);
 }
 
-/** The bowl the bowl templates draw: its recipe, and how many labels its pull-apart has
- * (one per layer, plus the sauce). */
-export type BowlInfo = { slug: string; labels: number };
+/** The recipe's bowl, as the checks need it: how many layers it has, and how many labels
+ * its pull-apart has (one per layer, plus the sauce). Null if it has no bowl yet. */
+export type BowlInfo = { layers: number; labels: number } | null;
 
 /** Checks a scene file against the narration script and lists every problem. Times are
  * checked against made-up beats here, for names and beat numbers; checkPlan checks them
@@ -165,9 +182,8 @@ export function checkSceneFile(raw: unknown, script: Script, slug: string, bowl:
     if (!["in", "out", "both", "none"].includes(String(s.fade))) bad(where, 'fade must be "in", "out", "both", or "none"');
     if (!TEMPLATES.includes(s.template as Template)) return bad(where, `template ${JSON.stringify(s.template)} is not one of ${TEMPLATES.join(", ")}`);
     const scene = s as SceneData;
-    if (BOWL_TEMPLATES.includes(scene.template) && slug !== bowl.slug)
-      bad(where, `the ${scene.template} template draws the ${bowl.slug} bowl; per-recipe bowls come with the kit (playbook item C)`);
-    if (scene.template === "skillet" && !["saute", "smash"].includes(scene.cook)) return bad(where, 'cook must be "saute" or "smash"');
+    if (BOWL_TEMPLATES.includes(scene.template) && !bowl) bad(where, `the ${scene.template} template draws the recipe's bowl, but there is no baked src/recipes/${slug}.build.json; write it, then run node tools/bake-drop.mjs ${slug}`);
+    if (scene.template === "skillet" && !Object.hasOwn(SKILLET_STEPS, scene.cook)) return bad(where, `cook must be one of ${Object.keys(SKILLET_STEPS).join(", ")}`);
     // Every time must resolve, using made-up beat frames: only the names and beat numbers matter.
     const beats = script[scene.id].map((_, k) => k * 100);
     const steps: Record<string, number> = {};
@@ -222,7 +238,7 @@ function checkTemplate(scene: SceneData, where: string, time: (w: unknown, at: s
   switch (scene.template) {
     case "pullApart": {
       const labels = list(scene.labels, "labels", true);
-      if (labels.length && labels.length !== bowl.labels) bad(where, `labels needs ${bowl.labels} times, one per layer of the bowl and one for the sauce`);
+      if (bowl && labels.length && labels.length !== bowl.labels) bad(where, `labels needs ${bowl.labels} times, one per layer of the bowl and one for the sauce`);
       labels.forEach((w, k) => time(w, `labels[${k}]`));
       break;
     }
@@ -250,11 +266,12 @@ function checkTemplate(scene: SceneData, where: string, time: (w: unknown, at: s
     }
     case "skillet":
       if (!Array.isArray(scene.camera) || scene.camera.length !== 2 || !scene.camera.every((n) => typeof n === "number")) bad(where, "camera needs [from, to] angles in radians");
-      if (scene.cook === "saute") {
+      if (scene.cook === "saute" || scene.cook === "char") {
         const food = list(scene.food, "food", true);
         const before = problemCount();
+        const kit = scene.cook === "char" ? ["broccoli"] : ["mushroom", "onion"];
         food.forEach((p, k) => {
-          if (!["mushroom", "onion"].includes(p?.piece)) bad(where, `food[${k}].piece ${JSON.stringify(p?.piece)} is not in the kit yet (mushroom, onion)`);
+          if (!kit.includes(p?.piece)) bad(where, `food[${k}].piece ${JSON.stringify(p?.piece)} is not in the kit yet (${kit.join(", ")})`);
           if (!Number.isInteger(p?.count) || p.count < 1) bad(where, `food[${k}].count needs a whole number`);
         });
         if (food.length && problemCount() === before) {
@@ -262,11 +279,28 @@ function checkTemplate(scene: SceneData, where: string, time: (w: unknown, at: s
           const placed = panLayout(food).length;
           if (placed < asked) bad(where, `the pan has room for ${placed} of the ${asked} slices in one layer`);
         }
-      } else {
+      } else if (scene.cook === "smash") {
         for (const flag of ["cheese", "parchment"] as const) if (scene[flag] !== undefined && typeof scene[flag] !== "boolean") bad(where, `${flag} must be true or false`);
       }
       break;
+    case "board":
+      list(scene.foods, "foods", true).forEach((food: BoardFood, k) => {
+        if (!Object.hasOwn(SLICES_OF, food?.food)) bad(where, `foods[${k}].food ${JSON.stringify(food?.food)} is not in the kit yet (${Object.keys(SLICES_OF).join(", ")})`);
+        if (typeof food?.x !== "number") bad(where, `foods[${k}].x needs a number`);
+        time(food?.cut, `foods[${k}].cut`);
+      });
+      break;
+    case "build": {
+      if (!isObject(scene.waves) || Object.keys(scene.waves).length === 0) {
+        bad(where, "waves needs each step's list of layers");
+        break;
+      }
+      const layers = Object.values(scene.waves).flat();
+      if (bowl && [...layers].sort((a, b) => a - b).join() !== Array.from({ length: bowl.layers }, (_, i) => i).join()) bad(where, `waves must drop each of the bowl's ${bowl.layers} layers exactly once`);
+      break;
+    }
     case "finish":
+      if (scene.topping !== undefined) time(scene.topping, "topping");
       if (scene.side !== undefined) {
         if (!isObject(scene.side)) {
           bad(where, "side needs { food, at }");
@@ -384,17 +418,26 @@ export function checkPlan(plan: Planned[]): string[] {
         for (const r of scene.ingredients) inside(frame(r.lands), r.name);
         break;
       case "skillet":
-        order(scene.cook === "smash" ? ["heat", "add", "rest", "flip"] : ["add", "stir"]);
+        order([...stepsOf(scene)]);
+        break;
+      case "pot":
+        order([...stepsOf(scene)], { water: 30, lid: 20, off: 20 });
+        break;
+      case "board":
+        for (const food of scene.foods) inside(frame(food.cut) + SLICES_OF[food.food] * CUT_FRAMES + FAN_FRAMES, `the end of the ${food.food} cut`);
         break;
       case "pullApart":
         scene.labels.forEach((w, k) => inside(frame(w), `label ${k}`));
         break;
-      case "build":
-        // The camera closes in from "cold" until 100 frames after "hot".
-        if (at.hot + 100 <= at.cold + 2) bad(`hot (${at.hot}) comes too long before cold (${at.cold})`);
+      case "build": {
+        // The camera closes in from the first wave until 100 frames after the last.
+        const [first, last] = [stepsOf(scene)[0], stepsOf(scene).at(-1)!];
+        if (at[last] + 100 <= at[first] + 2) bad(`${last} (${at[last]}) comes too long before ${first} (${at[first]})`);
         break;
+      }
       case "finish":
         if (scene.side) inside(frame(scene.side.at), "the side dish");
+        if (scene.topping !== undefined) inside(frame(scene.topping), "the topping");
         break;
     }
   }
