@@ -103,7 +103,10 @@ export function BuildScene({ s, p, slug }: TemplateProps) {
     const wave = list.find((w) => w.layers.includes(bowl.items[i].layer))!;
     return bowl.droppedPose(i, f - wave.at + wave.start);
   };
-  const apart = 1 - interpolate(f, [list[0].at + 2, list[list.length - 1].at + 100], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
+  // The camera has closed in by 100 frames after the second wave, so any later wave falls
+  // into a close-up from above the frame instead of leaving a long, empty wide shot.
+  const closing = list[Math.min(1, list.length - 1)];
+  const apart = 1 - interpolate(f, [list[0].at + 2, closing.at + 100], [0, 1], { ...clamp, easing: Easing.inOut(Easing.cubic) });
   const { position, target } = orbit(mix(AZ.buildIn, AZ.buildOut, f / s.len), apart, 0, s.tall ? CLOSE_TALL : CLOSE, s.tall, s.tall ? 0.02 : 0.09);
   return (
     <Stage s={s}>

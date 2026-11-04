@@ -430,9 +430,10 @@ export function checkPlan(plan: Planned[]): string[] {
         scene.labels.forEach((w, k) => inside(frame(w), `label ${k}`));
         break;
       case "build": {
-        // The camera closes in from the first wave until 100 frames after the last.
-        const [first, last] = [stepsOf(scene)[0], stepsOf(scene).at(-1)!];
-        if (at[last] + 100 <= at[first] + 2) bad(`${last} (${at[last]}) comes too long before ${first} (${at[first]})`);
+        // The camera closes in from the first wave until 100 frames after the second.
+        const waves = stepsOf(scene);
+        const [first, closing] = [waves[0], waves[Math.min(1, waves.length - 1)]];
+        if (at[closing] + 100 <= at[first] + 2) bad(`${closing} (${at[closing]}) comes too long before ${first} (${at[first]})`);
         break;
       }
       case "finish":

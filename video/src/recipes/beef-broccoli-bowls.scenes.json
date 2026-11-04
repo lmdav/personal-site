@@ -22,7 +22,7 @@
       "cook": "sear",
       "fade": "both",
       "camera": [-0.08, 0.1],
-      "steps": { "heat": 6, "add": "b1+24", "flip": "b2", "out": "b3+150" },
+      "steps": { "heat": 6, "add": "b1+24", "flip": "b2", "out": "b3+340" },
       "chips": [
         { "text": "HIGH HEAT · 3 MIN", "show": [8, "add"], "timer": [8, "add-6"] },
         { "text": "HANDS OFF · 3 MIN", "show": ["add+8", "flip"], "timer": ["add+8", "flip-4"] },

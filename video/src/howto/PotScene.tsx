@@ -1,6 +1,6 @@
 // The pot template (docs/adr/0004-recipe-video-scene-files.md), for rice: grains pour into a
-// pot (step "rice"), water follows ("water"), the lid goes on with a warm glow from the
-// burner ("lid"), and the glow fades when the heat goes off ("off"), with steam at the rim.
+// pot (step "rice"), water follows ("water"), the lid goes on ("lid") with steam at the rim,
+// and the scene holds through the heat going off ("off"), which its chips state.
 import { useLayoutEffect, useMemo } from "react";
 import { Easing, useCurrentFrame } from "remotion";
 import * as THREE from "three";
@@ -53,7 +53,6 @@ function Set({ at }: { at: Record<string, number> }) {
   const fill = ramp(f, at.water + 4, WATER.rise, Easing.out(Easing.quad));
   const stream = f >= at.water && f < at.water + WATER.rise;
   const lid = ramp(f, at.lid, 16, Easing.inOut(Easing.cubic));
-  const heat = ramp(f, at.lid, 20) * (1 - ramp(f, at.off, 16));
   const y = POT.floor + 0.002 + WATER.depth * fill;
   return (
     <>
@@ -77,7 +76,6 @@ function Set({ at }: { at: Record<string, number> }) {
         </mesh>
       )}
       {lid > 0 && <Lid radius={0.083} position-y={POT.rim + 0.32 * (1 - lid)} />}
-      {heat > 0 && <pointLight position={[0, 0.005, 0.12]} color="#FF8A42" intensity={0.05 * heat} distance={0.5} decay={2} />}
       <Steam from={[[0.07, POT.rim + 0.012, 0.03], [-0.07, POT.rim + 0.012, -0.02], [0.0, POT.rim + 0.012, 0.08]]} frame={f} amount={ramp(f, at.lid + 24, 40) * 0.8} spread={0.02} rise={0.14} />
     </>
   );

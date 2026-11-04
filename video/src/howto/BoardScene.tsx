@@ -56,8 +56,9 @@ function Food({ food }: { food: BoardFood & { at: number } }) {
   );
 }
 
-/** Where the knife's edge is, or null while it is away. */
-function knifeAt(f: number, foods: (BoardFood & { at: number })[]): [number, number] | null {
+/** Where the knife's edge is (x, height, and depth), or null while it is away. It comes and
+ * goes low along its own length, off the near edge of the board, never up past the camera. */
+function knifeAt(f: number, foods: (BoardFood & { at: number })[]): [number, number, number] | null {
   for (const food of foods) {
     const n = SLICES_OF[food.food];
     const end = food.at + n * CUT_FRAMES;
@@ -69,7 +70,7 @@ function knifeAt(f: number, foods: (BoardFood & { at: number })[]): [number, num
     const height = food.food === "steak" ? STEAK.height : 0.024;
     const down = f < food.at || f > end ? 1 : 1 - Math.sin(Math.min(1, Math.max(0, local)) * Math.PI);
     const away = Math.max(1 - ramp(f, food.at - 8, 8), ramp(f, end, 8));
-    return [x, TOP + mix(0.002, height + 0.02, down) + 0.3 * away];
+    return [x, TOP + mix(0.002, height + 0.02, down) + 0.04 * away, -0.015 + 0.7 * away];
   }
   return null;
 }
@@ -90,7 +91,7 @@ function Set({ s, foods }: { s: SceneProps; foods: (BoardFood & { at: number })[
             <Food key={food.food} food={food} />
           ))}
         </KitProvider>
-        {knife && <Knife position={[knife[0], knife[1], -0.015]} />}
+        {knife && <Knife position={knife} />}
       </group>
     </Stage>
   );
