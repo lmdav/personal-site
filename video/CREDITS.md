@@ -20,7 +20,7 @@ From [Unsplash](https://unsplash.com), under the [Unsplash License](https://unsp
 | Photo | Used for | Photographer | Page | ID |
 | --- | --- | --- | --- | --- |
 | Crispy smashed potatoes on a baking sheet | The smashed potatoes (`public/textures/potato_*.png`) | Alpha Perspective (@alphaperspective) | https://unsplash.com/photos/crispy-smashed-potatoes-on-a-baking-sheet-Epim2rzorz8 | 1777229987480-d19f32acc68f |
-| Grilled patties on grill | The patty crust (`public/textures/patty.jpg`) | Maude Frédérique Lavoie (@maudefl) | https://unsplash.com/photos/grilled-patties-on-grill-haAhKtXcdgM | 1560951105-a23933755abc |
+| Grilled patties on grill | The patty crust and the steak's seared crust (`public/textures/patty.jpg`) | Maude Frédérique Lavoie (@maudefl) | https://unsplash.com/photos/grilled-patties-on-grill-haAhKtXcdgM | 1560951105-a23933755abc |
 | Green leaf vegetable on brown wooden table | The romaine (`public/textures/leaf.png`) | Terry Jaskiw (@darkjett) | https://unsplash.com/photos/green-leaf-vegetable-on-brown-wooden-table-CU8MdyE4pG4 | 1612231653032-8a93d1de0834 |
 
 Everything else (the bowl, tomato, onion, pickles, mushrooms, cheese, beans, cookware, and sauces) is modeled and painted in code.

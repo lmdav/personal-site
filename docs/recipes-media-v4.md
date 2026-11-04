@@ -59,6 +59,13 @@ A new recipe needs:
    - `node tools/bake-drop.mjs <slug>` bakes the physics.
    - Remotion renders the result.
 
+## Foods and methods added for Beef Broccoli Bowls (2026-11-03)
+
+- **Foods** (`video/src/three/foods.ts`): a whole steak from raw to seared, steak strips, broccoli florets from bright to charred, avocado slices, fried eggs, a bed of rice with instanced grains, and sesame seeds. All are modeled and painted, and the steak's crust reuses the patty crust photo. No new downloads.
+- **Methods:** the `pot` template (rice, water, lid, heat off), the `board` template (a knife walks along the food, then the slices fan), and skillet `sear`, `char`, and `eggs` in `video/src/howto/panCooks.tsx`. New cookware: a pot, lids, a knife, and a small nonstick pan.
+- **Per-recipe bowls:** see ADR 0005.
+- **Known limits:** the steak's crust still reads a little like wood grain. Rinsing the rice, trimming the fat cap, the thermometer, fluffing the rice, and the lime are in the narration or captions only. The flip has no spatula, like the patties.
+
 ## The how-to video
 
 Two compositions from the same scenes (`video/src/howto/`): `smash-burger-bowl` (1920 x 1080, for the recipe page) and `smash-burger-bowl-vertical` (1080 x 1920, for a phone). Both run about 114 seconds, narrated in the Kokoro `af_heart` voice with on-screen captions. It reuses the studio, the bowl, the ingredient kit, the physics bake, and the proof's choreography (now shared in `video/src/three/bowlShot.tsx`, which the proof also uses).

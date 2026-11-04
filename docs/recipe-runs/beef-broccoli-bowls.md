@@ -67,7 +67,7 @@ The amounts, times, and temperatures below were estimated for the first draft. L
 
 Liam said go on 2026-11-03 and asked for this recipe only. The kit gained what it lacked: a bowl per recipe, steak, broccoli, rice, avocado, eggs, and sesame, and the sear, char, eggs, pot, and board methods. No photos or sounds were downloaded.
 
-- **Scenes:** hero, pull-apart, rice, steak, broccoli, eggs, slice, build, finish. 176.5 s at house pacing.
+- **Scenes:** hero, pull-apart, rice, steak, broccoli, eggs, slice, build, finish. 176.4 s at house pacing.
 - **Not drawn, narration and chips only:** rinsing the rice, trimming the fat cap, the thermometer, fluffing the rice, and the lime.
 - **Smash Burger Bowl unchanged:** its bake is byte-identical, and 44 stills (22 moments, wide and vertical) show zero pixel difference from `main`. A re-render of `main` also showed zero, so the renderer adds no noise.
 - **Narration:** all 30 lines match the script in the whisper check. It caught "rice" as "rise", "Calrose" as "cowl rose", "bowl" as "balls", and the spelled-out URL, each fixed in the script or the dictionary.
@@ -97,5 +97,6 @@ Stage 1 took about 6 minutes on the clock, 16:32 to 16:38 PST, including two ver
 | --- | --- |
 | 0. Kickoff | Answered |
 | 1. Recipe | Done: [PR #17](https://github.com/lmdav/personal-site/pull/17) merged as `9a9eaca`, deployed by hand to production, and live |
-| 2. Video plan | Review pack sent 2026-11-03, waiting on Liam's approval of the narration and stills |
-| 3 to 4. Render and publish | Not started. Render only after approval, on mains power. |
+| 2. Video plan | Done. Liam approved the review pack on 2026-11-03, then cut the broccoli to 1 cup; he was told the changed lines and bowl would render under that approval unless he asked to hear them first. |
+| 3. Render | Done on the second full run. The first failed the frame check on the vertical cut (the knife through the camera, and an empty wide shot in the build). Both are fixed, along with a smear on the pot and an empty pan seen by sampling the cut. |
+| 4. Publish | PR open, waiting on "ship it". The wide cut was sent to Liam as a file to share before this, at his request. |

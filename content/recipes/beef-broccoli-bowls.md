@@ -12,6 +12,9 @@ tags: [high-protein, beef, weeknight, rice-bowl]
 image:
   src: "https://images.unsplash.com/photo-1760504526069-ff0f8bf6e4ca?auto=format&fit=crop&w=1600&q=80"
   alt: "Beef and broccoli with vegetables on a red plate"
+video:
+  src: "/recipes/beef-broccoli-bowls/how-to.mp4"
+  poster: "/recipes/beef-broccoli-bowls/how-to-poster.jpg"
 
 ingredients:
   - name: "Rice"

@@ -127,11 +127,11 @@ Ranked by payoff for the effort.
 | The v4 video system and both cuts | Built and merged (PR #5) |
 | The video on the recipe page, and sweet potato as a choice on one page | Built and merged (PRs #5, #10, #11) |
 | This playbook | Committed in PR #12 |
-| A. `/recipe` skill | Built: `~/.claude/skills/recipe/SKILL.md`, outside the repo. Not yet run on a real recipe. |
-| B. Scene templates | Built (PR #13). The Smash Burger Bowl renders from `smash-burger-bowl.scenes.json`: 44 stills at 22 key moments, wide and vertical, are pixel-identical to the hand-written scenes, and the full wide cut is byte-identical to the one Liam approved. The bowl templates still draw only the Smash Burger Bowl (item C). |
+| A. `/recipe` skill | Built: `~/.claude/skills/recipe/SKILL.md`, outside the repo. First run on a real recipe: Beef Broccoli Bowls, 2026-11-03 (`docs/recipe-runs/beef-broccoli-bowls.md`). |
+| B. Scene templates | Built (PR #13). The Smash Burger Bowl renders from `smash-burger-bowl.scenes.json`: 44 stills at 22 key moments, wide and vertical, are pixel-identical to the hand-written scenes, and the full wide cut is byte-identical to the one Liam approved. The bowl templates drew only the Smash Burger Bowl until ADR 0005. |
 | D. One render command | Built (PR #14). `pnpm render smash-burger-bowl` passed in one run on 2026-11-03: exit 0 in 27.1 min (13.2 and 12.6 min per cut), no blank or glitched frames, the mix at -22.8 LUFS with a -3.5 dBFS peak and every scene within 0.1 LU of its narration. The stall stop fired correctly when the Mac hibernated mid-render; a planted loud bed fails the loudness check. |
 | E. Pronunciation check | Built (PR #15). All 29 narration lines match; a planted wrong line and the unfixed "romaine" both fail. |
-| C. Kit for the four tested recipes | Not started |
+| C. Kit for the four tested recipes | Partly built on 2026-11-03: per-recipe bowls and everything Beef Broccoli Bowls needs (ADR 0005). The pot may serve the chili. The egg bake, pancakes, and chili foods, the baking dish, and the griddle are not started. |
 | F. Deploy on merge | Linked on 2026-11-03: project `personal-site1`, repo `lmdav/personal-site`, production branch `main`. The merge that adds this line is the first test. |
 | G. Video hosting | Not started |
 | The 10 to 15 minute target | Untested until the next recipe runs through `/recipe` |
