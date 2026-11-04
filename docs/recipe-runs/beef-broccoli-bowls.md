@@ -89,5 +89,5 @@ Stage 1 took about 6 minutes on the clock, 16:32 to 16:38 PST, including two ver
 | Stage | State |
 | --- | --- |
 | 0. Kickoff | Questions unanswered, assumptions above |
-| 1. Recipe | File written, verify green, PR open, waiting on Liam's answers and "publish" |
+| 1. Recipe | File written, verify green, [PR #17](https://github.com/lmdav/personal-site/pull/17) open, waiting on Liam's answers and "publish" |
 | 2 to 4. Video | Skipped until item C |
