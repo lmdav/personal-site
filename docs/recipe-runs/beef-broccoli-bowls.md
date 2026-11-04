@@ -89,7 +89,7 @@ The recipes index says "Every one has been cooked and tested." Liam confirmed on
 | The page renders | Viewed on the dev server at desktop and 375 px phone widths: photo, cook mode, phone ingredients panel, index card, no console or server errors, no sideways scroll |
 | The recipe works when cooked | Liam's word that he has cooked it and the amounts match. The step times, temperatures, and rice water ratio were not confirmed separately. |
 | The nutrition numbers | Estimated by hand from USDA values recalled from memory, without checking them against FoodData Central |
-| The production page | Viewed at lmdav.com/recipes/beef-broccoli-bowls after the deploy: status 200, photo loaded, nutrition shown, listed on the index, no console errors. The Smash Burger Bowl page still returns 200. Checked at desktop width only. |
+| The production page | Viewed at www.lmdav.com/recipes/beef-broccoli-bowls after the video deploy, at phone and desktop widths. Not checked on a real phone. |
 
 ## Timing
 
@@ -103,4 +103,11 @@ Stage 1 took about 6 minutes on the clock, 16:32 to 16:38 PST, including two ver
 | 1. Recipe | Done: [PR #17](https://github.com/lmdav/personal-site/pull/17) merged as `9a9eaca`, deployed by hand to production, and live |
 | 2. Video plan | Done. Liam approved the review pack on 2026-11-03, then cut the broccoli to 1 cup; he was told the changed lines and bowl would render under that approval unless he asked to hear them first. |
 | 3. Render | Done on the second full run. The first failed the frame check on the vertical cut (the knife through the camera, and an empty wide shot in the build). Both are fixed, along with a smear on the pot and an empty pan seen by sampling the cut. |
-| 4. Publish | PR open, waiting on "ship it". The wide cut was sent to Liam as a file to share before this, at his request. |
+| 4. Publish | Done: Liam said "ship it", [PR #20](https://github.com/lmdav/personal-site/pull/20) merged as `4aa40ff`, and merging deployed it. Checked live at www.lmdav.com: 1 cup, 980 kcal, the video plays, and in phone emulation cook mode starts on with the cover above the title. The 1 cup amount has not been cooked yet. |
+
+## What this run taught
+
+- The kit work and two renders took most of the evening. A recipe from these foods and methods should now need only its data files and one render of about 29 minutes.
+- Sampling a render's frames found problems the automated checks cannot, so do it before spending a second render.
+- `lmdav.com` redirects to `www.lmdav.com`. A check of the live site must follow redirects; one that did not wasted about 13 minutes while the site was already up.
+- The cover photo is a stock shot of a different plate of beef and broccoli. Liam has not yet chosen a replacement.
