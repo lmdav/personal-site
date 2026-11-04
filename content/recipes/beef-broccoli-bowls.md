@@ -25,7 +25,7 @@ ingredients:
       - "1 tsp avocado or canola oil"
   - name: "Broccoli"
     items:
-      - "2 cups small broccoli florets"
+      - "1 cup small broccoli florets"
       - "Pinch of salt"
       - "2 tbsp water"
   - name: "Teriyaki eggs"
@@ -46,7 +46,7 @@ steps:
     text: "The rice takes the longest, so start it first. Rinse 1/3 cup Calrose rice in a strainer until the water runs mostly clear, then put it in a small pot with 1/2 cup water. Bring it to a boil over high heat, cover, turn the heat to low, and set a timer for 15 minutes. When the timer goes off, turn off the heat and leave the lid on for 10 more minutes."
   - title: "Prep the steak and broccoli"
     minutes: 5
-    text: "While the rice simmers, trim the fat cap on 6 oz NY strip steak to about 1/8 inch, pat the steak very dry, and season all sides with 1/4 tsp kosher salt and a few grinds of black pepper. Cut the broccoli into 2 cups of small florets, and leave the steak on the counter until the pan is hot."
+    text: "While the rice simmers, trim the fat cap on 6 oz NY strip steak to about 1/8 inch, pat the steak very dry, and season all sides with 1/4 tsp kosher salt and a few grinds of black pepper. Cut the broccoli into 1 cup of small florets, and leave the steak on the counter until the pan is hot."
   - title: "Heat the pan"
     minutes: 3
     text: "When the rice timer has about 5 minutes left, put a large cast iron or heavy stainless steel skillet over high heat for 3 minutes, until it just starts to smoke."
@@ -76,16 +76,16 @@ tips:
   - title: "Swaps"
     text: "Ribeye or sirloin can replace the strip steak, and sushi or jasmine rice can replace the Calrose. Frozen broccoli works if you skip the water and cook it a few minutes longer."
   - title: "Lighter version"
-    text: "Use 5 oz of steak, 1 egg, and 1/4 avocado for about 825 kcal, 50 g protein, and 36 g fat."
+    text: "Use 5 oz of steak, 1 egg, and 1/4 avocado for about 795 kcal, 48 g protein, and 36 g fat."
   - title: "Make ahead"
     text: "Cooked rice and sliced steak keep for 3 days in the fridge. Fry the eggs and slice the avocado fresh."
 
 nutrition:
-  calories: 1010
-  protein: 62
-  carbs: 80
+  calories: 980
+  protein: 59
+  carbs: 74
   fat: 49
-  fiber: 11
+  fiber: 8
   estimate: true
   note: "Estimated from standard USDA values for the ingredients as listed, with the steak weighed raw and trimmed. Sodium is about 1,500 mg, most of it from the teriyaki, so salt lightly."
 ---

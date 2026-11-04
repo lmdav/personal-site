@@ -1,6 +1,6 @@
 {
   "title": "Beef Broccoli Bowls",
-  "facts": ["62 G PROTEIN · 1,010 CALORIES", "ONE SERVING · ABOUT 35 MIN"],
+  "facts": ["59 G PROTEIN · 980 CALORIES", "ONE SERVING · ABOUT 35 MIN"],
   "endCard": "LMDAV.COM/RECIPES",
   "scenes": [
     { "id": "hero", "template": "hero", "fade": "in" },
@@ -40,7 +40,7 @@
       "cook": "char",
       "fade": "both",
       "camera": [0.08, -0.08],
-      "food": [{ "piece": "broccoli", "count": 9 }],
+      "food": [{ "piece": "broccoli", "count": 7 }],
       "steps": { "add": "b0+50", "cover": "b1+30", "uncover": "b2" },
       "chips": [
         { "text": "MEDIUM-HIGH", "show": ["add", "cover-10"] },

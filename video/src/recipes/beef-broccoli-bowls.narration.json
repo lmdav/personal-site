@@ -19,8 +19,8 @@
       "caption": "6 oz of NY strip."
     },
     {
-      "speak": "Two cups of broccoli.",
-      "caption": "2 cups of broccoli."
+      "speak": "A cup of broccoli.",
+      "caption": "1 cup of broccoli."
     },
     {
       "speak": "Half an avocado.",
@@ -133,8 +133,8 @@
       "caption": "Drizzle 2 tsp teriyaki over the steak and broccoli. Sprinkle with 1 tsp toasted sesame seeds. Lime, if you like."
     },
     {
-      "speak": "Sixty two grams of protein. The full recipe is on the site.",
-      "caption": "62 g protein. The full recipe is at lmdav.com/recipes."
+      "speak": "Fifty nine grams of protein. The full recipe is on the site.",
+      "caption": "59 g protein. The full recipe is at lmdav.com/recipes."
     }
   ]
 }

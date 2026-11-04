@@ -31,6 +31,7 @@ This run was started from another session, so the draft was written from assumpt
 - Added by the chef review: oil, salt, pepper, water, and an optional lime wedge.
 - Photo: the Unsplash pick from 2026-11-02 for the beef and broccoli rice bowl (`four-recipes-photo-picks.md` in the session notes). It shows beef and broccoli on a red plate, without the rice, avocado, or eggs.
 - Teriyaki is bottled, with a two-ingredient homemade option as a tip.
+- Broccoli went from 2 cups to 1 cup on 2026-11-03, when Liam looked at the video stills and asked if 2 cups was a ton. The published page said 2 cups until this change ships. Macros and the lighter-version tip were recalculated from the working below, without a fresh USDA lookup, and the 1 cup amount has not been cooked yet.
 
 ## Stage 1: chef review
 
@@ -43,7 +44,7 @@ The amounts, times, and temperatures below were estimated for the first draft. L
 - **Parallel timing:** rice starts first. The pan heats when the rice timer has 5 minutes left. Broccoli cooks in the steak pan during the 5 minute rest, the eggs start when the broccoli is covered, and the rice finishes its 10 minute steam at about the same time.
 - **Heat:** high for the sear, medium-high for the broccoli, medium for the eggs, low for the rice.
 - **Safe temperatures:** the steak step gives 130°F for medium-rare and 145°F as the USDA minimum. The egg step says soft yolks are the choice here and firm yolks are the USDA safe choice.
-- **Macros, estimated per bowl:** 1,010 kcal, 62 g protein, 80 g carbs, 49 g fat, 11 g fiber. This is about 110 kcal more than the Smash Burger Bowl, so a lighter version is a tip.
+- **Macros, estimated per bowl:** 980 kcal, 59 g protein, 74 g carbs, 49 g fat, 8 g fiber, with 1 cup of broccoli. This is about 80 kcal more than the Smash Burger Bowl, so a lighter version is a tip.
 - **Micros, estimated:** iron, zinc, and B12 from the steak; vitamin C, vitamin K, and folate from the broccoli; choline from the eggs; potassium from the avocado. Sodium is about 1,500 mg, mostly from the teriyaki.
 - **Substitutions:** ribeye or sirloin, sushi or jasmine rice, frozen broccoli, homemade teriyaki.
 - **What a home cook might question:** why the sauce goes in last, and why two pans. Both are answered on the page.
@@ -55,12 +56,12 @@ The amounts, times, and temperatures below were estimated for the first draft. L
 | 6 oz NY strip, raw, trimmed to 1/8 inch | 340 | 36.5 | 0 | 21 | 0 |
 | 2 large eggs | 143 | 12.6 | 0.7 | 9.5 | 0 |
 | 1/3 cup dry Calrose rice | 238 | 4.4 | 52 | 0.4 | 0.9 |
-| 2 cups broccoli | 61 | 5 | 12 | 0.7 | 4.7 |
+| 1 cup broccoli | 31 | 2.5 | 6 | 0.4 | 2.4 |
 | 1/2 avocado | 114 | 1.3 | 6 | 10.5 | 4.6 |
 | 5 tsp teriyaki, between thin and thick styles | 40 | 1.5 | 9 | 0 | 0 |
 | 1.5 tsp oil | 60 | 0 | 0 | 6.7 | 0 |
 | 1 tsp sesame seeds | 17 | 0.5 | 0.7 | 1.5 | 0.4 |
-| **Total** | **1,013** | **61.8** | **80.4** | **49.3** | **10.6** |
+| **Total** | **983** | **59.3** | **74.4** | **49.0** | **8.3** |
 
 ## Stage 2 and later: video
 
