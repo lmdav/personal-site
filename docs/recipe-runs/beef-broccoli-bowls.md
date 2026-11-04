@@ -1,6 +1,6 @@
 # Run file: Beef Broccoli Bowls
 
-Slug: `beef-broccoli-bowls`. Started 2026-11-03 at 16:32 PST. Next gate: Liam's answers below, then "publish".
+Slug: `beef-broccoli-bowls`. Started 2026-11-03 at 16:32 PST. Next gate: "publish".
 
 ## What Liam sent
 
@@ -14,16 +14,16 @@ Avacado
 light teryaki drizzle
 sesame seeds"
 
-## Kickoff (stage 0): not answered yet
+## Kickoff (stage 0): answered 2026-11-03
 
-This run was started from another session, so the kickoff questions could not be asked before writing. Nothing goes live until Liam answers them. The assumptions used for the draft are:
+This run was started from another session, so the draft was written from assumptions and Liam answered afterward.
 
-| Question | Assumption in the draft |
+| Question | Liam's answer |
 | --- | --- |
-| Has it been cooked and tested? | Unknown. The playbook lists a "beef and broccoli rice bowl" as tested, but no tested text exists: the four-recipes session was still waiting for it. Treat the amounts and times as untested. |
-| Equipment out of reach, ingredients being swapped | None. The draft needs a stovetop only, with one large heavy skillet and one small nonstick. |
-| Servings, and who is cooking | 1 bowl, matching the Smash Burger Bowl, with "2 eggs" read as 2 per bowl. If it means 2 bowls with 1 egg each, the steak stays 6 oz per bowl and the numbers drop by about 70 kcal. |
-| Differences from the house defaults | None. |
+| Has it been cooked and tested? | Cooked, and the amounts match: 6 oz strip, 1/3 cup dry rice, 2 cups broccoli, 1/2 avocado, 2 eggs, 5 tsp teriyaki in total, 1 tsp sesame seeds. Times and temperatures were not asked about separately. |
+| Equipment out of reach, ingredients being swapped | No changes. The recipe needs a stovetop, one large heavy skillet, and one small nonstick. |
+| Servings, and who is cooking | One bowl with 2 eggs, doubled for two. Who is cooking was not asked. |
+| Differences from the house defaults | Not asked in the final round. None assumed. |
 
 ## Decisions
 
@@ -34,7 +34,7 @@ This run was started from another session, so the kickoff questions could not be
 
 ## Stage 1: chef review
 
-Every amount, time, and temperature below is an estimate written for this draft. None has been cooked.
+The amounts, times, and temperatures below were estimated for the first draft. Liam has since confirmed the amounts from cooking it.
 
 - **Flavor and balance:** salt comes from the teriyaki and fat from the steak, avocado, and yolks. Nothing on the list supplies acid, so an optional lime wedge is added.
 - **How it plays together:** the yolks and avocado act as the sauce, and sticky Calrose holds them. The drizzle stays at 2 tsp because the eggs already carry 1 tbsp of teriyaki.
@@ -68,7 +68,7 @@ Skipped for now. The kit has no rice, broccoli, steak, egg, or avocado, no sear 
 
 ## Before publishing
 
-The recipes index says "Every one has been cooked and tested." These amounts have not been cooked, so publishing them as written would make that line untrue. Liam either confirms them from his own cooking, corrects them, or cooks them first.
+The recipes index says "Every one has been cooked and tested." Liam confirmed on 2026-11-03 that he has cooked this with these amounts, so that line holds. His "publish" is the only thing left.
 
 ## Proven and untested
 
@@ -76,18 +76,18 @@ The recipes index says "Every one has been cooked and tested." These amounts hav
 | --- | --- |
 | The file is valid and the site builds with it | `pnpm verify` exit 0: lint, types, test, build, and video-types all PASS |
 | The page renders | Viewed on the dev server at desktop and 375 px phone widths: photo, cook mode, phone ingredients panel, index card, no console or server errors, no sideways scroll |
-| The recipe works when cooked | Untested. Amounts, times, temperatures, and the rice water ratio are estimates. |
+| The recipe works when cooked | Liam's word that he has cooked it and the amounts match. The step times, temperatures, and rice water ratio were not confirmed separately. |
 | The nutrition numbers | Estimated by hand from USDA values recalled from memory, without checking them against FoodData Central |
 | The production page | Untested. Nothing is merged or deployed. |
 
 ## Timing
 
-Stage 1 took about 6 minutes on the clock, 16:32 to 16:38 PST, including two verify failures on the fresh worktree. Liam's attention so far is zero, because the kickoff and the publish gate are both still ahead. This does not measure the 10 to 15 minute target, which covers all three gates and the video.
+Stage 1 took about 6 minutes on the clock, 16:32 to 16:38 PST, including two verify failures on the fresh worktree. The kickoff answers came later, in a few quick replies. This does not measure the 10 to 15 minute target, which covers all three gates and the video.
 
 ## Status
 
 | Stage | State |
 | --- | --- |
-| 0. Kickoff | Questions unanswered, assumptions above |
-| 1. Recipe | File written, verify green, [PR #17](https://github.com/lmdav/personal-site/pull/17) open, waiting on Liam's answers and "publish" |
+| 0. Kickoff | Answered |
+| 1. Recipe | File written, verify green, [PR #17](https://github.com/lmdav/personal-site/pull/17) open, waiting on "publish" |
 | 2 to 4. Video | Skipped until item C |
